@@ -3,6 +3,7 @@ import { AuthComponent } from './pages/auth/auth.component';
 import { AccesoDenegadoComponent } from './pages/acceso-denegado/acceso-denegado.component';
 import { RecuperarComponent } from './pages/recuperar/recuperar.component';
 import { PanelComponent } from './pages/panel/panel.component';
+import { PerfilComponent } from './pages/perfil/perfil.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
@@ -16,6 +17,12 @@ export const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
+      {
+        path: 'perfil',
+        component: PerfilComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['HUESPED', 'ANFITRION', 'ADMINISTRADOR'] },
+      },
       {
         path: 'inicio',
         component: PanelComponent,

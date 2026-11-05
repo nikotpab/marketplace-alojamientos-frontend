@@ -1,0 +1,52 @@
+.contenido { width: min(1240px, 100%); margin: 0 auto; padding: 48px 32px; }
+h1 { margin: 0; font-size: 2.2rem; color: #1f2a1a; }
+.subtitulo { margin: 4px 0 28px; color: #55574a; }
+
+.columnas { display: grid; grid-template-columns: 1fr 430px; gap: 32px; align-items: start; }
+
+.tarjeta {
+  background: #fff; border: 1px solid var(--gris-borde); border-radius: 16px; padding: 24px;
+  h2 { margin: 0 0 8px; font-size: 1.15rem; }
+  p { margin: 0 0 16px; color: #55574a; }
+}
+.lateral { display: flex; flex-direction: column; gap: 20px; }
+
+.cabecera {
+  display: flex; align-items: center; gap: 16px; padding-bottom: 20px; margin-bottom: 20px;
+  border-bottom: 1px solid var(--gris-borde);
+  h2 { margin: 0; font-size: 1.5rem; }
+  p { margin: 2px 0 0; font-size: .85rem; }
+}
+.avatar {
+  width: 70px; height: 70px; border-radius: 50%; background: var(--verde); color: #fff;
+  display: grid; place-items: center; font-size: 1.5rem; font-weight: 700; flex: none;
+}
+
+form { display: flex; flex-direction: column; gap: 16px; }
+.fila { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .85rem; }
+input {
+  padding: 12px; border: 1px solid var(--gris-borde); border-radius: var(--radio);
+  font: inherit; font-weight: 400;
+  &:focus { outline: 2px solid var(--verde); }
+  &[readonly] { background: var(--crema-claro); color: #55574a; }
+}
+.error { color: var(--rojo); font-weight: 500; margin: 0; }
+.exito { color: var(--verde); font-weight: 600; margin: 0; }
+
+.principal {
+  align-self: flex-start; background: var(--rojo); color: #fff; border: 0; padding: 12px 22px;
+  border-radius: var(--radio); font-weight: 700; font-size: .95rem; cursor: pointer;
+  &:disabled { opacity: .6; cursor: wait; }
+}
+.secundario {
+  background: #fff; color: var(--verde); border: 1.5px solid var(--verde); padding: 11px 20px;
+  border-radius: var(--radio); font-weight: 700; font-size: .95rem; cursor: pointer;
+  &:hover { background: var(--verde-suave); }
+}
+
+@media (max-width: 900px) {
+  .columnas { grid-template-columns: 1fr; }
+  .fila { grid-template-columns: 1fr; }
+  .contenido { padding: 32px 16px; }
+}

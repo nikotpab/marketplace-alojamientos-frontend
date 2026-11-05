@@ -8,11 +8,18 @@ interface Enlace {
 }
 
 const ENLACES: Record<RolUsuario, Enlace[]> = {
-  HUESPED: [{ texto: 'Inicio', ruta: '/inicio' }],
-  ANFITRION: [{ texto: 'Mis alojamientos', ruta: '/anfitrion' }],
+  HUESPED: [
+    { texto: 'Inicio', ruta: '/inicio' },
+    { texto: 'Mi perfil', ruta: '/perfil' },
+  ],
+  ANFITRION: [
+    { texto: 'Mis alojamientos', ruta: '/anfitrion' },
+    { texto: 'Mi perfil', ruta: '/perfil' },
+  ],
   ADMINISTRADOR: [
     { texto: 'Panel', ruta: '/admin' },
     { texto: 'Configuración', ruta: '/admin/configuracion' },
+    { texto: 'Mi perfil', ruta: '/perfil' },
   ],
 };
 
@@ -41,6 +48,16 @@ export class LayoutComponent {
   etiquetaRol = computed(() => {
     const u = this.auth.usuario();
     return u ? ETIQUETA_ROL[u.rol] : '';
+  });
+
+  iniciales = computed(() => {
+    const nombre = this.auth.usuario()?.nombre ?? '';
+    return nombre
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((p) => p[0].toUpperCase())
+      .join('');
   });
 
   salir() {

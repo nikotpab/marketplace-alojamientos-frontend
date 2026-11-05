@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SoloNumerosDirective } from '../../shared/solo-numeros.directive';
 import { AuthService, Rol, RolUsuario } from '../../core/auth.service';
 
 const INICIO_POR_ROL: Record<RolUsuario, string> = {
@@ -12,7 +13,7 @@ const INICIO_POR_ROL: Record<RolUsuario, string> = {
 @Component({
   selector: 'app-auth',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SoloNumerosDirective],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss',
 })

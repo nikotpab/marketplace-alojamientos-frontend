@@ -19,6 +19,16 @@ export interface LoginRequest {
   contrasena: string;
 }
 
+export interface Perfil {
+  nombre: string;
+  apellido: string;
+  correo: string;
+  telefono: string;
+  rol: RolUsuario;
+}
+
+export type PerfilEditable = Pick<Perfil, 'nombre' | 'apellido' | 'telefono'>;
+
 export interface RecuperacionResponse {
   token: string;
 }
@@ -56,6 +66,15 @@ export class AuthService {
     return this.http
       .post<Sesion>(`${this.api}/auth/login`, datos)
       .pipe(tap((s) => this.guardarSesion(s)));
+  }
+
+  /** Perfil del usuario autenticado (el backend lo identifica por el token). */
+  obtenerPerfil(): Observable<Perfil> {
+    return this.http.get<Perfil>(`${this.api}/usuarios/me`);
+  }
+
+  actualizarPerfil(datos: PerfilEditable): Observable<Perfil> {
+    return this.http.put<Perfil>(`${this.api}/usuarios/me`, datos);
   }
 
   /** Paso 1: solicita el procedimiento de recuperación (simulado, sin correo real). */
