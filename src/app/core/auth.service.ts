@@ -25,6 +25,7 @@ export interface Perfil {
   correo: string;
   telefono: string;
   rol: RolUsuario;
+  activo: boolean;
 }
 
 export type PerfilEditable = Pick<Perfil, 'nombre' | 'apellido' | 'telefono'>;
@@ -75,6 +76,11 @@ export class AuthService {
 
   actualizarPerfil(datos: PerfilEditable): Observable<Perfil> {
     return this.http.put<Perfil>(`${this.api}/usuarios/me`, datos);
+  }
+
+  /** Activa o desactiva la cuenta del usuario autenticado (queda en auditoría en el backend). */
+  cambiarEstadoCuenta(activo: boolean): Observable<Perfil> {
+    return this.http.patch<Perfil>(`${this.api}/usuarios/me/estado`, { activo });
   }
 
   /** Paso 1: solicita el procedimiento de recuperación (simulado, sin correo real). */
