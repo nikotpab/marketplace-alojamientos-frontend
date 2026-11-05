@@ -1,0 +1,75 @@
+<main class="contenedor">
+  <section class="tarjeta">
+    <div class="lado-marca">
+      <img class="logo-img" src="logo-lr.png" alt="Inversiones LR · Marketplace de alojamientos" />
+      <h2>Reserva alojamientos con confianza</h2>
+      <p>Crea tu cuenta para cotizar y confirmar tu reserva. Puedes explorar y comparar alojamientos sin una cuenta.</p>
+      <ul class="beneficios">
+        <li><span class="icono"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></span><div><strong>Cotiza con transparencia</strong><span>Ves el desglose del precio antes de reservar.</span></div></li>
+        <li><span class="icono"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></span><div><strong>Reserva sin superposiciones</strong><span>Las fechas confirmadas quedan bloqueadas al instante.</span></div></li>
+        <li><span class="icono"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span><div><strong>Pago simulado y seguro</strong><span>Tus datos se protegen en cada paso.</span></div></li>
+      </ul>
+    </div>
+
+    <div class="lado-form">
+      <div class="pestanas">
+        <button type="button" [class.activa]="pestana() === 'login'" (click)="pestana.set('login')">Iniciar sesión</button>
+        <button type="button" [class.activa]="pestana() === 'registro'" (click)="pestana.set('registro')">Crear cuenta</button>
+      </div>
+
+      @if (pestana() === 'registro') {
+        <h2>Crea tu cuenta</h2>
+
+        <p class="etiqueta">Elige cómo usarás la plataforma</p>
+        <div class="roles">
+          <button type="button" class="rol" [class.activo]="rol() === 'HUESPED'" (click)="rol.set('HUESPED')">
+            <strong>Soy huésped</strong>
+            <span>Busco y reservo alojamientos</span>
+          </button>
+          <button type="button" class="rol" [class.activo]="rol() === 'ANFITRION'" (click)="rol.set('ANFITRION')">
+            <strong>Soy anfitrión</strong>
+            <span>Publico y administro alojamientos</span>
+          </button>
+        </div>
+
+        <form [formGroup]="registro" (ngSubmit)="registrar()" novalidate>
+          <div class="fila">
+            <label>Nombre
+              <input formControlName="nombre" type="text" />
+              @if (invalido('nombre')) { <small class="error">Ingresa tu nombre</small> }
+            </label>
+            <label>Apellido
+              <input formControlName="apellido" type="text" />
+              @if (invalido('apellido')) { <small class="error">Ingresa tu apellido</small> }
+            </label>
+          </div>
+
+          <label>Correo electrónico
+            <input formControlName="correo" type="email" />
+            @if (invalido('correo')) { <small class="error">Ingresa un correo válido</small> }
+            @if (correoDuplicado()) { <small class="error">Este correo ya está registrado</small> }
+          </label>
+
+          <label>Teléfono
+            <input formControlName="telefono" type="tel" />
+            @if (invalido('telefono')) { <small class="error">Solo números, entre 7 y 15 dígitos</small> }
+          </label>
+
+          <label>Contraseña
+            <input formControlName="contrasena" type="password" />
+            @if (invalido('contrasena')) { <small class="error">Mínimo 8 caracteres</small> }
+          </label>
+
+          @if (errorGeneral()) { <p class="error">{{ errorGeneral() }}</p> }
+          @if (exito()) { <p class="exito">Cuenta creada. Ya puedes iniciar sesión.</p> }
+          <button type="submit" class="principal" [disabled]="cargando()">
+            {{ cargando() ? 'Creando cuenta...' : 'Crear cuenta' }}
+          </button>
+        </form>
+      } @else {
+        <h2>Bienvenido de nuevo</h2>
+        <p>El inicio de sesión se construye en SCRUM-17.</p>
+      }
+    </div>
+  </section>
+</main>
