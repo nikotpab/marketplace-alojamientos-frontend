@@ -1,0 +1,35 @@
+.barra {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; gap: 32px;
+  padding: 10px 32px; background: #fff; border-bottom: 1px solid var(--gris-borde);
+}
+
+.marca img { display: block; height: 48px; width: auto; }
+
+.enlaces {
+  display: flex; gap: 8px; flex: 1;
+  a {
+    padding: 8px 14px; border-radius: 999px; text-decoration: none;
+    font-weight: 600; color: var(--texto);
+    &:hover { background: var(--crema-claro); }
+    &.activo { background: var(--verde-suave); color: var(--verde); }
+  }
+}
+
+.usuario { display: flex; align-items: center; gap: 16px; }
+.datos {
+  display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;
+  span { font-size: .75rem; color: #7a7a68; }
+}
+
+.salir {
+  background: none; border: 1px solid var(--gris-borde); border-radius: 999px;
+  padding: 8px 16px; font: inherit; font-weight: 600; color: var(--verde); cursor: pointer;
+  &:hover { border-color: var(--verde); }
+}
+
+@media (max-width: 700px) {
+  .barra { flex-wrap: wrap; gap: 12px; padding: 10px 16px; }
+  .enlaces { order: 3; flex-basis: 100%; }
+  .datos { display: none; }
+}
