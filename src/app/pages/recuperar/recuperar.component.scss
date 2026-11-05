@@ -1,0 +1,32 @@
+.contenedor { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+
+.tarjeta {
+  width: min(460px, 100%); background: #fff; border: 1px solid var(--gris-borde);
+  border-radius: 20px; padding: 40px; display: flex; flex-direction: column; gap: 16px;
+}
+
+.logo { width: 220px; height: auto; margin-bottom: 8px; }
+h1 { margin: 0; font-size: 1.6rem; color: var(--verde); }
+.texto { margin: 0; color: #55574a; }
+.nota { margin: 0; font-size: .85rem; color: #7a7a68; }
+
+form { display: flex; flex-direction: column; gap: 14px; }
+label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .9rem; }
+input {
+  padding: 12px; border: 1px solid var(--gris-borde); border-radius: var(--radio);
+  font: inherit; font-weight: 400;
+}
+input:focus { outline: 2px solid var(--verde); }
+.error { color: var(--rojo); font-weight: 500; margin: 0; }
+
+.principal {
+  background: var(--rojo); color: #fff; border: 0; padding: 14px;
+  border-radius: var(--radio); font-weight: 700; font-size: 1rem; cursor: pointer;
+  &:disabled { opacity: .6; cursor: wait; }
+}
+
+.volver {
+  align-self: center; background: none; border: 0; padding: 0; font: inherit;
+  font-size: .9rem; font-weight: 600; color: var(--verde); cursor: pointer;
+  &:hover { text-decoration: underline; }
+}

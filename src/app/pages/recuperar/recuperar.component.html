@@ -1,0 +1,58 @@
+<main class="contenedor">
+  <section class="tarjeta">
+    <img class="logo" src="logo-lr.png" alt="Inversiones LR · Marketplace de alojamientos" />
+
+    @switch (paso()) {
+      @case (1) {
+        <h1>Recupera tu contraseña</h1>
+        <p class="texto">Ingresa tu correo y te guiaremos para crear una contraseña nueva.</p>
+
+        <form [formGroup]="correo" (ngSubmit)="solicitar()" novalidate>
+          <label>Correo electrónico
+            <input formControlName="correo" type="email" autocomplete="email" />
+            @if (invalido('correo', 'correo')) { <small class="error">Ingresa un correo válido</small> }
+          </label>
+
+          @if (error()) { <p class="error">{{ error() }}</p> }
+          <button type="submit" class="principal" [disabled]="cargando()">
+            {{ cargando() ? 'Enviando...' : 'Continuar' }}
+          </button>
+        </form>
+      }
+
+      @case (2) {
+        <h1>Crea tu nueva contraseña</h1>
+        <p class="nota">Procedimiento simulado: no se envía ningún correo real.</p>
+
+        <form [formGroup]="nueva" (ngSubmit)="guardar()" novalidate>
+          <label>Contraseña nueva
+            <input formControlName="contrasena" type="password" autocomplete="new-password" />
+            @if (invalido('nueva', 'contrasena')) { <small class="error">Mínimo 8 caracteres</small> }
+          </label>
+
+          <label>Confirmar contraseña
+            <input formControlName="confirmar" type="password" autocomplete="new-password" />
+            @if ((nueva.touched || enviado()) && nueva.hasError('noCoinciden')) {
+              <small class="error">Las contraseñas no coinciden</small>
+            }
+          </label>
+
+          @if (error()) { <p class="error">{{ error() }}</p> }
+          <button type="submit" class="principal" [disabled]="cargando()">
+            {{ cargando() ? 'Guardando...' : 'Guardar contraseña' }}
+          </button>
+        </form>
+      }
+
+      @case (3) {
+        <h1>Contraseña actualizada</h1>
+        <p class="texto">Tu contraseña anterior ya no funciona. Inicia sesión con la nueva.</p>
+        <button type="button" class="principal" (click)="irALogin()">Ir a iniciar sesión</button>
+      }
+    }
+
+    @if (paso() !== 3) {
+      <button type="button" class="volver" (click)="irALogin()">Volver a iniciar sesión</button>
+    }
+  </section>
+</main>
