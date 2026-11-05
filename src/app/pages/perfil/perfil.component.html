@@ -1,0 +1,58 @@
+<main class="contenido">
+  <h1>Mi perfil</h1>
+  <p class="subtitulo">Actualiza tus datos básicos.</p>
+
+  @if (cargando()) {
+    <p>Cargando tu perfil...</p>
+  } @else {
+    <div class="columnas">
+      <section class="tarjeta">
+        <div class="cabecera">
+          <span class="avatar" aria-hidden="true">{{ iniciales() }}</span>
+          <div>
+            <h2>{{ nombreCompleto() }}</h2>
+            <p>{{ etiquetaRol() }}</p>
+          </div>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+          <div class="fila">
+            <label>Nombre
+              <input formControlName="nombre" type="text" />
+              @if (invalido('nombre')) { <small class="error">Ingresa tu nombre</small> }
+            </label>
+            <label>Apellido
+              <input formControlName="apellido" type="text" />
+              @if (invalido('apellido')) { <small class="error">Ingresa tu apellido</small> }
+            </label>
+          </div>
+
+          <div class="fila">
+            <label>Correo electrónico
+              <input type="email" [value]="perfil()?.correo ?? ''" readonly />
+            </label>
+            <label>Teléfono
+              <input formControlName="telefono" type="tel" />
+              @if (invalido('telefono')) { <small class="error">Solo números, entre 7 y 15 dígitos</small> }
+            </label>
+          </div>
+
+          @if (error()) { <p class="error">{{ error() }}</p> }
+          @if (exito()) { <p class="exito">Cambios guardados.</p> }
+
+          <button type="submit" class="principal" [disabled]="guardando()">
+            {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </form>
+      </section>
+
+      <aside class="lateral">
+        <section class="tarjeta">
+          <h2>Seguridad</h2>
+          <p>Cambia tu contraseña periódicamente. Nunca te la pediremos por mensaje.</p>
+          <button type="button" class="secundario" (click)="cambiarContrasena()">Cambiar contraseña</button>
+        </section>
+      </aside>
+    </div>
+  }
+</main>
