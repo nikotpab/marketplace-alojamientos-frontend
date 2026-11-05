@@ -52,6 +52,39 @@
           <p>Cambia tu contraseña periódicamente. Nunca te la pediremos por mensaje.</p>
           <button type="button" class="secundario" (click)="cambiarContrasena()">Cambiar contraseña</button>
         </section>
+
+        <section class="tarjeta">
+          <h2>Estado de la cuenta</h2>
+          <p class="estado" [class.inactiva]="!perfil()?.activo">
+            <span class="punto" aria-hidden="true"></span>
+            {{ perfil()?.activo ? 'Cuenta activa' : 'Cuenta desactivada' }}
+          </p>
+          <p>
+            {{ perfil()?.activo
+              ? 'Si desactivas tu cuenta no podrás iniciar sesión hasta reactivarla. El cambio de estado queda registrado.'
+              : 'Tu cuenta está desactivada. Puedes reactivarla cuando quieras. El cambio de estado queda registrado.' }}
+          </p>
+
+          @if (errorEstado()) { <p class="error">{{ errorEstado() }}</p> }
+
+          @if (!confirmando()) {
+            @if (perfil()?.activo) {
+              <button type="button" class="peligro" (click)="pedirConfirmacion()">Desactivar cuenta</button>
+            } @else {
+              <button type="button" class="secundario" (click)="pedirConfirmacion()">Reactivar cuenta</button>
+            }
+          } @else {
+            <p class="confirmar-texto">
+              {{ perfil()?.activo ? '¿Seguro que quieres desactivar tu cuenta?' : '¿Quieres reactivar tu cuenta?' }}
+            </p>
+            <div class="acciones">
+              <button type="button" [class]="perfil()?.activo ? 'peligro-lleno' : 'principal'" [disabled]="cambiandoEstado()" (click)="cambiarEstado()">
+                {{ cambiandoEstado() ? 'Guardando...' : 'Sí, confirmar' }}
+              </button>
+              <button type="button" class="texto" [disabled]="cambiandoEstado()" (click)="cancelarConfirmacion()">Cancelar</button>
+            </div>
+          }
+        </section>
       </aside>
     </div>
   }

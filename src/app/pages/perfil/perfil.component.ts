@@ -29,6 +29,10 @@ export class PerfilComponent implements OnInit {
   error = signal('');
   exito = signal(false);
 
+  confirmando = signal(false);
+  cambiandoEstado = signal(false);
+  errorEstado = signal('');
+
   form = this.fb.nonNullable.group({
     nombre: ['', [Validators.required, Validators.minLength(2)]],
     apellido: ['', [Validators.required, Validators.minLength(2)]],
@@ -63,7 +67,7 @@ export class PerfilComponent implements OnInit {
       error: () => {
         // Sin conexión con la API se muestran los datos de la sesión
         const u = this.auth.usuario();
-        if (u) this.cargarPerfil({ nombre: u.nombre, apellido: '', correo: u.correo, telefono: '', rol: u.rol });
+        if (u) this.cargarPerfil({ nombre: u.nombre, apellido: '', correo: u.correo, telefono: '', rol: u.rol, activo: true });
         this.error.set('No se pudo cargar tu perfil completo. Intenta de nuevo más tarde.');
         this.cargando.set(false);
       },
@@ -96,6 +100,40 @@ export class PerfilComponent implements OnInit {
             ? 'Revisa los datos ingresados.'
             : 'No se pudieron guardar los cambios. Intenta de nuevo.',
         );
+      },
+    });
+  }
+
+  pedirConfirmacion() {
+    this.errorEstado.set('');
+    this.confirmando.set(true);
+  }
+
+  cancelarConfirmacion() {
+    this.confirmando.set(false);
+  }
+
+  cambiarEstado() {
+    const p = this.perfil();
+    if (!p) return;
+    const activar = !p.activo;
+
+    this.cambiandoEstado.set(true);
+    this.errorEstado.set('');
+    this.auth.cambiarEstadoCuenta(activar).subscribe({
+      next: (actualizado) => {
+        this.cambiandoEstado.set(false);
+        this.confirmando.set(false);
+        this.perfil.set({ ...p, activo: actualizado.activo });
+        if (!actualizado.activo) {
+          // Cuenta desactivada: se cierra la sesión
+          this.auth.cerrarSesion();
+          this.router.navigate(['/auth'], { queryParams: { cuenta: 'desactivada' } });
+        }
+      },
+      error: () => {
+        this.cambiandoEstado.set(false);
+        this.errorEstado.set('No se pudo cambiar el estado de la cuenta. Intenta de nuevo.');
       },
     });
   }
