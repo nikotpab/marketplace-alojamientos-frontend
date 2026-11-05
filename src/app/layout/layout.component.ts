@@ -43,6 +43,16 @@ export class LayoutComponent {
     return u ? ETIQUETA_ROL[u.rol] : '';
   });
 
+  iniciales = computed(() => {
+    const nombre = this.auth.usuario()?.nombre ?? '';
+    return nombre
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((p) => p[0].toUpperCase())
+      .join('');
+  });
+
   salir() {
     this.auth.cerrarSesion();
     this.router.navigateByUrl('/auth');
