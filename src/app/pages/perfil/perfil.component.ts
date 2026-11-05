@@ -2,6 +2,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, Perfil, RolUsuario } from '../../core/auth.service';
+import { SoloNumerosDirective } from '../../shared/solo-numeros.directive';
 
 const ETIQUETA_ROL: Record<RolUsuario, string> = {
   HUESPED: 'Huésped',
@@ -12,7 +13,7 @@ const ETIQUETA_ROL: Record<RolUsuario, string> = {
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SoloNumerosDirective],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.scss',
 })
