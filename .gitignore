@@ -40,3 +40,7 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Higiene del repo
+.vscode/
+package-lock.json
