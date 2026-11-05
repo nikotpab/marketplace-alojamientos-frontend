@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SoloNumerosDirective } from '../../shared/solo-numeros.directive';
 import { AuthService, Rol, RolUsuario } from '../../core/auth.service';
 
@@ -29,6 +29,7 @@ export class AuthComponent {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   cargandoLogin = signal(false);
   errorLogin = signal('');
@@ -50,6 +51,12 @@ export class AuthComponent {
   invalidoLogin(campo: string) {
     const c = this.login.get(campo);
     return !!c && c.invalid && (c.touched || this.loginEnviado());
+  }
+
+  constructor() {
+    if (this.route.snapshot.queryParamMap.get('cuenta') === 'desactivada') {
+      this.errorLogin.set('Tu cuenta fue desactivada. No podrás iniciar sesión hasta reactivarla.');
+    }
   }
 
   irARecuperar() {
@@ -78,6 +85,8 @@ export class AuthComponent {
         this.cargandoLogin.set(false);
         if (e.status === 423 || e.status === 429)
           this.errorLogin.set('Cuenta bloqueada por 30 minutos por intentos fallidos.');
+        else if (e.status === 403 && e.error?.codigo === 'CUENTA_DESACTIVADA')
+          this.errorLogin.set('Tu cuenta está desactivada. No puedes iniciar sesión hasta reactivarla.');
         else if (e.status === 403)
           this.errorLogin.set('Tu cuenta está restringida y no puede iniciar sesión.');
         else if (e.status === 401)
