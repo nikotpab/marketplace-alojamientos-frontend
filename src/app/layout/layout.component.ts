@@ -8,11 +8,18 @@ interface Enlace {
 }
 
 const ENLACES: Record<RolUsuario, Enlace[]> = {
-  HUESPED: [{ texto: 'Inicio', ruta: '/inicio' }],
-  ANFITRION: [{ texto: 'Mis alojamientos', ruta: '/anfitrion' }],
+  HUESPED: [
+    { texto: 'Inicio', ruta: '/inicio' },
+    { texto: 'Mi perfil', ruta: '/perfil' },
+  ],
+  ANFITRION: [
+    { texto: 'Mis alojamientos', ruta: '/anfitrion' },
+    { texto: 'Mi perfil', ruta: '/perfil' },
+  ],
   ADMINISTRADOR: [
     { texto: 'Panel', ruta: '/admin' },
     { texto: 'Configuración', ruta: '/admin/configuracion' },
+    { texto: 'Mi perfil', ruta: '/perfil' },
   ],
 };
 
