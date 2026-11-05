@@ -19,6 +19,10 @@ export interface LoginRequest {
   contrasena: string;
 }
 
+export interface RecuperacionResponse {
+  token: string;
+}
+
 export interface Usuario {
   id: string;
   nombre: string;
@@ -52,6 +56,16 @@ export class AuthService {
     return this.http
       .post<Sesion>(`${this.api}/auth/login`, datos)
       .pipe(tap((s) => this.guardarSesion(s)));
+  }
+
+  /** Paso 1: solicita el procedimiento de recuperación (simulado, sin correo real). */
+  solicitarRecuperacion(correo: string): Observable<RecuperacionResponse> {
+    return this.http.post<RecuperacionResponse>(`${this.api}/auth/password/recover`, { correo });
+  }
+
+  /** Paso 2: define la nueva contraseña con el token del procedimiento. */
+  restablecerContrasena(token: string, contrasenaNueva: string): Observable<unknown> {
+    return this.http.post(`${this.api}/auth/password/reset`, { token, contrasenaNueva });
   }
 
   cerrarSesion() {
