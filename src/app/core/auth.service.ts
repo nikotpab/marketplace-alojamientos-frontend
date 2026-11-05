@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { Observable, tap } from 'rxjs';
 
 export type Rol = 'HUESPED' | 'ANFITRION';
+export type RolUsuario = Rol | 'ADMINISTRADOR';
 
 export interface RegistroRequest {
   nombre: string;
@@ -13,12 +14,71 @@ export interface RegistroRequest {
   rol: Rol;
 }
 
+export interface LoginRequest {
+  correo: string;
+  contrasena: string;
+}
+
+export interface Usuario {
+  id: string;
+  nombre: string;
+  correo: string;
+  rol: RolUsuario;
+}
+
+export interface Sesion {
+  token: string;
+  usuario: Usuario;
+}
+
+const CLAVE_SESION = 'lr_sesion';
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
   private readonly api = '/api';
 
+  private sesion = signal<Sesion | null>(this.leerSesion());
+
+  usuario = computed(() => this.sesion()?.usuario ?? null);
+  token = computed(() => this.sesion()?.token ?? null);
+  autenticado = computed(() => this.sesion() !== null);
+
   registrar(datos: RegistroRequest): Observable<unknown> {
     return this.http.post(`${this.api}/auth/register`, datos);
+  }
+
+  login(datos: LoginRequest): Observable<Sesion> {
+    return this.http
+      .post<Sesion>(`${this.api}/auth/login`, datos)
+      .pipe(tap((s) => this.guardarSesion(s)));
+  }
+
+  cerrarSesion() {
+    this.sesion.set(null);
+    try {
+      sessionStorage.removeItem(CLAVE_SESION);
+    } catch {}
+  }
+
+  tieneRol(roles: RolUsuario[]): boolean {
+    const u = this.usuario();
+    return !!u && roles.includes(u.rol);
+  }
+
+  private guardarSesion(s: Sesion) {
+    this.sesion.set(s);
+    try {
+      sessionStorage.setItem(CLAVE_SESION, JSON.stringify(s));
+    } catch {}
+  }
+
+  private leerSesion(): Sesion | null {
+    try {
+      const raw = sessionStorage.getItem(CLAVE_SESION);
+      return raw ? (JSON.parse(raw) as Sesion) : null;
+    } catch {
+      return null;
+    }
   }
 }
