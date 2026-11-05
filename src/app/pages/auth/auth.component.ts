@@ -51,6 +51,10 @@ export class AuthComponent {
     return !!c && c.invalid && (c.touched || this.loginEnviado());
   }
 
+  irARecuperar() {
+    this.router.navigateByUrl('/recuperar');
+  }
+
   cambiarPestana(p: 'login' | 'registro') {
     this.pestana.set(p);
     this.errorLogin.set('');
