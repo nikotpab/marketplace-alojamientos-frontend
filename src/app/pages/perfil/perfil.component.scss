@@ -45,6 +45,29 @@ input {
   &:hover { background: var(--verde-suave); }
 }
 
+.estado {
+  display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font-weight: 700; color: var(--verde);
+  .punto { width: 10px; height: 10px; border-radius: 50%; background: var(--verde); }
+  &.inactiva { color: #7a7a68; .punto { background: #b0b0a0; } }
+}
+
+.peligro {
+  background: #fff; color: var(--rojo); border: 1.5px solid var(--rojo); padding: 11px 20px;
+  border-radius: var(--radio); font-weight: 700; font-size: .95rem; cursor: pointer;
+  &:hover { background: #fdecef; }
+}
+.peligro-lleno {
+  background: var(--rojo); color: #fff; border: 0; padding: 12px 22px;
+  border-radius: var(--radio); font-weight: 700; font-size: .95rem; cursor: pointer;
+  &:disabled { opacity: .6; cursor: wait; }
+}
+.confirmar-texto { font-weight: 600; color: #1f2a1a !important; margin-bottom: 12px !important; }
+.acciones { display: flex; align-items: center; gap: 16px; }
+.texto {
+  background: none; border: 0; padding: 0; font: inherit; font-weight: 600; color: var(--verde); cursor: pointer;
+  &:hover { text-decoration: underline; }
+}
+
 @media (max-width: 900px) {
   .columnas { grid-template-columns: 1fr; }
   .fila { grid-template-columns: 1fr; }
