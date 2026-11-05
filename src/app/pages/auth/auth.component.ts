@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-
-type Rol = 'HUESPED' | 'ANFITRION';
+import { AuthService, Rol } from '../../core/auth.service';
 
 @Component({
   selector: 'app-auth',
@@ -14,8 +13,13 @@ export class AuthComponent {
   pestana = signal<'login' | 'registro'>('registro');
   rol = signal<Rol>('HUESPED');
   enviado = signal(false);
+  cargando = signal(false);
+  correoDuplicado = signal(false);
+  errorGeneral = signal('');
+  exito = signal(false);
 
   private fb = inject(FormBuilder);
+  private auth = inject(AuthService);
 
   registro = this.fb.nonNullable.group({
     nombre: ['', [Validators.required, Validators.minLength(2)]],
@@ -32,8 +36,23 @@ export class AuthComponent {
 
   registrar() {
     this.enviado.set(true);
+    this.correoDuplicado.set(false);
+    this.errorGeneral.set('');
     if (this.registro.invalid) return;
-    // La llamada a la API se conecta en el siguiente commit
-    console.log({ ...this.registro.getRawValue(), rol: this.rol() });
+
+    this.cargando.set(true);
+    this.auth.registrar({ ...this.registro.getRawValue(), rol: this.rol() }).subscribe({
+      next: () => {
+        this.cargando.set(false);
+        this.exito.set(true);
+        this.registro.reset();
+        this.enviado.set(false);
+      },
+      error: (e) => {
+        this.cargando.set(false);
+        if (e.status === 409) this.correoDuplicado.set(true);
+        else this.errorGeneral.set('No se pudo completar el registro. Intenta de nuevo.');
+      },
+    });
   }
 }

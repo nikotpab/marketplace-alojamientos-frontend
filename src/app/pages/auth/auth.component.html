@@ -47,6 +47,7 @@
           <label>Correo electrónico
             <input formControlName="correo" type="email" />
             @if (invalido('correo')) { <small class="error">Ingresa un correo válido</small> }
+            @if (correoDuplicado()) { <small class="error">Este correo ya está registrado</small> }
           </label>
 
           <label>Teléfono
@@ -59,7 +60,11 @@
             @if (invalido('contrasena')) { <small class="error">Mínimo 8 caracteres</small> }
           </label>
 
-          <button type="submit" class="principal">Crear cuenta</button>
+          @if (errorGeneral()) { <p class="error">{{ errorGeneral() }}</p> }
+          @if (exito()) { <p class="exito">Cuenta creada. Ya puedes iniciar sesión.</p> }
+          <button type="submit" class="principal" [disabled]="cargando()">
+            {{ cargando() ? 'Creando cuenta...' : 'Crear cuenta' }}
+          </button>
         </form>
       } @else {
         <h2>Bienvenido de nuevo</h2>
