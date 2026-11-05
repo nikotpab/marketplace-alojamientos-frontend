@@ -13,8 +13,8 @@
 
     <div class="lado-form">
       <div class="pestanas">
-        <button type="button" [class.activa]="pestana() === 'login'" (click)="pestana.set('login')">Iniciar sesión</button>
-        <button type="button" [class.activa]="pestana() === 'registro'" (click)="pestana.set('registro')">Crear cuenta</button>
+        <button type="button" [class.activa]="pestana() === 'login'" (click)="cambiarPestana('login')">Iniciar sesión</button>
+        <button type="button" [class.activa]="pestana() === 'registro'" (click)="cambiarPestana('registro')">Crear cuenta</button>
       </div>
 
       @if (pestana() === 'registro') {
@@ -68,7 +68,32 @@
         </form>
       } @else {
         <h2>Bienvenido de nuevo</h2>
-        <p>El inicio de sesión se construye en SCRUM-17.</p>
+
+        <form [formGroup]="login" (ngSubmit)="iniciarSesion()" novalidate>
+          <label>Correo electrónico
+            <input formControlName="correo" type="email" autocomplete="email" />
+            @if (invalidoLogin('correo')) { <small class="error">Ingresa un correo válido</small> }
+          </label>
+
+          <label>Contraseña
+            <input formControlName="contrasena" type="password" autocomplete="current-password" />
+            @if (invalidoLogin('contrasena')) { <small class="error">Ingresa tu contraseña</small> }
+          </label>
+
+
+          @if (errorLogin()) { <p class="error">{{ errorLogin() }}</p> }
+          <button type="submit" class="principal" [disabled]="cargandoLogin()">
+            {{ cargandoLogin() ? 'Ingresando...' : 'Iniciar sesión' }}
+          </button>
+          <button type="button" class="olvido">¿Olvidaste tu contraseña?</button>
+
+          <p class="aviso">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            Tras 5 intentos fallidos, tu cuenta se bloquea por 30 minutos.
+          </p>
+        </form>
+
+        <p class="cambio">¿Aún no tienes cuenta? <button type="button" class="enlace" (click)="cambiarPestana('registro')">Crear cuenta</button></p>
       }
     </div>
   </section>
