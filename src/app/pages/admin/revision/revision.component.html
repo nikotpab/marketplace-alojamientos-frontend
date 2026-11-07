@@ -1,0 +1,68 @@
+<main class="contenido">
+  <h1>Revisión de publicaciones</h1>
+  <p class="subtitulo">Aprueba o rechaza las publicaciones que los anfitriones enviaron a revisión.</p>
+
+  @if (aviso()) { <p class="aviso ok" role="status">{{ aviso() }}</p> }
+  @if (error()) { <p class="aviso mal" role="alert">{{ error() }}</p> }
+
+  @if (cargando()) {
+    <p>Cargando publicaciones pendientes…</p>
+  } @else {
+    @for (p of pendientes(); track p.id) {
+      <article class="tarjeta">
+        <div class="cabecera">
+          <div>
+            <h2>{{ p.titulo }}</h2>
+            <p class="meta">
+              {{ p.ubicacion }} · {{ nombreTipo(p.tipo) }} · hasta {{ p.capacidad }} huéspedes ·
+              {{ p.precioNoche | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} / noche
+            </p>
+            @if (p.anfitrion) { <p class="meta">Anfitrión: {{ p.anfitrion }}</p> }
+          </div>
+          <span class="estado">Pendiente de revisión</span>
+        </div>
+
+        <p class="descripcion">{{ p.descripcion }}</p>
+
+        @if (p.imagenes.length) {
+          <div class="imagenes">
+            @for (img of p.imagenes; track img) {
+              <a [href]="img" target="_blank" rel="noopener noreferrer" class="miniatura"
+                 [style.background-image]="'url(' + img + ')'" aria-label="Abrir imagen"></a>
+            }
+          </div>
+        }
+
+        <dl class="datos">
+          <dt>Servicios</dt><dd>{{ p.servicios.join(', ') || '—' }}</dd>
+          <dt>Reglas</dt><dd>{{ p.reglas.join(' · ') || '—' }}</dd>
+          <dt>Cancelación</dt><dd>{{ p.politicaCancelacion }}</dd>
+        </dl>
+
+        @if (rechazando() === p.id) {
+          <div class="rechazo">
+            <label>Motivo del rechazo (obligatorio)
+              <textarea [(ngModel)]="motivo" rows="3" maxlength="500"
+                        placeholder="Ej.: Las imágenes no corresponden al alojamiento descrito."
+                        [class.con-error]="errorMotivo()"></textarea>
+            </label>
+            @if (errorMotivo()) { <small class="error">{{ errorMotivo() }}</small> }
+            <div class="acciones">
+              <button type="button" class="rechazar" [disabled]="procesando() === p.id" (click)="confirmarRechazo(p)">
+                Confirmar rechazo
+              </button>
+              <button type="button" class="enlace" (click)="cancelarRechazo()">Cancelar</button>
+            </div>
+          </div>
+        } @else {
+          <div class="acciones">
+            <button type="button" class="aprobar" [disabled]="procesando() === p.id" (click)="aprobar(p)">Aprobar</button>
+            <button type="button" class="rechazar-sec" [disabled]="procesando() === p.id" (click)="abrirRechazo(p)">Rechazar</button>
+          </div>
+        }
+      </article>
+    } @empty {
+      <section class="vacio"><p>No hay publicaciones pendientes de revisión.</p></section>
+    }
+  }
+</main>

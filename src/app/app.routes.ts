@@ -8,6 +8,7 @@ import { BusquedaComponent } from './pages/busqueda/busqueda.component';
 import { DetalleComponent } from './pages/detalle/detalle.component';
 import { MisPublicacionesComponent } from './pages/anfitrion/mis-publicaciones/mis-publicaciones.component';
 import { PublicacionFormComponent } from './pages/anfitrion/publicacion-form/publicacion-form.component';
+import { RevisionComponent } from './pages/admin/revision/revision.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
@@ -61,6 +62,12 @@ export const routes: Routes = [
         component: PanelComponent,
         canActivate: [rolGuard],
         data: { roles: ['ADMINISTRADOR'], titulo: 'Panel de administración' },
+      },
+      {
+        path: 'admin/revision',
+        component: RevisionComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] },
       },
       {
         path: 'admin/configuracion',
