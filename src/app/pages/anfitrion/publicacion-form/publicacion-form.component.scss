@@ -3,7 +3,7 @@
 h1 { margin: 12px 0 0; font-size: 2rem; color: #1f2a1a; }
 .subtitulo { margin: 4px 0 24px; color: #55574a; }
 
-form { display: flex; flex-direction: column; gap: 20px; }
+form { display: flex; flex-direction: column; gap: 20px; &[hidden] { display: none; } }
 
 .tarjeta {
   background: #fff; border: 1px solid var(--gris-borde); border-radius: 16px; padding: 24px;
@@ -39,3 +39,10 @@ textarea { resize: vertical; }
 .secundario { color: var(--verde); font-weight: 600; }
 
 @media (max-width: 700px) { .fila { grid-template-columns: 1fr; } }
+
+.estado {
+  padding: 4px 12px; border-radius: 999px; font-size: .8rem; font-weight: 700; background: #eee; color: #555;
+  &[data-estado='PENDIENTE_REVISION'] { background: #fff1c2; color: #7a5a00; }
+  &[data-estado='ACTIVA'] { background: var(--verde-suave); color: var(--verde); }
+  &[data-estado='RECHAZADA'] { background: #f3d6d6; color: var(--rojo); }
+}

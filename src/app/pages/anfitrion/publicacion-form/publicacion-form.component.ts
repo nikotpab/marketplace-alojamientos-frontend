@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SERVICIOS } from '../../../core/alojamientos.service';
-import { DatosPublicacion, PublicacionesService, TipoConfigurado } from '../../../core/publicaciones.service';
+import { DatosPublicacion, ESTADO_TEXTO, Publicacion, PublicacionesService, TipoConfigurado } from '../../../core/publicaciones.service';
 import { SoloNumerosDirective } from '../../../shared/solo-numeros.directive';
 
 /** Vacío es válido (borrador); si hay valor, debe ser mayor que 0. */
@@ -27,6 +27,13 @@ export class PublicacionFormComponent {
   private api = inject(PublicacionesService);
   private router = inject(Router);
 
+  /** Si la ruta trae :id, el formulario está en modo edición. */
+  id = inject(ActivatedRoute).snapshot.paramMap.get('id');
+  estados = ESTADO_TEXTO;
+  publicacion = signal<Publicacion | null>(null);
+  cargando = signal(false);
+  errorCarga = signal('');
+
   servicios = SERVICIOS;
   tipos = signal<TipoConfigurado[]>([]);
   errorTipos = signal('');
@@ -50,6 +57,36 @@ export class PublicacionFormComponent {
     this.api.tiposActivos().subscribe({
       next: (t) => this.tipos.set(t),
       error: () => this.errorTipos.set('No pudimos cargar los tipos de alojamiento. Recarga la página.'),
+    });
+    if (this.id) this.cargar(this.id);
+  }
+
+  private cargar(id: string) {
+    this.cargando.set(true);
+    this.api.obtener(id).subscribe({
+      next: (p) => {
+        this.publicacion.set(p);
+        this.form.patchValue({
+          titulo: p.titulo ?? '',
+          descripcion: p.descripcion ?? '',
+          ubicacion: p.ubicacion ?? '',
+          tipo: p.tipo ?? '',
+          capacidad: p.capacidad != null ? String(p.capacidad) : '',
+          precioNoche: p.precioNoche != null ? String(p.precioNoche) : '',
+          reglas: (p.reglas ?? []).join('\n'),
+          imagenes: (p.imagenes ?? []).join('\n'),
+          politicaCancelacion: p.politicaCancelacion ?? '',
+        });
+        this.seleccionados.set(p.servicios ?? []);
+        this.cargando.set(false);
+      },
+      // 403 (no es el propietario ni administrador) lo redirige el interceptor a /acceso-denegado
+      error: (e) => {
+        this.errorCarga.set(
+          e.status === 404 ? 'La publicación no existe.' : 'No pudimos cargar la publicación. Intenta de nuevo.',
+        );
+        this.cargando.set(false);
+      },
     });
   }
 
@@ -83,10 +120,12 @@ export class PublicacionFormComponent {
     if (this.form.invalid) return;
     this.guardando.set(true);
     this.error.set('');
-    this.api.crear(this.datos()).subscribe({
+    const peticion = this.id ? this.api.actualizar(this.id, this.datos()) : this.api.crear(this.datos());
+    peticion.subscribe({
       next: () => this.router.navigate(['/anfitrion'], { queryParams: { guardada: 1 } }),
-      error: () => {
-        this.error.set('No pudimos guardar el borrador. Revisa tu conexión e intenta de nuevo.');
+      error: (e) => {
+        if (e.status === 403) return; // el interceptor lleva a /acceso-denegado
+        this.error.set('No pudimos guardar los cambios. Revisa tu conexión e intenta de nuevo.');
         this.guardando.set(false);
       },
     });
