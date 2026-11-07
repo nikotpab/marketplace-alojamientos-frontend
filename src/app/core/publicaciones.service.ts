@@ -60,6 +60,14 @@ export class PublicacionesService {
     return this.http.put<Publicacion>(`/api/publicaciones/${encodeURIComponent(id)}`, datos);
   }
 
+  /**
+   * Pide pasar de BORRADOR a PENDIENTE_REVISION. El backend vuelve a validar y, si falta algo,
+   * responde 422 con { errores: { campo: mensaje } } y la publicación sigue en BORRADOR.
+   */
+  solicitarActivacion(id: string): Observable<Publicacion> {
+    return this.http.post<Publicacion>(`/api/publicaciones/${encodeURIComponent(id)}/solicitar-activacion`, {});
+  }
+
   /** Solo los tipos de alojamiento activos en la configuración. */
   tiposActivos(): Observable<TipoConfigurado[]> {
     return this.http.get<TipoConfigurado[]>('/api/configuracion/tipos-alojamiento', {

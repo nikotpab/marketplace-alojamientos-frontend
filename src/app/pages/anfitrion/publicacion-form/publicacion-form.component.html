@@ -12,29 +12,40 @@
 
   @if (cargando()) { <p>Cargando publicación…</p> }
   @if (errorCarga()) { <p class="error" role="alert">{{ errorCarga() }}</p> }
+  @if (exito()) { <p class="aviso ok" role="status">{{ exito() }}</p> }
+  @if (totalErrores()) {
+    <p class="aviso mal" role="alert">
+      La publicación sigue en borrador: {{ totalErrores() === 1 ? 'falta 1 dato' : 'faltan ' + totalErrores() + ' datos' }}
+      para solicitar la activación. Revisa los campos marcados.
+    </p>
+  }
 
   <form [formGroup]="form" (ngSubmit)="guardarBorrador()" novalidate [hidden]="cargando() || !!errorCarga()">
     <section class="tarjeta">
       <h2>Información básica</h2>
       <label>Título
-        <input formControlName="titulo" type="text" maxlength="120" placeholder="Ej.: Casa campestre con vista a la montaña" />
+        <input formControlName="titulo" [class.con-error]="errorActivacion('titulo')" type="text" maxlength="120" placeholder="Ej.: Casa campestre con vista a la montaña" />
+        @if (errorActivacion('titulo'); as m) { <small class="error">{{ m }}</small> }
       </label>
       <label>Descripción
-        <textarea formControlName="descripcion" rows="4" maxlength="2000"
+        <textarea formControlName="descripcion" [class.con-error]="errorActivacion('descripcion')" rows="4" maxlength="2000"
                   placeholder="Cuenta qué hace especial a tu alojamiento"></textarea>
+        @if (errorActivacion('descripcion'); as m) { <small class="error">{{ m }}</small> }
       </label>
       <div class="fila">
         <label>Ubicación
-          <input formControlName="ubicacion" type="text" maxlength="200" placeholder="Ej.: Vereda Sabana km 3, Villa de Leyva" />
+          <input formControlName="ubicacion" [class.con-error]="errorActivacion('ubicacion')" type="text" maxlength="200" placeholder="Ej.: Vereda Sabana km 3, Villa de Leyva" />
+        @if (errorActivacion('ubicacion'); as m) { <small class="error">{{ m }}</small> }
         </label>
         <label>Tipo de alojamiento
-          <select formControlName="tipo">
+          <select formControlName="tipo" [class.con-error]="errorActivacion('tipo')">
             <option value="">Selecciona un tipo</option>
             @for (t of tipos(); track t.codigo) {
               <option [value]="t.codigo">{{ t.nombre }}</option>
             }
           </select>
           @if (errorTipos()) { <small class="error">{{ errorTipos() }}</small> }
+        @if (errorActivacion('tipo'); as m) { <small class="error">{{ m }}</small> }
         </label>
       </div>
     </section>
@@ -44,17 +55,17 @@
       <div class="fila">
         <label>Capacidad (huéspedes)
           <input formControlName="capacidad" type="text" inputmode="numeric" soloNumeros placeholder="Ej.: 4"
-                 [class.con-error]="invalido('capacidad')" />
+                 [class.con-error]="invalido('capacidad') || errorActivacion('capacidad')" />
           @if (invalido('capacidad')) {
             <small class="error">La capacidad debe ser mayor que 0. Ingresa cuántos huéspedes pueden alojarse (mínimo 1).</small>
-          }
+          } @else if (errorActivacion('capacidad')) { <small class="error">{{ errorActivacion('capacidad') }}</small> }
         </label>
         <label>Precio por noche (COP)
           <input formControlName="precioNoche" type="text" inputmode="numeric" soloNumeros placeholder="Ej.: 250000"
-                 [class.con-error]="invalido('precioNoche')" />
+                 [class.con-error]="invalido('precioNoche') || errorActivacion('precioNoche')" />
           @if (invalido('precioNoche')) {
             <small class="error">El precio debe ser mayor que 0. Ingresa el valor por noche en pesos, sin puntos ni símbolos.</small>
-          }
+          } @else if (errorActivacion('precioNoche')) { <small class="error">{{ errorActivacion('precioNoche') }}</small> }
         </label>
       </div>
     </section>
@@ -75,11 +86,13 @@
     <section class="tarjeta">
       <h2>Imágenes y cancelación</h2>
       <label>Referencias de imágenes <span class="ayuda">(una URL por línea)</span>
-        <textarea formControlName="imagenes" rows="3" placeholder="https://..."></textarea>
+        <textarea formControlName="imagenes" [class.con-error]="errorActivacion('imagenes')" rows="3" placeholder="https://..."></textarea>
+        @if (errorActivacion('imagenes'); as m) { <small class="error">{{ m }}</small> }
       </label>
       <label>Política de cancelación
-        <textarea formControlName="politicaCancelacion" rows="2"
+        <textarea formControlName="politicaCancelacion" [class.con-error]="errorActivacion('politicaCancelacion')" rows="2"
                   placeholder="Ej.: Cancelación gratuita hasta 48 horas antes de la llegada."></textarea>
+        @if (errorActivacion('politicaCancelacion'); as m) { <small class="error">{{ m }}</small> }
       </label>
     </section>
 
@@ -89,6 +102,11 @@
       <button type="submit" class="principal" [disabled]="guardando()">
         {{ guardando() ? 'Guardando…' : id ? 'Guardar cambios' : 'Guardar borrador' }}
       </button>
+      @if (puedeSolicitar()) {
+        <button type="button" class="activar" [disabled]="guardando()" (click)="solicitarActivacion()">
+          Solicitar activación
+        </button>
+      }
       <a routerLink="/anfitrion" class="secundario">Cancelar</a>
     </div>
   </form>
