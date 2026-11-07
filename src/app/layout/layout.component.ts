@@ -10,6 +10,7 @@ interface Enlace {
 const ENLACES: Record<RolUsuario, Enlace[]> = {
   HUESPED: [
     { texto: 'Inicio', ruta: '/inicio' },
+    { texto: 'Explorar', ruta: '/buscar' },
     { texto: 'Mi perfil', ruta: '/perfil' },
   ],
   ANFITRION: [
@@ -22,6 +23,8 @@ const ENLACES: Record<RolUsuario, Enlace[]> = {
     { texto: 'Mi perfil', ruta: '/perfil' },
   ],
 };
+
+const ENLACES_VISITANTE: Enlace[] = [{ texto: 'Explorar', ruta: '/buscar' }];
 
 const ETIQUETA_ROL: Record<RolUsuario, string> = {
   HUESPED: 'Huésped',
@@ -42,7 +45,7 @@ export class LayoutComponent {
 
   enlaces = computed(() => {
     const u = this.auth.usuario();
-    return u ? ENLACES[u.rol] : [];
+    return u ? ENLACES[u.rol] : ENLACES_VISITANTE;
   });
 
   etiquetaRol = computed(() => {
