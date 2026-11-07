@@ -1,0 +1,85 @@
+<main class="contenido">
+  <a class="volver" routerLink="/anfitrion">← Mis publicaciones</a>
+  <h1>Nueva publicación</h1>
+  <p class="subtitulo">Se guarda como <strong>borrador</strong>: puedes completarla después y solicitar su activación cuando esté lista.</p>
+
+  <form [formGroup]="form" (ngSubmit)="guardarBorrador()" novalidate>
+    <section class="tarjeta">
+      <h2>Información básica</h2>
+      <label>Título
+        <input formControlName="titulo" type="text" maxlength="120" placeholder="Ej.: Casa campestre con vista a la montaña" />
+      </label>
+      <label>Descripción
+        <textarea formControlName="descripcion" rows="4" maxlength="2000"
+                  placeholder="Cuenta qué hace especial a tu alojamiento"></textarea>
+      </label>
+      <div class="fila">
+        <label>Ubicación
+          <input formControlName="ubicacion" type="text" maxlength="200" placeholder="Ej.: Vereda Sabana km 3, Villa de Leyva" />
+        </label>
+        <label>Tipo de alojamiento
+          <select formControlName="tipo">
+            <option value="">Selecciona un tipo</option>
+            @for (t of tipos(); track t.codigo) {
+              <option [value]="t.codigo">{{ t.nombre }}</option>
+            }
+          </select>
+          @if (errorTipos()) { <small class="error">{{ errorTipos() }}</small> }
+        </label>
+      </div>
+    </section>
+
+    <section class="tarjeta">
+      <h2>Capacidad y precio</h2>
+      <div class="fila">
+        <label>Capacidad (huéspedes)
+          <input formControlName="capacidad" type="text" inputmode="numeric" soloNumeros placeholder="Ej.: 4"
+                 [class.con-error]="invalido('capacidad')" />
+          @if (invalido('capacidad')) {
+            <small class="error">La capacidad debe ser mayor que 0. Ingresa cuántos huéspedes pueden alojarse (mínimo 1).</small>
+          }
+        </label>
+        <label>Precio por noche (COP)
+          <input formControlName="precioNoche" type="text" inputmode="numeric" soloNumeros placeholder="Ej.: 250000"
+                 [class.con-error]="invalido('precioNoche')" />
+          @if (invalido('precioNoche')) {
+            <small class="error">El precio debe ser mayor que 0. Ingresa el valor por noche en pesos, sin puntos ni símbolos.</small>
+          }
+        </label>
+      </div>
+    </section>
+
+    <section class="tarjeta">
+      <h2>Servicios y reglas</h2>
+      <div class="chips" role="group" aria-label="Servicios">
+        @for (s of servicios; track s) {
+          <button type="button" class="chip" [class.on]="seleccionados().includes(s)"
+                  [attr.aria-pressed]="seleccionados().includes(s)" (click)="alternarServicio(s)">{{ s }}</button>
+        }
+      </div>
+      <label>Reglas básicas <span class="ayuda">(una por línea)</span>
+        <textarea formControlName="reglas" rows="3" placeholder="No fiestas&#10;Check-in desde las 3:00 p. m."></textarea>
+      </label>
+    </section>
+
+    <section class="tarjeta">
+      <h2>Imágenes y cancelación</h2>
+      <label>Referencias de imágenes <span class="ayuda">(una URL por línea)</span>
+        <textarea formControlName="imagenes" rows="3" placeholder="https://..."></textarea>
+      </label>
+      <label>Política de cancelación
+        <textarea formControlName="politicaCancelacion" rows="2"
+                  placeholder="Ej.: Cancelación gratuita hasta 48 horas antes de la llegada."></textarea>
+      </label>
+    </section>
+
+    @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+
+    <div class="acciones">
+      <button type="submit" class="principal" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando…' : 'Guardar borrador' }}
+      </button>
+      <a routerLink="/anfitrion" class="secundario">Cancelar</a>
+    </div>
+  </form>
+</main>
