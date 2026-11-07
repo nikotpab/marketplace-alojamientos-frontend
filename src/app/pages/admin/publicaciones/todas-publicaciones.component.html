@@ -1,0 +1,50 @@
+<main class="contenido">
+  <h1>Publicaciones</h1>
+  <p class="subtitulo">Todas las publicaciones del marketplace, con su estado.</p>
+
+  <div class="filtros" role="group" aria-label="Filtrar por estado">
+    @for (f of filtros; track f.valor) {
+      <button type="button" class="chip" [class.on]="filtro() === f.valor" [attr.aria-pressed]="filtro() === f.valor"
+              (click)="filtro.set(f.valor)">
+        {{ f.texto }} <span class="cuenta">{{ conteo()[f.valor] || 0 }}</span>
+      </button>
+    }
+  </div>
+
+  @if (cargando()) {
+    <p>Cargando publicaciones…</p>
+  } @else if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  } @else {
+    <div class="tabla" role="table" aria-label="Publicaciones">
+      <div class="fila cabecera" role="row">
+        <span role="columnheader">Publicación</span>
+        <span role="columnheader">Anfitrión</span>
+        <span role="columnheader">Precio / noche</span>
+        <span role="columnheader">Estado</span>
+        <span role="columnheader"><span class="oculto">Acciones</span></span>
+      </div>
+      @for (p of visibles(); track p.id) {
+        <div class="fila" role="row">
+          <span role="cell">
+            <strong>{{ p.titulo || 'Sin título' }}</strong>
+            <small>{{ p.ubicacion || '—' }} · {{ nombreTipo(p.tipo) || '—' }}</small>
+          </span>
+          <span role="cell">{{ p.anfitrion || '—' }}</span>
+          <span role="cell">
+            @if (p.precioNoche) { {{ p.precioNoche | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} } @else { — }
+          </span>
+          <span role="cell"><span class="estado" [attr.data-estado]="p.estado">{{ estados[p.estado] }}</span></span>
+          <span role="cell" class="acciones">
+            @if (p.estado === 'PENDIENTE_REVISION') {
+              <a class="revisar" routerLink="/admin/revision">Revisar</a>
+            }
+            <a class="editar" [routerLink]="['/anfitrion/publicaciones', p.id, 'editar']">Editar</a>
+          </span>
+        </div>
+      } @empty {
+        <p class="vacio">No hay publicaciones en este estado.</p>
+      }
+    </div>
+  }
+</main>

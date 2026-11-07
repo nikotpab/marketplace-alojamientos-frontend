@@ -19,6 +19,7 @@ const ENLACES: Record<RolUsuario, Enlace[]> = {
   ],
   ADMINISTRADOR: [
     { texto: 'Panel', ruta: '/admin' },
+    { texto: 'Publicaciones', ruta: '/admin/publicaciones' },
     { texto: 'Revisión', ruta: '/admin/revision' },
     { texto: 'Configuración', ruta: '/admin/configuracion' },
     { texto: 'Mi perfil', ruta: '/perfil' },

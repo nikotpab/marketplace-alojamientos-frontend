@@ -84,6 +84,13 @@ export class PublicacionesService {
 
   // --- Administrador ---
 
+  /** Todas las publicaciones (solo ADMINISTRADOR); opcionalmente filtradas por estado. */
+  todas(estado?: EstadoPublicacion): Observable<Publicacion[]> {
+    const params: Record<string, string> = {};
+    if (estado) params['estado'] = estado;
+    return this.http.get<Publicacion[]>('/api/admin/publicaciones', { params });
+  }
+
   pendientesDeRevision(): Observable<Publicacion[]> {
     return this.http.get<Publicacion[]>('/api/admin/publicaciones', { params: { estado: 'PENDIENTE_REVISION' } });
   }
