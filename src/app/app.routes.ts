@@ -5,6 +5,7 @@ import { RecuperarComponent } from './pages/recuperar/recuperar.component';
 import { PanelComponent } from './pages/panel/panel.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
 import { BusquedaComponent } from './pages/busqueda/busqueda.component';
+import { DetalleComponent } from './pages/detalle/detalle.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
@@ -20,6 +21,7 @@ export const routes: Routes = [
     children: [
       // Públicas: se puede explorar sin cuenta
       { path: 'buscar', component: BusquedaComponent },
+      { path: 'alojamientos/:id', component: DetalleComponent },
 
       {
         path: 'perfil',
