@@ -7,15 +7,16 @@
     <a class="principal" routerLink="/anfitrion/publicaciones/nueva">+ Nueva publicación</a>
   </div>
 
-  @if (aviso) { <p class="exito" role="status">{{ aviso }}</p> }
+  @if (aviso()) { <p class="aviso ok" role="status">{{ aviso() }}</p> }
+  @if (error() && !cargando() && publicaciones().length) { <p class="aviso mal" role="alert">{{ error() }}</p> }
 
   @if (cargando()) {
     <p>Cargando tus publicaciones…</p>
-  } @else if (error()) {
+  } @else if (error() && !publicaciones().length) {
     <p class="error" role="alert">{{ error() }}</p>
   } @else {
     @for (p of publicaciones(); track p.id) {
-      <article class="fila">
+      <article class="fila" [class.abierta]="confirmandoPausa() === p.id">
         <div class="datos">
           <h2>{{ p.titulo || 'Sin título' }}</h2>
           <p>{{ p.ubicacion || 'Ubicación pendiente' }}
@@ -23,7 +24,29 @@
           </p>
         </div>
         <span class="estado" [attr.data-estado]="p.estado">{{ estados[p.estado] }}</span>
-        <a class="editar" [routerLink]="['/anfitrion/publicaciones', p.id, 'editar']">Editar</a>
+        <div class="acciones">
+          @switch (p.estado) {
+            @case ('ACTIVA') {
+              <button type="button" class="sec" [disabled]="procesando() === p.id" (click)="confirmandoPausa.set(p.id)">Pausar</button>
+            }
+            @case ('PAUSADA') {
+              <button type="button" class="sec" [disabled]="procesando() === p.id" (click)="reactivar(p)">Reactivar</button>
+            }
+          }
+          <a class="editar" [routerLink]="['/anfitrion/publicaciones', p.id, 'editar']">Editar</a>
+        </div>
+
+        @if (p.estado === 'BLOQUEADA') {
+          <p class="nota">Bloqueada por el administrador. Solo un administrador puede reactivarla.</p>
+        }
+
+        @if (confirmandoPausa() === p.id) {
+          <div class="confirmar">
+            <p>Al pausarla dejará de aparecer en búsquedas y no recibirá reservas nuevas. Podrás reactivarla cuando quieras.</p>
+            <button type="button" class="pausar" [disabled]="procesando() === p.id" (click)="pausar(p)">Sí, pausar</button>
+            <button type="button" class="enlace" (click)="confirmandoPausa.set(null)">Cancelar</button>
+          </div>
+        }
       </article>
     } @empty {
       <section class="vacio">
