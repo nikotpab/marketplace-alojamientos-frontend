@@ -1,0 +1,101 @@
+<main class="detalle">
+  <a class="volver" routerLink="/buscar">← Volver a la búsqueda</a>
+
+  @if (cargando()) {
+    <p class="estado">Cargando alojamiento…</p>
+  } @else if (error()) {
+    <p class="estado error" role="alert">{{ error() }}</p>
+  }
+
+  @if (alojamiento(); as a) {
+    <header class="cabecera">
+      <h1>{{ a.titulo }}</h1>
+      <p class="meta">
+        {{ a.ciudad }} · {{ tipoTexto() }} · hasta {{ a.capacidad }} huéspedes
+        @if (a.calificacionPromedio !== null) { · <span class="nota">★ {{ a.calificacionPromedio.toFixed(1) }}</span> }
+      </p>
+    </header>
+
+    <section class="galeria" aria-label="Imágenes del alojamiento">
+      @if (a.imagenes.length) {
+        <div class="principal" [style.background-image]="'url(' + a.imagenes[imagenActiva()] + ')'"></div>
+        <div class="miniaturas">
+          @for (img of a.imagenes; track img; let i = $index) {
+            <button type="button" [class.on]="i === imagenActiva()" [style.background-image]="'url(' + img + ')'"
+                    [attr.aria-label]="'Ver imagen ' + (i + 1)" (click)="imagenActiva.set(i)"></button>
+          }
+        </div>
+      } @else {
+        <div class="principal vacia">Sin imágenes</div>
+      }
+    </section>
+
+    <div class="columnas">
+      <div class="info">
+        <section>
+          <h2>Descripción</h2>
+          <p>{{ a.descripcion }}</p>
+        </section>
+        <section>
+          <h2>Ubicación</h2>
+          <p>{{ a.direccion }}, {{ a.ciudad }}</p>
+        </section>
+        <section>
+          <h2>Servicios</h2>
+          <ul class="lista-chips">
+            @for (s of a.servicios; track s) { <li>{{ s }}</li> }
+          </ul>
+        </section>
+        <section>
+          <h2>Reglas de la casa</h2>
+          <ul class="lista">
+            @for (r of a.reglas; track r) { <li>{{ r }}</li> }
+          </ul>
+        </section>
+        <section>
+          <h2>Política de cancelación</h2>
+          <p>{{ a.politicaCancelacion }}</p>
+        </section>
+
+        <section>
+          <h2>Reseñas
+            @if (a.calificacionPromedio !== null) { <span class="nota">· ★ {{ a.calificacionPromedio.toFixed(1) }} promedio</span> }
+          </h2>
+          @for (r of a.resenas; track r.id) {
+            <article class="resena">
+              <p class="cab"><strong>{{ r.autor }}</strong> <span>★ {{ r.calificacion }}</span>
+                <small>{{ r.fecha | date: 'mediumDate' }}</small></p>
+              <p>{{ r.comentario }}</p>
+            </article>
+          } @empty {
+            <p class="estado">Aún no hay reseñas para este alojamiento.</p>
+          }
+        </section>
+      </div>
+
+      <aside class="reserva">
+        <p class="precio"><strong>{{ a.precioNoche | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong> / noche</p>
+
+        <div class="calendario" aria-label="Calendario de disponibilidad">
+          <div class="mes">
+            <button type="button" (click)="cambiarMes(-1)" [disabled]="enMesInicial()" aria-label="Mes anterior">‹</button>
+            <span>{{ tituloMes() }}</span>
+            <button type="button" (click)="cambiarMes(1)" aria-label="Mes siguiente">›</button>
+          </div>
+          <div class="semana"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+          <div class="dias">
+            @for (d of dias(); track $index) {
+              @if (d) {
+                <span class="dia" [class.ocupado]="d.ocupado && !d.pasado" [class.pasado]="d.pasado"
+                      [attr.title]="d.pasado ? 'Fecha pasada' : d.ocupado ? 'No disponible' : 'Disponible'">{{ d.numero }}</span>
+              } @else { <span></span> }
+            }
+          </div>
+          <p class="leyenda"><i class="libre"></i> Disponible <i class="ocupado"></i> No disponible</p>
+        </div>
+
+        <a class="cotizar" [routerLink]="['/alojamientos', a.id, 'cotizar']">Cotizar y reservar</a>
+      </aside>
+    </div>
+  }
+</main>
