@@ -46,3 +46,15 @@ textarea { resize: vertical; }
   &[data-estado='ACTIVA'] { background: var(--verde-suave); color: var(--verde); }
   &[data-estado='RECHAZADA'] { background: #f3d6d6; color: var(--rojo); }
 }
+
+.activar {
+  background: #fff; color: var(--verde); border: 2px solid var(--verde); padding: 10px 24px; border-radius: 999px;
+  font: inherit; font-weight: 700; cursor: pointer;
+  &:hover:not(:disabled) { background: var(--verde-suave); }
+  &:disabled { opacity: .6; cursor: wait; }
+}
+.aviso {
+  padding: 12px 16px; border-radius: 12px; margin: 0 0 16px; font-weight: 500;
+  &.ok { background: var(--verde-suave); color: var(--verde); }
+  &.mal { background: #fbe4e4; color: var(--rojo); }
+}
