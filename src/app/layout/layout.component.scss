@@ -18,6 +18,11 @@
   }
 }
 
+.ingresar {
+  justify-self: end; padding: 8px 18px; border-radius: 999px; text-decoration: none;
+  background: var(--verde); color: #fff; font-weight: 600;
+}
+
 .usuario { display: flex; align-items: center; gap: 12px; justify-self: end; }
 .avatar {
   width: 36px; height: 36px; border-radius: 50%; background: var(--verde); color: #fff;

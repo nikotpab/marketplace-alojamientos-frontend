@@ -10,6 +10,7 @@
       }
     </nav>
 
+    @if (auth.usuario()) {
     <div class="usuario">
       <span class="avatar" aria-hidden="true">{{ iniciales() }}</span>
       <div class="datos">
@@ -18,6 +19,9 @@
       </div>
       <button type="button" class="salir" (click)="salir()">Cerrar sesión</button>
     </div>
+    } @else {
+      <a class="ingresar" routerLink="/auth">Iniciar sesión</a>
+    }
   </header>
 
   <router-outlet />
