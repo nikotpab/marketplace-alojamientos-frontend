@@ -1,0 +1,32 @@
+.contenido { width: min(1000px, 100%); margin: 0 auto; padding: 32px 24px 56px; }
+.encabezado { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
+.subtitulo { margin: 4px 0 0; color: #55574a; }
+
+.principal {
+  background: var(--verde); color: #fff; padding: 11px 22px; border-radius: 999px;
+  font-weight: 700; text-decoration: none;
+}
+.exito { color: var(--verde); font-weight: 600; }
+.error { color: var(--rojo); }
+
+.fila {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  background: #fff; border: 1px solid var(--gris-borde); border-radius: 14px; padding: 16px 20px; margin-bottom: 12px;
+  h2 { margin: 0; font-size: 1.05rem; color: var(--verde); }
+  p { margin: 4px 0 0; font-size: .85rem; color: #55574a; }
+}
+.datos { flex: 1; min-width: 0; }
+
+.estado {
+  padding: 5px 12px; border-radius: 999px; font-size: .8rem; font-weight: 700; white-space: nowrap;
+  background: #eee; color: #555;
+  &[data-estado='PENDIENTE_REVISION'] { background: #fff1c2; color: #7a5a00; }
+  &[data-estado='ACTIVA'] { background: var(--verde-suave); color: var(--verde); }
+  &[data-estado='RECHAZADA'] { background: #f3d6d6; color: var(--rojo); }
+}
+
+.vacio {
+  text-align: center; padding: 48px 16px; border: 1px dashed var(--gris-borde); border-radius: 16px; background: #fff;
+  a { color: var(--verde); font-weight: 700; }
+}
