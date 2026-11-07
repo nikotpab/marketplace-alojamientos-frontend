@@ -1,0 +1,34 @@
+<main class="contenido">
+  <div class="encabezado">
+    <div>
+      <h1>Mis publicaciones</h1>
+      <p class="subtitulo">Crea y administra tus alojamientos.</p>
+    </div>
+    <a class="principal" routerLink="/anfitrion/publicaciones/nueva">+ Nueva publicación</a>
+  </div>
+
+  @if (aviso) { <p class="exito" role="status">{{ aviso }}</p> }
+
+  @if (cargando()) {
+    <p>Cargando tus publicaciones…</p>
+  } @else if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  } @else {
+    @for (p of publicaciones(); track p.id) {
+      <article class="fila">
+        <div class="datos">
+          <h2>{{ p.titulo || 'Sin título' }}</h2>
+          <p>{{ p.ubicacion || 'Ubicación pendiente' }}
+            @if (p.precioNoche) { · {{ p.precioNoche | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} / noche }
+          </p>
+        </div>
+        <span class="estado" [attr.data-estado]="p.estado">{{ estados[p.estado] }}</span>
+      </article>
+    } @empty {
+      <section class="vacio">
+        <p>Aún no tienes publicaciones.</p>
+        <a routerLink="/anfitrion/publicaciones/nueva">Crea tu primera publicación</a>
+      </section>
+    }
+  }
+</main>

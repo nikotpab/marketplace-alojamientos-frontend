@@ -6,6 +6,8 @@ import { PanelComponent } from './pages/panel/panel.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
 import { BusquedaComponent } from './pages/busqueda/busqueda.component';
 import { DetalleComponent } from './pages/detalle/detalle.component';
+import { MisPublicacionesComponent } from './pages/anfitrion/mis-publicaciones/mis-publicaciones.component';
+import { PublicacionFormComponent } from './pages/anfitrion/publicacion-form/publicacion-form.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
@@ -37,9 +39,15 @@ export const routes: Routes = [
       },
       {
         path: 'anfitrion',
-        component: PanelComponent,
+        component: MisPublicacionesComponent,
         canActivate: [rolGuard],
-        data: { roles: ['ANFITRION'], titulo: 'Panel del anfitrión' },
+        data: { roles: ['ANFITRION'] },
+      },
+      {
+        path: 'anfitrion/publicaciones/nueva',
+        component: PublicacionFormComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ANFITRION'] },
       },
       {
         path: 'admin',
