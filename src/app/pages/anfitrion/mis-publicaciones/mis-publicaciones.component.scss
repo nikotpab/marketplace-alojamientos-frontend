@@ -30,3 +30,9 @@ h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
   text-align: center; padding: 48px 16px; border: 1px dashed var(--gris-borde); border-radius: 16px; background: #fff;
   a { color: var(--verde); font-weight: 700; }
 }
+
+.editar {
+  padding: 7px 16px; border-radius: 999px; border: 1px solid var(--verde); color: var(--verde);
+  font-weight: 600; text-decoration: none; font-size: .85rem;
+  &:hover { background: var(--verde); color: #fff; }
+}

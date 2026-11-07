@@ -17,7 +17,7 @@ export class MisPublicacionesComponent {
   publicaciones = signal<Publicacion[]>([]);
   cargando = signal(true);
   error = signal('');
-  aviso = inject(ActivatedRoute).snapshot.queryParamMap.get('guardada') ? 'Borrador guardado.' : '';
+  aviso = inject(ActivatedRoute).snapshot.queryParamMap.get('guardada') ? 'Cambios guardados.' : '';
 
   constructor() {
     this.api.misPublicaciones().subscribe({

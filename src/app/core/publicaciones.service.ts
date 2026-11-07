@@ -51,6 +51,15 @@ export class PublicacionesService {
     return this.http.post<Publicacion>('/api/publicaciones', datos);
   }
 
+  obtener(id: string): Observable<Publicacion> {
+    return this.http.get<Publicacion>(`/api/publicaciones/${encodeURIComponent(id)}`);
+  }
+
+  /** Solo el propietario o un ADMINISTRADOR; el backend verifica la propiedad y responde 403 si no. */
+  actualizar(id: string, datos: DatosPublicacion): Observable<Publicacion> {
+    return this.http.put<Publicacion>(`/api/publicaciones/${encodeURIComponent(id)}`, datos);
+  }
+
   /** Solo los tipos de alojamiento activos en la configuración. */
   tiposActivos(): Observable<TipoConfigurado[]> {
     return this.http.get<TipoConfigurado[]>('/api/configuracion/tipos-alojamiento', {

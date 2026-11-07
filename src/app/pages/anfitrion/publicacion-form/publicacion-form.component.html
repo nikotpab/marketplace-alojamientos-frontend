@@ -1,9 +1,19 @@
 <main class="contenido">
   <a class="volver" routerLink="/anfitrion">← Mis publicaciones</a>
-  <h1>Nueva publicación</h1>
-  <p class="subtitulo">Se guarda como <strong>borrador</strong>: puedes completarla después y solicitar su activación cuando esté lista.</p>
+  @if (id) {
+    <h1>Editar publicación</h1>
+    @if (publicacion(); as p) {
+      <p class="subtitulo">Estado actual: <span class="estado" [attr.data-estado]="p.estado">{{ estados[p.estado] }}</span></p>
+    }
+  } @else {
+    <h1>Nueva publicación</h1>
+    <p class="subtitulo">Se guarda como <strong>borrador</strong>: puedes completarla después y solicitar su activación cuando esté lista.</p>
+  }
 
-  <form [formGroup]="form" (ngSubmit)="guardarBorrador()" novalidate>
+  @if (cargando()) { <p>Cargando publicación…</p> }
+  @if (errorCarga()) { <p class="error" role="alert">{{ errorCarga() }}</p> }
+
+  <form [formGroup]="form" (ngSubmit)="guardarBorrador()" novalidate [hidden]="cargando() || !!errorCarga()">
     <section class="tarjeta">
       <h2>Información básica</h2>
       <label>Título
@@ -77,7 +87,7 @@
 
     <div class="acciones">
       <button type="submit" class="principal" [disabled]="guardando()">
-        {{ guardando() ? 'Guardando…' : 'Guardar borrador' }}
+        {{ guardando() ? 'Guardando…' : id ? 'Guardar cambios' : 'Guardar borrador' }}
       </button>
       <a routerLink="/anfitrion" class="secundario">Cancelar</a>
     </div>
