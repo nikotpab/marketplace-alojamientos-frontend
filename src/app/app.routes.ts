@@ -50,6 +50,13 @@ export const routes: Routes = [
         data: { roles: ['ANFITRION'] },
       },
       {
+        // Propietario o administrador; la propiedad la verifica el backend (403 si no corresponde)
+        path: 'anfitrion/publicaciones/:id/editar',
+        component: PublicacionFormComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ANFITRION', 'ADMINISTRADOR'] },
+      },
+      {
         path: 'admin',
         component: PanelComponent,
         canActivate: [rolGuard],

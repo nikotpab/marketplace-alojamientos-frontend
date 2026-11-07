@@ -23,6 +23,7 @@
           </p>
         </div>
         <span class="estado" [attr.data-estado]="p.estado">{{ estados[p.estado] }}</span>
+        <a class="editar" [routerLink]="['/anfitrion/publicaciones', p.id, 'editar']">Editar</a>
       </article>
     } @empty {
       <section class="vacio">
