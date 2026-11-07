@@ -2,14 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-export type EstadoPublicacion = 'BORRADOR' | 'PENDIENTE_REVISION' | 'ACTIVA' | 'RECHAZADA' | 'INACTIVA';
+export type EstadoPublicacion = 'BORRADOR' | 'PENDIENTE_REVISION' | 'ACTIVA' | 'PAUSADA' | 'BLOQUEADA';
 
 export const ESTADO_TEXTO: Record<EstadoPublicacion, string> = {
   BORRADOR: 'Borrador',
   PENDIENTE_REVISION: 'Pendiente de revisión',
   ACTIVA: 'Activa',
-  RECHAZADA: 'Rechazada',
-  INACTIVA: 'Inactiva',
+  PAUSADA: 'Pausada',
+  BLOQUEADA: 'Bloqueada',
 };
 
 /** Datos que ingresa el anfitrión. En borrador todos pueden ir incompletos. */
@@ -30,6 +30,10 @@ export interface Publicacion extends DatosPublicacion {
   id: string;
   estado: EstadoPublicacion;
   actualizadaEn: string;
+  /** Motivo del último rechazo del administrador (la publicación vuelve a BORRADOR). */
+  motivoRechazo?: string | null;
+  /** Nombre del anfitrión propietario (visible para el administrador). */
+  anfitrion?: string;
 }
 
 export interface TipoConfigurado {
@@ -66,6 +70,22 @@ export class PublicacionesService {
    */
   solicitarActivacion(id: string): Observable<Publicacion> {
     return this.http.post<Publicacion>(`/api/publicaciones/${encodeURIComponent(id)}/solicitar-activacion`, {});
+  }
+
+  // --- Administrador ---
+
+  pendientesDeRevision(): Observable<Publicacion[]> {
+    return this.http.get<Publicacion[]>('/api/admin/publicaciones', { params: { estado: 'PENDIENTE_REVISION' } });
+  }
+
+  /** Pasa a ACTIVA y notifica al anfitrión. 403 si no es ADMINISTRADOR. */
+  aprobar(id: string): Observable<Publicacion> {
+    return this.http.post<Publicacion>(`/api/admin/publicaciones/${encodeURIComponent(id)}/aprobar`, {});
+  }
+
+  /** Vuelve a BORRADOR con motivo obligatorio y notifica al anfitrión. */
+  rechazar(id: string, motivo: string): Observable<Publicacion> {
+    return this.http.post<Publicacion>(`/api/admin/publicaciones/${encodeURIComponent(id)}/rechazar`, { motivo });
   }
 
   /** Solo los tipos de alojamiento activos en la configuración. */

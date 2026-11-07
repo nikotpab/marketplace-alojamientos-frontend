@@ -44,7 +44,8 @@ textarea { resize: vertical; }
   padding: 4px 12px; border-radius: 999px; font-size: .8rem; font-weight: 700; background: #eee; color: #555;
   &[data-estado='PENDIENTE_REVISION'] { background: #fff1c2; color: #7a5a00; }
   &[data-estado='ACTIVA'] { background: var(--verde-suave); color: var(--verde); }
-  &[data-estado='RECHAZADA'] { background: #f3d6d6; color: var(--rojo); }
+  &[data-estado='PAUSADA'] { background: #e3e8f0; color: #3b4a63; }
+  &[data-estado='BLOQUEADA'] { background: #f3d6d6; color: var(--rojo); }
 }
 
 .activar {

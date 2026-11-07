@@ -56,11 +56,8 @@ export class PublicacionFormComponent {
   totalErrores = computed(() => Object.keys(this.erroresActivacion()).length);
   exito = signal('');
 
-  /** Solo se puede pedir activación desde BORRADOR (o tras un rechazo). */
-  puedeSolicitar = computed(() => {
-    const e = this.publicacion()?.estado;
-    return !!this.id && (e === 'BORRADOR' || e === 'RECHAZADA');
-  });
+  /** Solo se puede pedir activación desde BORRADOR (incluye las rechazadas, que vuelven a borrador). */
+  puedeSolicitar = computed(() => !!this.id && this.publicacion()?.estado === 'BORRADOR');
 
   servicios = SERVICIOS;
   tipos = signal<TipoConfigurado[]>([]);

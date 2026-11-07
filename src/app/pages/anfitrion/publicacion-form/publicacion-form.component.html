@@ -12,6 +12,9 @@
 
   @if (cargando()) { <p>Cargando publicación…</p> }
   @if (errorCarga()) { <p class="error" role="alert">{{ errorCarga() }}</p> }
+  @if (publicacion()?.estado === 'BORRADOR' && publicacion()?.motivoRechazo) {
+    <p class="aviso mal" role="status"><strong>Rechazada por el administrador:</strong> {{ publicacion()?.motivoRechazo }}</p>
+  }
   @if (exito()) { <p class="aviso ok" role="status">{{ exito() }}</p> }
   @if (totalErrores()) {
     <p class="aviso mal" role="alert">
