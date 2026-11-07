@@ -7,6 +7,7 @@ interface Dia {
   numero: number;
   iso: string;
   ocupado: boolean;
+  pasado: boolean;
 }
 
 const NOMBRES_TIPO: Record<string, string> = {
@@ -35,9 +36,15 @@ export class DetalleComponent {
 
   tipoTexto = computed(() => NOMBRES_TIPO[this.alojamiento()?.tipo ?? ''] ?? '');
 
-  tituloMes = computed(() =>
-    this.mesActual().toLocaleDateString('es-CO', { month: 'long', year: 'numeric' }),
-  );
+  private hoy = this.aIso(new Date());
+  private mesInicial = this.inicioDeMes(new Date());
+
+  tituloMes = computed(() => {
+    const t = this.mesActual().toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  });
+
+  enMesInicial = computed(() => this.mesActual().getTime() <= this.mesInicial.getTime());
 
   dias = computed<(Dia | null)[]>(() => {
     const base = this.mesActual();
@@ -47,7 +54,7 @@ export class DetalleComponent {
     const lista: (Dia | null)[] = Array(huecos).fill(null);
     for (let d = 1; d <= total; d++) {
       const iso = this.aIso(new Date(base.getFullYear(), base.getMonth(), d));
-      lista.push({ numero: d, iso, ocupado: ocupadas.has(iso) });
+      lista.push({ numero: d, iso, ocupado: ocupadas.has(iso), pasado: iso < this.hoy });
     }
     return lista;
   });
@@ -71,6 +78,7 @@ export class DetalleComponent {
   }
 
   cambiarMes(delta: number) {
+    if (delta < 0 && this.enMesInicial()) return;
     const m = this.mesActual();
     this.mesActual.set(new Date(m.getFullYear(), m.getMonth() + delta, 1));
   }

@@ -47,15 +47,17 @@ p { margin: 0 0 8px; line-height: 1.5; }
 }
 
 .calendario {
-  .mes { display: flex; justify-content: space-between; align-items: center; font-weight: 600; text-transform: capitalize; margin-bottom: 8px;
-    button { background: none; border: 1px solid var(--gris-borde); border-radius: 50%; width: 28px; height: 28px; cursor: pointer; } }
+  .mes { display: flex; justify-content: space-between; align-items: center; font-weight: 600; margin-bottom: 8px;
+    button { background: none; border: 1px solid var(--gris-borde); border-radius: 50%; width: 28px; height: 28px; cursor: pointer;
+      &:disabled { opacity: .3; cursor: default; } } }
   .semana, .dias { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 2px; }
   .semana { font-size: .75rem; opacity: .6; margin-bottom: 4px; }
   .dia { padding: 6px 0; border-radius: 6px; font-size: .85rem; background: var(--verde-suave); color: var(--verde);
-    &.ocupado { background: #eee; color: #999; text-decoration: line-through; } }
-  .leyenda { font-size: .75rem; opacity: .75; margin-top: 8px;
-    i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin: 0 4px 0 8px; background: var(--verde-suave);
-      &.ocupado { background: #ddd; } } }
+    &.ocupado { background: #f3d6d6; color: var(--rojo); text-decoration: line-through; }
+    &.pasado { background: transparent; color: #bbb; } }
+  .leyenda { display: flex; align-items: center; gap: 6px; font-size: .8rem; margin-top: 10px;
+    i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--verde-suave); border: 1px solid var(--verde);
+      &.ocupado { background: #f3d6d6; border-color: var(--rojo); margin-left: 10px; } } }
 }
 
 .cotizar {

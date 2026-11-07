@@ -78,7 +78,7 @@
 
         <div class="calendario" aria-label="Calendario de disponibilidad">
           <div class="mes">
-            <button type="button" (click)="cambiarMes(-1)" aria-label="Mes anterior">‹</button>
+            <button type="button" (click)="cambiarMes(-1)" [disabled]="enMesInicial()" aria-label="Mes anterior">‹</button>
             <span>{{ tituloMes() }}</span>
             <button type="button" (click)="cambiarMes(1)" aria-label="Mes siguiente">›</button>
           </div>
@@ -86,8 +86,8 @@
           <div class="dias">
             @for (d of dias(); track $index) {
               @if (d) {
-                <span class="dia" [class.ocupado]="d.ocupado"
-                      [attr.title]="d.ocupado ? 'No disponible' : 'Disponible'">{{ d.numero }}</span>
+                <span class="dia" [class.ocupado]="d.ocupado && !d.pasado" [class.pasado]="d.pasado"
+                      [attr.title]="d.pasado ? 'Fecha pasada' : d.ocupado ? 'No disponible' : 'Disponible'">{{ d.numero }}</span>
               } @else { <span></span> }
             }
           </div>
