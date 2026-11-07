@@ -72,6 +72,16 @@ export class PublicacionesService {
     return this.http.post<Publicacion>(`/api/publicaciones/${encodeURIComponent(id)}/solicitar-activacion`, {});
   }
 
+  /** ACTIVA → PAUSADA: deja de aparecer en búsquedas y de recibir reservas. */
+  pausar(id: string): Observable<Publicacion> {
+    return this.http.post<Publicacion>(`/api/publicaciones/${encodeURIComponent(id)}/pausar`, {});
+  }
+
+  /** PAUSADA → ACTIVA. Una BLOQUEADA solo la reactiva un administrador (el backend responde 403/409). */
+  reactivar(id: string): Observable<Publicacion> {
+    return this.http.post<Publicacion>(`/api/publicaciones/${encodeURIComponent(id)}/reactivar`, {});
+  }
+
   // --- Administrador ---
 
   pendientesDeRevision(): Observable<Publicacion[]> {
