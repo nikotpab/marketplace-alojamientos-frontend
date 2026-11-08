@@ -32,6 +32,15 @@
 
     <div class="columnas">
       <div class="info">
+        @if (activo()) {
+          <section class="disponibilidad">
+            <h2>Disponibilidad</h2>
+            <app-calendario [meses]="2" [bloqueados]="disponibilidad().bloqueados"
+                            [reservados]="disponibilidad().reservados"
+                            (rango)="rango.set($event)" (mesVisible)="cargarDisponibilidad($event)" />
+          </section>
+        }
+
         <section>
           <h2>Descripción</h2>
           <p>{{ a.descripcion }}</p>
@@ -76,25 +85,27 @@
       <aside class="reserva">
         <p class="precio"><strong>{{ a.precioNoche | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong> / noche</p>
 
-        <div class="calendario" aria-label="Calendario de disponibilidad">
-          <div class="mes">
-            <button type="button" (click)="cambiarMes(-1)" [disabled]="enMesInicial()" aria-label="Mes anterior">‹</button>
-            <span>{{ tituloMes() }}</span>
-            <button type="button" (click)="cambiarMes(1)" aria-label="Mes siguiente">›</button>
-          </div>
-          <div class="semana"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
-          <div class="dias">
-            @for (d of dias(); track $index) {
-              @if (d) {
-                <span class="dia" [class.ocupado]="d.ocupado && !d.pasado" [class.pasado]="d.pasado"
-                      [attr.title]="d.pasado ? 'Fecha pasada' : d.ocupado ? 'No disponible' : 'Disponible'">{{ d.numero }}</span>
-              } @else { <span></span> }
+        @if (activo()) {
+          @if (rango(); as r) {
+            <dl class="seleccion">
+              <dt>Llegada</dt><dd>{{ r.desde | date: 'd MMM y' }}</dd>
+              <dt>Salida</dt><dd>{{ r.hasta !== r.desde ? (r.hasta | date: 'd MMM y') : 'Elige la fecha de salida' }}</dd>
+            </dl>
+            @if (cruzaNoDisponibles()) {
+              <p class="aviso-error">Tu selección incluye fechas no disponibles. Elige otro rango.</p>
+            } @else if (noches()) {
+              <p class="noches">{{ noches() }} {{ noches() === 1 ? 'noche' : 'noches' }}</p>
             }
-          </div>
-          <p class="leyenda"><i class="libre"></i> Disponible <i class="ocupado"></i> No disponible</p>
-        </div>
-
-        <a class="cotizar" [routerLink]="['/alojamientos', a.id, 'cotizar']">Cotizar y reservar</a>
+          } @else {
+            <p class="ayuda">Elige tus fechas en el calendario de disponibilidad.</p>
+          }
+          <a class="cotizar" [class.inactivo]="!noches() || cruzaNoDisponibles()"
+             [routerLink]="['/alojamientos', a.id, 'cotizar']"
+             [queryParams]="rango() ? { llegada: rango()!.desde, salida: rango()!.hasta } : {}"
+             [attr.aria-disabled]="!noches() || cruzaNoDisponibles()">Cotizar y reservar</a>
+        } @else {
+          <p class="aviso-error">Este alojamiento no está disponible para reservas en este momento.</p>
+        }
       </aside>
     </div>
   }

@@ -26,7 +26,8 @@ export interface AlojamientoDetalle {
   imagenes: string[];
   calificacionPromedio: number | null;
   resenas: Resena[];
-  fechasNoDisponibles: string[]; // ISO yyyy-MM-dd
+  /** Estado de la publicación; el calendario y la reserva solo aplican a ACTIVA. */
+  estado: string;
 }
 
 @Injectable({ providedIn: 'root' })
