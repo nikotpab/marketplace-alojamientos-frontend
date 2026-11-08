@@ -1,0 +1,38 @@
+<main class="contenido">
+  <a class="volver" routerLink="/anfitrion">← Mis publicaciones</a>
+  <h1>Disponibilidad</h1>
+  <p class="subtitulo">Elige la fecha de inicio y la de fin, y márcalas como disponibles o bloqueadas. Los días reservados no se pueden editar.</p>
+
+  @if (aviso()) { <p class="aviso ok" role="status">{{ aviso() }}</p> }
+  @if (error()) { <p class="aviso mal" role="alert">{{ error() }}</p> }
+
+  <div class="columnas">
+    <section class="tarjeta">
+      <app-calendario [meses]="2" [bloqueados]="datos().bloqueados" [reservados]="datos().reservados"
+                      [permitirBloqueados]="true" (rango)="rango.set($event)" (mesVisible)="cargar($event)" />
+    </section>
+
+    <aside class="tarjeta panel">
+      @if (rango(); as r) {
+        <h2>Fechas seleccionadas</h2>
+        <p class="fechas">
+          {{ r.desde | date: 'd MMM y' }}
+          @if (r.hasta !== r.desde) { → {{ r.hasta | date: 'd MMM y' }} }
+        </p>
+        <p class="meta">{{ noches() }} {{ noches() === 1 ? 'día' : 'días' }}</p>
+
+        @if (incluyeReservas()) {
+          <p class="error">El rango incluye días con reservas confirmadas. Elige un rango sin días reservados.</p>
+        } @else {
+          <div class="acciones">
+            <button type="button" class="bloquear" [disabled]="guardando()" (click)="marcar('BLOQUEADO')">Bloquear</button>
+            <button type="button" class="liberar" [disabled]="guardando()" (click)="marcar('DISPONIBLE')">Marcar disponible</button>
+          </div>
+        }
+      } @else {
+        <h2>Sin selección</h2>
+        <p class="meta">Haz clic en el primer día y luego en el último del periodo que quieres cambiar.</p>
+      }
+    </aside>
+  </div>
+</main>
