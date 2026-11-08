@@ -2,7 +2,15 @@
   <a class="volver" [routerLink]="['/alojamientos', id]">← Volver al alojamiento</a>
   <h1>Cotización</h1>
 
-  @if (!fechasValidas) {
+  @if (reserva(); as r) {
+    <section class="tarjeta exito" role="status">
+      <h2>¡Reserva confirmada!</h2>
+      <p>Código de reserva: <strong>{{ r.codigo }}</strong></p>
+      <p>{{ alojamiento()?.titulo }} · {{ r.llegada | date: 'd MMM' }} → {{ r.salida | date: 'd MMM y' }} · {{ r.huespedes }} {{ r.huespedes === 1 ? 'huésped' : 'huéspedes' }}</p>
+      <p class="total">Total: {{ r.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
+      <a routerLink="/buscar" class="seguir">Seguir explorando</a>
+    </section>
+  } @else if (!fechasValidas) {
     <p class="aviso mal" role="alert">Elige primero las fechas de llegada y salida en el calendario del alojamiento.</p>
   } @else {
     <div class="columnas">
@@ -65,6 +73,11 @@
             </tfoot>
           </table>
           <p class="nota">Las tarifas se calculan con la configuración vigente. Revisa el total antes de confirmar.</p>
+
+          @if (errorReserva()) { <p class="aviso mal" role="alert">{{ errorReserva() }}</p> }
+          <button type="button" class="confirmar" [disabled]="confirmando() || cargando()" (click)="confirmar()">
+            {{ confirmando() ? 'Confirmando…' : 'Confirmar reserva' }}
+          </button>
         } @else if (!error()) {
           <p>Calculando cotización…</p>
         }

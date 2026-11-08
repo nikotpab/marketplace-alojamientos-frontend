@@ -49,3 +49,20 @@ table {
   .desglose { position: static; }
   .fechas { grid-template-columns: 1fr; }
 }
+
+.confirmar {
+  width: 100%; margin-top: 16px; padding: 13px; border: 0; border-radius: 999px;
+  background: var(--verde); color: #fff; font: inherit; font-weight: 700; font-size: 1rem; cursor: pointer;
+  &:disabled { opacity: .6; cursor: wait; }
+}
+.aviso.mal { margin-top: 12px; }
+.exito {
+  text-align: center; padding: 40px 24px;
+  h2 { font-size: 1.6rem; margin-bottom: 12px; }
+  p { margin: 6px 0; }
+  .total { font-weight: 800; font-size: 1.2rem; margin-top: 12px; }
+  .seguir {
+    display: inline-block; margin-top: 20px; padding: 11px 24px; border-radius: 999px;
+    border: 2px solid var(--verde); color: var(--verde); font-weight: 700; text-decoration: none;
+  }
+}
