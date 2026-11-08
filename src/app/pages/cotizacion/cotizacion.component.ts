@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Cotizacion, CotizacionService } from '../../core/cotizacion.service';
 import { AlojamientoDetalle, DetalleService } from '../../core/detalle.service';
+import { Reserva, ReservasService } from '../../core/reservas.service';
 
 @Component({
   selector: 'app-cotizacion',
@@ -26,6 +27,11 @@ export class CotizacionComponent {
   adicionales = signal<string[]>([]);
   cargando = signal(false);
   error = signal('');
+
+  private reservas = inject(ReservasService);
+  confirmando = signal(false);
+  errorReserva = signal('');
+  reserva = signal<Reserva | null>(null);
 
   fechasValidas = !!this.llegada && !!this.salida && this.salida > this.llegada;
   capacidad = computed(() => this.alojamiento()?.capacidad ?? 1);
@@ -65,6 +71,28 @@ export class CotizacionComponent {
             e.status === 409
               ? 'Las fechas elegidas ya no están disponibles. Vuelve al calendario y elige otras.'
               : 'No pudimos calcular la cotización. Intenta de nuevo.',
+          );
+        },
+      });
+  }
+
+  confirmar() {
+    if (this.confirmando() || !this.cotizacion()) return;
+    this.confirmando.set(true);
+    this.errorReserva.set('');
+    this.reservas
+      .confirmar({ publicacionId: this.id, llegada: this.llegada, salida: this.salida, huespedes: this.huespedes, adicionales: this.adicionales() })
+      .subscribe({
+        next: (r) => {
+          this.reserva.set(r);
+          this.confirmando.set(false);
+        },
+        error: (e) => {
+          this.confirmando.set(false);
+          this.errorReserva.set(
+            e.status === 409
+              ? 'Periodo no disponible: otra persona acaba de reservar estas fechas. Elige otras en el calendario.'
+              : 'No pudimos confirmar la reserva. Intenta de nuevo.',
           );
         },
       });
