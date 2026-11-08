@@ -33,6 +33,12 @@ export class CotizacionComponent {
   errorReserva = signal('');
   reserva = signal<Reserva | null>(null);
 
+  /**
+   * Clave única por intento de confirmación (RF-19). Se reutiliza si hay que reintentar
+   * por un error de red y se renueva cuando cambian los datos de la reserva.
+   */
+  private claveIntento: string | null = null;
+
   fechasValidas = !!this.llegada && !!this.salida && this.salida > this.llegada;
   capacidad = computed(() => this.alojamiento()?.capacidad ?? 1);
 
@@ -56,6 +62,7 @@ export class CotizacionComponent {
 
   /** Cada cambio pide una cotización nueva: los porcentajes salen de la configuración del backend. */
   cotizar() {
+    this.claveIntento = null; // datos distintos = intento distinto
     this.cargando.set(true);
     this.error.set('');
     this.api
@@ -80,8 +87,12 @@ export class CotizacionComponent {
     if (this.confirmando() || !this.cotizacion()) return;
     this.confirmando.set(true);
     this.errorReserva.set('');
+    this.claveIntento ??= crypto.randomUUID();
     this.reservas
-      .confirmar({ publicacionId: this.id, llegada: this.llegada, salida: this.salida, huespedes: this.huespedes, adicionales: this.adicionales() })
+      .confirmar(
+        { publicacionId: this.id, llegada: this.llegada, salida: this.salida, huespedes: this.huespedes, adicionales: this.adicionales() },
+        this.claveIntento,
+      )
       .subscribe({
         next: (r) => {
           this.reserva.set(r);
@@ -89,10 +100,12 @@ export class CotizacionComponent {
         },
         error: (e) => {
           this.confirmando.set(false);
+          // Rechazo definitivo: un nuevo intento debe llevar otra clave
+          if (e.status === 409) this.claveIntento = null;
           this.errorReserva.set(
             e.status === 409
               ? 'Periodo no disponible: otra persona acaba de reservar estas fechas. Elige otras en el calendario.'
-              : 'No pudimos confirmar la reserva. Intenta de nuevo.',
+              : 'No pudimos confirmar la reserva. Intenta de nuevo; no se creará una reserva duplicada.',
           );
         },
       });

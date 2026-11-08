@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -28,8 +28,14 @@ export class ReservasService {
   /**
    * Confirmación inmediata. El backend vuelve a verificar que no haya superposición
    * y responde 409 ("periodo no disponible") si otra reserva tomó las fechas.
+   *
+   * `claveIdempotencia` identifica el intento de confirmación: si la misma solicitud llega
+   * repetida (doble clic, reintento de red), el backend devuelve el resultado original sin
+   * crear otra reserva ni otro cobro, y reenvía la misma clave a Stripe.
    */
-  confirmar(s: SolicitudReserva): Observable<Reserva> {
-    return this.http.post<Reserva>('/api/reservas', s);
+  confirmar(s: SolicitudReserva, claveIdempotencia: string): Observable<Reserva> {
+    return this.http.post<Reserva>('/api/reservas', s, {
+      headers: new HttpHeaders({ 'Idempotency-Key': claveIdempotencia }),
+    });
   }
 }
