@@ -1,0 +1,51 @@
+.contenido { width: min(1000px, 100%); margin: 0 auto; padding: 24px 24px 56px; }
+.volver { color: var(--verde); font-weight: 600; text-decoration: none; &:hover { text-decoration: underline; } }
+h1 { margin: 12px 0 20px; font-size: 2rem; color: #1f2a1a; }
+
+.aviso { padding: 12px 16px; border-radius: 12px; font-weight: 500; &.mal { background: #fbe4e4; color: var(--rojo); } }
+
+.columnas { display: grid; grid-template-columns: 1fr 380px; gap: 24px; align-items: start; }
+.tarjeta {
+  background: #fff; border: 1px solid var(--gris-borde); border-radius: 16px; padding: 24px;
+  h2 { margin: 0; font-size: 1.15rem; color: var(--verde); }
+  h3 { margin: 20px 0 8px; font-size: 1rem; color: var(--verde); }
+}
+.meta { margin: 4px 0 16px; color: #55574a; }
+
+.fechas {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0;
+  div { border: 1px solid var(--gris-borde); border-radius: 12px; padding: 10px 12px; }
+  dt { font-size: .75rem; font-weight: 700; color: #55574a; text-transform: uppercase; }
+  dd { margin: 4px 0 0; font-weight: 600; text-transform: capitalize; }
+}
+.contador {
+  display: flex; align-items: center; gap: 10px;
+  button {
+    width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--verde); background: #fff;
+    color: var(--verde); font-size: 1rem; cursor: pointer;
+    &:disabled { opacity: .3; cursor: default; }
+  }
+}
+
+.adicionales {
+  list-style: none; padding: 0; margin: 0;
+  li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gris-borde); }
+  label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+}
+
+.desglose { position: sticky; top: 90px; }
+table {
+  width: 100%; border-collapse: collapse; margin-top: 12px; transition: opacity .2s;
+  &.actualizando { opacity: .5; }
+  th { text-align: left; font-weight: 400; padding: 7px 0; }
+  td { text-align: right; padding: 7px 0; white-space: nowrap; }
+  .descuento td, .descuento th { color: var(--verde); }
+  tfoot th, tfoot td { border-top: 2px solid #1f2a1a; padding-top: 12px; font-weight: 800; font-size: 1.15rem; }
+}
+.nota { font-size: .8rem; color: #55574a; margin: 12px 0 0; }
+
+@media (max-width: 860px) {
+  .columnas { grid-template-columns: 1fr; }
+  .desglose { position: static; }
+  .fechas { grid-template-columns: 1fr; }
+}

@@ -11,6 +11,7 @@ import { PublicacionFormComponent } from './pages/anfitrion/publicacion-form/pub
 import { RevisionComponent } from './pages/admin/revision/revision.component';
 import { TodasPublicacionesComponent } from './pages/admin/publicaciones/todas-publicaciones.component';
 import { DisponibilidadComponent } from './pages/anfitrion/disponibilidad/disponibilidad.component';
+import { CotizacionComponent } from './pages/cotizacion/cotizacion.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
@@ -27,6 +28,14 @@ export const routes: Routes = [
       // Públicas: se puede explorar sin cuenta
       { path: 'buscar', component: BusquedaComponent },
       { path: 'alojamientos/:id', component: DetalleComponent },
+
+      {
+        // Cotizar y reservar requiere sesión de huésped
+        path: 'alojamientos/:id/cotizar',
+        component: CotizacionComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['HUESPED'] },
+      },
 
       {
         path: 'perfil',
