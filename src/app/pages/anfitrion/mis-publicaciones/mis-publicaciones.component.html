@@ -33,6 +33,7 @@
               <button type="button" class="sec" [disabled]="procesando() === p.id" (click)="reactivar(p)">Reactivar</button>
             }
           }
+          <a class="editar" [routerLink]="['/anfitrion/publicaciones', p.id, 'disponibilidad']">Disponibilidad</a>
           <a class="editar" [routerLink]="['/anfitrion/publicaciones', p.id, 'editar']">Editar</a>
         </div>
 

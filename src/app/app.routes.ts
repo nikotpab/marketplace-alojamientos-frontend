@@ -10,6 +10,7 @@ import { MisPublicacionesComponent } from './pages/anfitrion/mis-publicaciones/m
 import { PublicacionFormComponent } from './pages/anfitrion/publicacion-form/publicacion-form.component';
 import { RevisionComponent } from './pages/admin/revision/revision.component';
 import { TodasPublicacionesComponent } from './pages/admin/publicaciones/todas-publicaciones.component';
+import { DisponibilidadComponent } from './pages/anfitrion/disponibilidad/disponibilidad.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
@@ -48,6 +49,13 @@ export const routes: Routes = [
       {
         path: 'anfitrion/publicaciones/nueva',
         component: PublicacionFormComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ANFITRION'] },
+      },
+      {
+        // Solo el anfitrión propietario; la propiedad la verifica el backend (403)
+        path: 'anfitrion/publicaciones/:id/disponibilidad',
+        component: DisponibilidadComponent,
         canActivate: [rolGuard],
         data: { roles: ['ANFITRION'] },
       },
