@@ -1,0 +1,74 @@
+<main class="contenido">
+  <a class="volver" [routerLink]="['/alojamientos', id]">← Volver al alojamiento</a>
+  <h1>Cotización</h1>
+
+  @if (!fechasValidas) {
+    <p class="aviso mal" role="alert">Elige primero las fechas de llegada y salida en el calendario del alojamiento.</p>
+  } @else {
+    <div class="columnas">
+      <section class="tarjeta">
+        <h2>{{ alojamiento()?.titulo }}</h2>
+        <p class="meta">{{ alojamiento()?.ciudad }}</p>
+
+        <dl class="fechas">
+          <div><dt>Llegada</dt><dd>{{ llegada | date: 'EEE d MMM y' }}</dd></div>
+          <div><dt>Salida</dt><dd>{{ salida | date: 'EEE d MMM y' }}</dd></div>
+          <div>
+            <dt>Huéspedes</dt>
+            <dd class="contador">
+              <button type="button" (click)="cambiarHuespedes(huespedes - 1)" [disabled]="huespedes <= 1" aria-label="Menos huéspedes">−</button>
+              <span>{{ huespedes }}</span>
+              <button type="button" (click)="cambiarHuespedes(huespedes + 1)" [disabled]="huespedes >= capacidad()" aria-label="Más huéspedes">+</button>
+            </dd>
+          </div>
+        </dl>
+
+        @if (cotizacion()?.adicionalesDisponibles?.length) {
+          <h3>Servicios adicionales</h3>
+          <ul class="adicionales">
+            @for (s of cotizacion()!.adicionalesDisponibles; track s.id) {
+              <li>
+                <label>
+                  <input type="checkbox" [checked]="adicionales().includes(s.id)" (change)="alternarAdicional(s.id)" />
+                  {{ s.nombre }}
+                </label>
+                <span>{{ s.precio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+
+      <aside class="tarjeta desglose" aria-live="polite">
+        <h2>Desglose</h2>
+        @if (error()) {
+          <p class="aviso mal" role="alert">{{ error() }}</p>
+        }
+        @if (!error() && cotizacion(); as c) {
+          <table [class.actualizando]="cargando()">
+            <tbody>
+              <tr>
+                <th scope="row">{{ c.precioNoche | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} × {{ c.noches }} {{ c.noches === 1 ? 'noche' : 'noches' }}</th>
+                <td>{{ c.subtotal | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</td>
+              </tr>
+              <tr><th scope="row">Tarifa de limpieza</th><td>{{ c.tarifaLimpieza | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</td></tr>
+              <tr><th scope="row">Tarifa de servicio ({{ c.porcentajeServicio }} %)</th><td>{{ c.tarifaServicio | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</td></tr>
+              @for (a of c.adicionales; track a.concepto) {
+                <tr><th scope="row">{{ a.concepto }}</th><td>{{ a.monto | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</td></tr>
+              }
+              @for (d of c.descuentos; track d.concepto) {
+                <tr class="descuento"><th scope="row">{{ d.concepto }}</th><td>− {{ d.monto | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</td></tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr><th scope="row">Total</th><td>{{ c.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</td></tr>
+            </tfoot>
+          </table>
+          <p class="nota">Las tarifas se calculan con la configuración vigente. Revisa el total antes de confirmar.</p>
+        } @else if (!error()) {
+          <p>Calculando cotización…</p>
+        }
+      </aside>
+    </div>
+  }
+</main>
