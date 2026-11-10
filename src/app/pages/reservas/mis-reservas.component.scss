@@ -1,0 +1,36 @@
+.contenido { width: min(1000px, 100%); margin: 0 auto; padding: 32px 24px 56px; }
+h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
+.subtitulo { margin: 4px 0 20px; color: #55574a; }
+.error { color: var(--rojo); }
+
+.pestanas {
+  display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+  button {
+    font: inherit; font-weight: 600; padding: 8px 16px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--gris-borde); background: #fff; color: var(--texto);
+    .cuenta { margin-left: 4px; opacity: .7; }
+    &.on { background: var(--verde); border-color: var(--verde); color: #fff; .cuenta { opacity: 1; } }
+  }
+}
+
+.reserva {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  background: #fff; border: 1px solid var(--gris-borde); border-radius: 14px; padding: 16px 20px; margin-bottom: 12px;
+  h2 { margin: 0; font-size: 1.05rem; color: var(--verde); }
+  p { margin: 4px 0 0; font-size: .88rem; color: #55574a; }
+  .codigo { font-size: .8rem; }
+}
+.datos { flex: 1; min-width: 0; }
+
+.estado {
+  padding: 5px 12px; border-radius: 999px; font-size: .8rem; font-weight: 700; white-space: nowrap;
+  &[data-estado='CONFIRMADA'] { background: var(--verde-suave); color: var(--verde); }
+  &[data-estado='COMPLETADA'] { background: #e3e8f0; color: #3b4a63; }
+  &[data-estado='CANCELADA'] { background: #eee; color: #666; }
+  &[data-estado='REVISION_MANUAL'] { background: #fff1c2; color: #7a5a00; }
+}
+
+.vacio {
+  text-align: center; padding: 48px 16px; border: 1px dashed var(--gris-borde); border-radius: 16px; background: #fff;
+  a { color: var(--verde); font-weight: 700; }
+}

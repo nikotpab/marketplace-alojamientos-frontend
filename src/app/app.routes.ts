@@ -12,6 +12,8 @@ import { RevisionComponent } from './pages/admin/revision/revision.component';
 import { TodasPublicacionesComponent } from './pages/admin/publicaciones/todas-publicaciones.component';
 import { DisponibilidadComponent } from './pages/anfitrion/disponibilidad/disponibilidad.component';
 import { CotizacionComponent } from './pages/cotizacion/cotizacion.component';
+import { MisReservasComponent } from './pages/reservas/mis-reservas.component';
+import { ReservasAnfitrionComponent } from './pages/anfitrion/reservas/reservas-anfitrion.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
@@ -29,6 +31,18 @@ export const routes: Routes = [
       { path: 'buscar', component: BusquedaComponent },
       { path: 'alojamientos/:id', component: DetalleComponent },
 
+      {
+        path: 'reservas',
+        component: MisReservasComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['HUESPED'] },
+      },
+      {
+        path: 'anfitrion/reservas',
+        component: ReservasAnfitrionComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ANFITRION'] },
+      },
       {
         // Cotizar y reservar requiere sesión de huésped
         path: 'alojamientos/:id/cotizar',

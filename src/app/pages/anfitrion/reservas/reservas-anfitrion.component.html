@@ -1,0 +1,38 @@
+<main class="contenido">
+  <h1>Reservas</h1>
+  <p class="subtitulo">Reservas de tus alojamientos.</p>
+
+  <div class="filtros" role="group" aria-label="Filtrar por estado">
+    @for (f of filtros; track f.valor) {
+      <button type="button" class="chip" [class.on]="filtro() === f.valor" [attr.aria-pressed]="filtro() === f.valor"
+              (click)="filtro.set(f.valor)">{{ f.texto }}</button>
+    }
+  </div>
+
+  @if (cargando()) {
+    <p>Cargando reservas…</p>
+  } @else if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  } @else {
+    @for (r of visibles(); track r.id) {
+      <article class="reserva">
+        <div class="datos">
+          <h2>{{ r.alojamiento?.titulo ?? 'Alojamiento' }}</h2>
+          <p>{{ r.llegada | date: 'd MMM' }} → {{ r.salida | date: 'd MMM y' }} · {{ r.huespedes }}
+            {{ r.huespedes === 1 ? 'huésped' : 'huéspedes' }} · {{ r.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
+          <p class="huesped">
+            <strong>{{ r.huesped?.nombre ?? 'Huésped' }}</strong>
+            @if (verContacto(r)) {
+              · {{ r.huesped?.telefono }} · {{ r.huesped?.correo }}
+            } @else {
+              · <span class="oculto">Contacto visible solo en reservas confirmadas</span>
+            }
+          </p>
+        </div>
+        <span class="estado" [attr.data-estado]="r.estado">{{ estados[r.estado] }}</span>
+      </article>
+    } @empty {
+      <p class="vacio">No hay reservas con este estado.</p>
+    }
+  }
+</main>
