@@ -1,6 +1,7 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService, RolUsuario } from '../core/auth.service';
+import { NotificacionesService } from '../core/notificaciones.service';
 
 interface Enlace {
   texto: string;
@@ -46,6 +47,14 @@ const ETIQUETA_ROL: Record<RolUsuario, string> = {
 export class LayoutComponent {
   auth = inject(AuthService);
   private router = inject(Router);
+  notif = inject(NotificacionesService);
+
+  constructor() {
+    // Carga las notificaciones al iniciar sesión y las refresca cada minuto (indicador de no leídas)
+    effect(() => (this.auth.usuario() ? this.notif.cargar() : this.notif.limpiar()));
+    const t = setInterval(() => this.auth.usuario() && this.notif.cargar(), 60_000);
+    inject(DestroyRef).onDestroy(() => clearInterval(t));
+  }
 
   enlaces = computed(() => {
     const u = this.auth.usuario();

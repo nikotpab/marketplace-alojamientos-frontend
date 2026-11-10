@@ -14,6 +14,7 @@ import { DisponibilidadComponent } from './pages/anfitrion/disponibilidad/dispon
 import { CotizacionComponent } from './pages/cotizacion/cotizacion.component';
 import { MisReservasComponent } from './pages/reservas/mis-reservas.component';
 import { ReservasAnfitrionComponent } from './pages/anfitrion/reservas/reservas-anfitrion.component';
+import { NotificacionesComponent } from './pages/notificaciones/notificaciones.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
@@ -51,6 +52,12 @@ export const routes: Routes = [
         data: { roles: ['HUESPED'] },
       },
 
+      {
+        path: 'notificaciones',
+        component: NotificacionesComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['HUESPED', 'ANFITRION', 'ADMINISTRADOR'] },
+      },
       {
         path: 'perfil',
         component: PerfilComponent,
