@@ -75,9 +75,11 @@
           <p class="nota">Las tarifas se calculan con la configuración vigente. Revisa el total antes de confirmar.</p>
 
           @if (errorReserva()) { <p class="aviso mal" role="alert">{{ errorReserva() }}</p> }
-          <button type="button" class="confirmar" [disabled]="confirmando() || cargando()" (click)="confirmar()">
-            {{ confirmando() ? 'Confirmando…' : 'Confirmar reserva' }}
-          </button>
+          @if (!pagando()) {
+            <button type="button" class="confirmar" [disabled]="cargando()" (click)="pagando.set(true)">Continuar al pago</button>
+          } @else {
+            <app-pago-form [total]="c.total" [procesando]="confirmando()" (pagar)="confirmar($event)" (cancelar)="pagando.set(false)" />
+          }
         } @else if (!error()) {
           <p>Calculando cotización…</p>
         }
