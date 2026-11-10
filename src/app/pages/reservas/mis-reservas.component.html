@@ -1,0 +1,36 @@
+<main class="contenido">
+  <h1>Mis reservas</h1>
+  <p class="subtitulo">Consulta tus estadías próximas, completadas y canceladas.</p>
+
+  <div class="pestanas" role="tablist">
+    @for (p of pestanas; track p.valor) {
+      <button type="button" role="tab" [class.on]="grupo() === p.valor" [attr.aria-selected]="grupo() === p.valor"
+              (click)="grupo.set(p.valor)">
+        {{ p.texto }} <span class="cuenta">{{ grupos()[p.valor].length }}</span>
+      </button>
+    }
+  </div>
+
+  @if (cargando()) {
+    <p>Cargando tus reservas…</p>
+  } @else if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  } @else {
+    @for (r of grupos()[grupo()]; track r.id) {
+      <article class="reserva">
+        <div class="datos">
+          <h2>{{ r.alojamiento?.titulo ?? 'Alojamiento' }}</h2>
+          <p>{{ r.alojamiento?.ciudad }} · {{ r.llegada | date: 'd MMM' }} → {{ r.salida | date: 'd MMM y' }} ·
+            {{ r.huespedes }} {{ r.huespedes === 1 ? 'huésped' : 'huéspedes' }}</p>
+          <p class="codigo">Código {{ r.codigo }} · {{ r.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
+        </div>
+        <span class="estado" [attr.data-estado]="r.estado">{{ estados[r.estado] }}</span>
+      </article>
+    } @empty {
+      <section class="vacio">
+        <p>No tienes reservas en esta sección.</p>
+        <a routerLink="/buscar">Explorar alojamientos</a>
+      </section>
+    }
+  }
+</main>
