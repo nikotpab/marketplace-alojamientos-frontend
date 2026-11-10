@@ -1,0 +1,45 @@
+<form class="pago" [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+  <h3>Pago con tarjeta</h3>
+  <p class="modo">Pago simulado con Stripe (modo de prueba). No se almacenan datos de tarjeta.</p>
+
+  <label>
+    Nombre en la tarjeta
+    <input type="text" formControlName="nombre" autocomplete="cc-name" [attr.aria-invalid]="invalido('nombre')" />
+    @if (invalido('nombre')) { <span class="err" role="alert">Ingresa el nombre del titular.</span> }
+  </label>
+
+  <label>
+    Número de tarjeta
+    <input type="text" inputmode="numeric" formControlName="numero" autocomplete="cc-number" placeholder="4242 4242 4242 4242"
+           (input)="formatearNumero($event)" [attr.aria-invalid]="invalido('numero')" />
+    @if (invalido('numero')) {
+      <span class="err" role="alert">
+        {{ form.controls.numero.errors?.['noPrueba'] ? 'Usa una tarjeta de prueba de Stripe.' : 'Ingresa los 16 dígitos de la tarjeta.' }}
+      </span>
+    }
+  </label>
+
+  <div class="fila">
+    <label>
+      Vence (MM/AA)
+      <input type="text" inputmode="numeric" formControlName="vence" autocomplete="cc-exp" placeholder="12/30"
+             (input)="formatearVence($event)" [attr.aria-invalid]="invalido('vence')" />
+      @if (invalido('vence')) {
+        <span class="err" role="alert">{{ form.controls.vence.errors?.['vencida'] ? 'Tarjeta vencida.' : 'Usa el formato MM/AA.' }}</span>
+      }
+    </label>
+    <label>
+      CVC
+      <input type="text" inputmode="numeric" formControlName="cvc" autocomplete="cc-csc" placeholder="123"
+             (input)="soloCvc($event)" [attr.aria-invalid]="invalido('cvc')" />
+      @if (invalido('cvc')) { <span class="err" role="alert">3 dígitos.</span> }
+    </label>
+  </div>
+
+  <p class="ayuda">Prueba: <code>4242 4242 4242 4242</code> aprobada · <code>4000 0000 0000 0002</code> rechazada · <code>4000 0000 0000 0119</code> error de la pasarela.</p>
+
+  <button type="submit" class="pagar" [disabled]="procesando()">
+    {{ procesando() ? 'Procesando pago…' : 'Pagar ' + (total() | currency: 'COP' : 'symbol-narrow' : '1.0-0') }}
+  </button>
+  <button type="button" class="cancelar" [disabled]="procesando()" (click)="cancelar.emit()">Volver al desglose</button>
+</form>
