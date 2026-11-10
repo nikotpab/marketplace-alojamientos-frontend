@@ -59,9 +59,13 @@ export class ReservasService {
    * `claveIdempotencia` identifica el intento de confirmación: si la misma solicitud llega
    * repetida (doble clic, reintento de red), el backend devuelve el resultado original sin
    * crear otra reserva ni otro cobro, y reenvía la misma clave a Stripe.
+   *
+   * `metodoPagoId` es el identificador (token) del método de pago de prueba de Stripe:
+   * nunca se envían ni se guardan números de tarjeta. La reserva solo se crea si el pago
+   * es aprobado; 402 = pago rechazado, 503 = pasarela no disponible (circuit breaker).
    */
-  confirmar(s: SolicitudReserva, claveIdempotencia: string): Observable<Reserva> {
-    return this.http.post<Reserva>('/api/reservas', s, {
+  confirmar(s: SolicitudReserva, claveIdempotencia: string, metodoPagoId: string): Observable<Reserva> {
+    return this.http.post<Reserva>('/api/reservas', { ...s, metodoPagoId }, {
       headers: new HttpHeaders({ 'Idempotency-Key': claveIdempotencia }),
     });
   }
