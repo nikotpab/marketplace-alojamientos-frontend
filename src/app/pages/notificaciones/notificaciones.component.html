@@ -1,0 +1,35 @@
+<main class="contenido">
+  <header class="cabecera">
+    <div>
+      <h1>Notificaciones</h1>
+      <p class="sub">
+        @if (api.noLeidas() > 0) { Tienes {{ api.noLeidas() }} sin leer. } @else { Estás al día. }
+      </p>
+    </div>
+    <button type="button" class="todas" [disabled]="api.noLeidas() === 0" (click)="api.marcarTodas()">Marcar todas como leídas</button>
+  </header>
+
+  @if (api.error() && api.notificaciones().length === 0) {
+    <p class="aviso mal" role="alert">No pudimos cargar tus notificaciones. El resto de la plataforma sigue funcionando.
+      <button type="button" class="reintentar" (click)="api.cargar()">Reintentar</button></p>
+  } @else if (api.cargando() && api.notificaciones().length === 0) {
+    <p>Cargando…</p>
+  } @else if (api.notificaciones().length === 0) {
+    <p class="vacio">Aún no tienes notificaciones.</p>
+  } @else {
+    <ul class="lista">
+      @for (n of api.notificaciones(); track n.id) {
+        <li [class.nueva]="!n.leida">
+          <div class="texto">
+            <span class="chip">{{ tipoTexto[n.tipo] }}</span>
+            <p>{{ n.mensaje }}</p>
+            <time [attr.datetime]="n.fecha">{{ n.fecha | date: "d MMM y, h:mm a" }}</time>
+          </div>
+          @if (!n.leida) {
+            <button type="button" class="leer" (click)="api.marcarLeida(n.id)">Marcar como leída</button>
+          }
+        </li>
+      }
+    </ul>
+  }
+</main>
