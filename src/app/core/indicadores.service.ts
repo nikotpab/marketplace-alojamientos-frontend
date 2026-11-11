@@ -3,13 +3,18 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, timeout } from 'rxjs';
 import { EstadoReserva } from './reservas.service';
 
+/** Indicadores del backend (GET /admin/dashboard). */
 export interface Indicadores {
-  usuarios: { total: number; huespedes: number; anfitriones: number };
+  desde: string;
+  hasta: string;
+  /** Total actual de usuarios. */
+  usuarios: number;
   publicacionesActivas: number;
   reservasPorEstado: Partial<Record<EstadoReserva, number>>;
-  /** Suma de reservas confirmadas y completadas del periodo, en COP. */
+  /** Suma de las tarifas de servicio de reservas confirmadas y completadas del periodo (lo que gana la plataforma). */
   ingresosEstimados: number;
-  ciudadesDemanda: { ciudad: string; reservas: number }[];
+  /** Ciudades ordenadas de mayor a menor demanda. */
+  ciudadesConMayorDemanda: string[];
 }
 
 /** Más de 10 s: se corta la espera para no afectar el resto de la plataforma (RNF-10). */
@@ -21,7 +26,7 @@ export class IndicadoresService {
 
   consultar(desde: string, hasta: string): Observable<Indicadores> {
     return this.http
-      .get<Indicadores>('/api/admin/indicadores', { params: { desde, hasta } })
+      .get<Indicadores>('/api/admin/dashboard', { params: { desde, hasta } })
       .pipe(timeout(PLAZO_DASHBOARD_MS));
   }
 }

@@ -24,12 +24,11 @@
   @if (datos(); as d) {
     <div [class.actualizando]="cargando()">
       <section class="kpis" aria-label="Indicadores principales">
-        <article><span>Usuarios</span><strong>{{ d.usuarios.total | number }}</strong>
-          <small>{{ d.usuarios.huespedes | number }} huéspedes · {{ d.usuarios.anfitriones | number }} anfitriones</small></article>
+        <article><span>Usuarios</span><strong>{{ d.usuarios | number }}</strong><small>total actual</small></article>
         <article><span>Publicaciones activas</span><strong>{{ d.publicacionesActivas | number }}</strong></article>
         <article><span>Reservas</span><strong>{{ totalReservas() | number }}</strong><small>en el periodo</small></article>
         <article><span>Ingresos estimados</span><strong>{{ d.ingresosEstimados | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong>
-          <small>confirmadas y completadas</small></article>
+          <small>tarifas de servicio de reservas confirmadas y completadas</small></article>
       </section>
 
       <div class="graficos">
@@ -47,13 +46,9 @@
         </section>
         <section class="tarjeta">
           <h2>Ciudades con mayor demanda</h2>
-          <ol class="barras">
-            @for (c of d.ciudadesDemanda; track c.ciudad) {
-              <li>
-                <span class="etiqueta">{{ c.ciudad }}</span>
-                <span class="barra"><span [style.width.%]="porcentaje(c.reservas, maxCiudad())"></span></span>
-                <span class="valor">{{ c.reservas | number }}</span>
-              </li>
+          <ol class="ranking">
+            @for (c of d.ciudadesConMayorDemanda; track c; let i = $index) {
+              <li><span class="puesto">{{ i + 1 }}</span>{{ c }}</li>
             } @empty {
               <li class="vacio">Sin reservas en el periodo.</li>
             }
