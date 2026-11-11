@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -15,7 +15,7 @@ const hoyISO = () => new Date().toISOString().slice(0, 10);
 @Component({
   selector: 'app-reportes',
   standalone: true,
-  imports: [FormsModule, DatePipe, DecimalPipe],
+  imports: [FormsModule, DatePipe],
   templateUrl: './reportes.component.html',
   styleUrl: './reportes.component.scss',
 })
@@ -64,12 +64,16 @@ export class ReportesComponent {
       error: (e) => {
         this.generando.set(false);
         this.error.set(
-          e.status === 413 || e.status === 422
-            ? 'El reporte supera los 10.000 registros. Acota el periodo o filtra por ciudad.'
+          e.status === 400
+            ? 'Revisa el periodo: la fecha final no puede ser anterior a la inicial.'
             : 'No pudimos generar el reporte. Intenta de nuevo.',
         );
       },
     });
+  }
+
+  textoTipo(t: string) {
+    return this.tipoTexto[t as TipoReporte] ?? t;
   }
 
   private nombreArchivo(cabecera: string | null, s: SolicitudReporte) {
