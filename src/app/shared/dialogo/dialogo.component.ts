@@ -38,6 +38,6 @@ export class DialogoComponent {
 
   constructor() {
     const el = inject<ElementRef<HTMLElement>>(ElementRef);
-    afterNextRender(() => el.nativeElement.querySelector('.dialogo')?.focus());
+    afterNextRender(() => el.nativeElement.querySelector<HTMLElement>('.dialogo')?.focus());
   }
 }
