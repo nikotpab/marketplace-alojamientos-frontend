@@ -1,0 +1,44 @@
+<app-dialogo titulo="Cancelar reserva" [bloqueado]="procesando()" (cerrar)="cerrar.emit()">
+  <p>
+    <strong>{{ reserva().alojamiento?.titulo ?? 'Alojamiento' }}</strong> ·
+    {{ reserva().llegada | date: 'd MMM' }} → {{ reserva().salida | date: 'd MMM y' }} · Código {{ reserva().codigo }}
+  </p>
+
+  @if (paso() === 'motivo') {
+    <label class="campo-dialogo">
+      Motivo de la cancelación
+      <textarea rows="3" maxlength="500" [(ngModel)]="motivo" [attr.aria-invalid]="intentoEnviar() && !motivoValido"
+                placeholder="Cuéntanos por qué cancelas"></textarea>
+      @if (intentoEnviar() && !motivoValido) {
+        <small class="texto-error" role="alert">El motivo es obligatorio (mínimo 5 caracteres).</small>
+      }
+    </label>
+    @if (error()) { <p class="texto-error" role="alert">{{ error() }}</p> }
+    <div class="acciones-dialogo">
+      <button type="button" class="btn-secundario" [disabled]="procesando()" (click)="cerrar.emit()">Volver</button>
+      <button type="button" class="btn-primario" [disabled]="procesando()" (click)="revisar()">
+        {{ procesando() ? 'Calculando…' : 'Ver devolución' }}
+      </button>
+    </div>
+  }
+
+  @if (paso() === 'revision') {
+  @if (previa(); as p) {
+    <dl class="devolucion">
+      <div><dt>Política</dt><dd>{{ p.politica }}</dd></div>
+      <div><dt>Regla aplicada</dt><dd>{{ p.reglaAplicada }}</dd></div>
+      <div><dt>Total pagado</dt><dd>{{ p.totalPagado | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</dd></div>
+      <div><dt>No reembolsable (tarifa de servicio)</dt><dd>− {{ p.noReembolsable | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</dd></div>
+      <div class="total"><dt>Te devolvemos ({{ p.porcentajeDevolucion }} %)</dt><dd>{{ p.valorDevolucion | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</dd></div>
+    </dl>
+    <p class="nota">Si cancelas, la reserva pasa a cancelada y las fechas quedan libres. Te notificaremos a ti y al anfitrión.</p>
+    @if (error()) { <p class="texto-error" role="alert">{{ error() }}</p> }
+    <div class="acciones-dialogo">
+      <button type="button" class="btn-secundario" [disabled]="procesando()" (click)="cerrar.emit()">Mantener mi reserva</button>
+      <button type="button" class="btn-peligro" [disabled]="procesando()" (click)="confirmar()">
+        {{ procesando() ? 'Cancelando…' : 'Confirmar cancelación' }}
+      </button>
+    </div>
+  }
+  }
+</app-dialogo>

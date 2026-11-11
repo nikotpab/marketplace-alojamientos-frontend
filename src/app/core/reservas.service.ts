@@ -38,6 +38,19 @@ export interface Reserva {
   huesped?: { nombre: string; telefono: string | null; correo: string | null };
 }
 
+/** Valor que se devolvería si el huésped cancela hoy, según la política de la publicación. */
+export interface PrevisualizacionCancelacion {
+  /** Nombre de la política de cancelación (Flexible, Moderada, Estricta…). */
+  politica: string;
+  /** Regla aplicada hoy, ej. "100 % hasta 5 días antes de la llegada". */
+  reglaAplicada: string;
+  porcentajeDevolucion: number;
+  totalPagado: number;
+  /** Conceptos que no se devuelven (la tarifa de servicio no es reembolsable). */
+  noReembolsable: number;
+  valorDevolucion: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ReservasService {
   private http = inject(HttpClient);
@@ -68,5 +81,18 @@ export class ReservasService {
     return this.http.post<Reserva>('/api/reservas', { ...s, metodoPagoId }, {
       headers: new HttpHeaders({ 'Idempotency-Key': claveIdempotencia }),
     });
+  }
+
+  /** Calcula la devolución sin cancelar: el huésped la revisa antes de confirmar. */
+  previsualizarCancelacion(id: string): Observable<PrevisualizacionCancelacion> {
+    return this.http.get<PrevisualizacionCancelacion>(`/api/reservas/${encodeURIComponent(id)}/cancelacion`);
+  }
+
+  /**
+   * Cancela la reserva con motivo obligatorio. El backend aplica la política, deja la reserva
+   * CANCELADA, libera el periodo y notifica al huésped y al anfitrión.
+   */
+  cancelar(id: string, motivo: string): Observable<Reserva> {
+    return this.http.post<Reserva>(`/api/reservas/${encodeURIComponent(id)}/cancelar`, { motivo });
   }
 }
