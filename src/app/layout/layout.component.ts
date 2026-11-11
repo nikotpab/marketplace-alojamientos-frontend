@@ -34,6 +34,7 @@ const ENLACES_MAS: Partial<Record<RolUsuario, Enlace[]>> = {
   ADMINISTRADOR: [
     { texto: 'Auditoría', ruta: '/admin/auditoria' },
     { texto: 'Configuración', ruta: '/admin/configuracion' },
+    { texto: 'Tipos de alojamiento', ruta: '/admin/tipos-alojamiento' },
     { texto: 'Mi perfil', ruta: '/perfil' },
   ],
 };

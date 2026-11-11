@@ -19,6 +19,7 @@ import { UsuariosComponent } from './pages/admin/usuarios/usuarios.component';
 import { ModeracionComponent } from './pages/admin/moderacion/moderacion.component';
 import { AuditoriaComponent } from './pages/admin/auditoria/auditoria.component';
 import { ConfiguracionComponent } from './pages/admin/configuracion/configuracion.component';
+import { TiposComponent } from './pages/admin/tipos/tipos.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
@@ -133,6 +134,12 @@ export const routes: Routes = [
       {
         path: 'admin/auditoria',
         component: AuditoriaComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] },
+      },
+      {
+        path: 'admin/tipos-alojamiento',
+        component: TiposComponent,
         canActivate: [rolGuard],
         data: { roles: ['ADMINISTRADOR'] },
       },

@@ -1,7 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TIPOS } from '../../../core/alojamientos.service';
+import { TiposAlojamientoService } from '../../../core/tipos-alojamiento.service';
 import { Publicacion, PublicacionesService } from '../../../core/publicaciones.service';
 
 const MOTIVO_MINIMO = 10;
@@ -14,6 +14,7 @@ const MOTIVO_MINIMO = 10;
   styleUrl: './revision.component.scss',
 })
 export class RevisionComponent {
+  private tiposApi = inject(TiposAlojamientoService);
   private api = inject(PublicacionesService);
 
   minimo = MOTIVO_MINIMO;
@@ -29,7 +30,7 @@ export class RevisionComponent {
   procesando = signal<string | null>(null);
 
   nombreTipo(codigo: string) {
-    return TIPOS.find((t) => t.valor === codigo)?.texto ?? codigo;
+    return this.tiposApi.nombre(codigo);
   }
 
   constructor() {
