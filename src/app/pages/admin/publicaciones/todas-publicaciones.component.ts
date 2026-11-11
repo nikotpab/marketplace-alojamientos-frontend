@@ -75,31 +75,18 @@ export class TodasPublicacionesComponent {
     this.procesando.set(true);
     this.errorAccion.set('');
     this.api.bloquear(p.id, motivo).subscribe({
-      next: (r) => {
-        this.reemplazar(r.publicacion);
+      next: () => {
+        this.reemplazar({ ...p, estado: 'BLOQUEADA', motivoBloqueo: motivo });
         this.procesando.set(false);
         this.aBloquear.set(null);
         this.aviso.set(
-          `"${p.titulo}" quedó bloqueada y fuera de las búsquedas.` +
-            (r.reservasEnRevision ? ` ${r.reservasEnRevision} reserva(s) futuras pasaron a revisión manual.` : '') +
-            ' Se notificó al anfitrión.',
+          `"${p.titulo}" quedó bloqueada y fuera de las búsquedas. Sus reservas futuras pasaron a revisión y se notificó al anfitrión.`,
         );
       },
       error: () => {
         this.procesando.set(false);
         this.errorAccion.set('No pudimos bloquear la publicación. Intenta de nuevo.');
       },
-    });
-  }
-
-  reactivar(p: Publicacion) {
-    this.aviso.set('');
-    this.api.reactivarBloqueada(p.id).subscribe({
-      next: (r) => {
-        this.reemplazar(r);
-        this.aviso.set(`"${p.titulo}" fue reactivada.`);
-      },
-      error: () => this.aviso.set('No pudimos reactivar la publicación. Intenta de nuevo.'),
     });
   }
 

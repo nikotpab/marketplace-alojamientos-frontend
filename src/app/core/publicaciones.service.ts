@@ -38,12 +38,6 @@ export interface Publicacion extends DatosPublicacion {
   anfitrion?: string;
 }
 
-export interface ResultadoBloqueo {
-  publicacion: Publicacion;
-  /** Reservas futuras que se conservan y pasan a revisión manual. */
-  reservasEnRevision: number;
-}
-
 export interface TipoConfigurado {
   codigo: string;
   nombre: string;
@@ -114,16 +108,12 @@ export class PublicacionesService {
   }
 
   /**
-   * Bloquea por información engañosa: pasa a BLOQUEADA, sale de las búsquedas, sus reservas
-   * futuras quedan en revisión manual, se registra en auditoría y se notifica al anfitrión.
+   * Bloquea por información engañosa (204): pasa a BLOQUEADA, sale de las búsquedas, sus reservas
+   * futuras quedan EN_REVISION, se registra en auditoría y se notifica al anfitrión.
+   * El backend todavía no permite reactivar una publicación bloqueada (pendiente 10 de su README).
    */
-  bloquear(id: string, motivo: string): Observable<ResultadoBloqueo> {
-    return this.http.post<ResultadoBloqueo>(`/api/admin/publicaciones/${encodeURIComponent(id)}/bloquear`, { motivo });
-  }
-
-  /** Solo un administrador reactiva una publicación BLOQUEADA. */
-  reactivarBloqueada(id: string): Observable<Publicacion> {
-    return this.http.post<Publicacion>(`/api/admin/publicaciones/${encodeURIComponent(id)}/reactivar`, {});
+  bloquear(id: string, motivo: string): Observable<void> {
+    return this.http.post<void>(`/api/admin/publicaciones/${encodeURIComponent(id)}/bloqueo`, { motivo });
   }
 
   /** Solo los tipos de alojamiento activos en la configuración. */
