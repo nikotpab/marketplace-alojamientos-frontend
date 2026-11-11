@@ -18,6 +18,7 @@ import { NotificacionesComponent } from './pages/notificaciones/notificaciones.c
 import { UsuariosComponent } from './pages/admin/usuarios/usuarios.component';
 import { ModeracionComponent } from './pages/admin/moderacion/moderacion.component';
 import { AuditoriaComponent } from './pages/admin/auditoria/auditoria.component';
+import { ConfiguracionComponent } from './pages/admin/configuracion/configuracion.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
@@ -137,9 +138,9 @@ export const routes: Routes = [
       },
       {
         path: 'admin/configuracion',
-        component: PanelComponent,
+        component: ConfiguracionComponent,
         canActivate: [rolGuard],
-        data: { roles: ['ADMINISTRADOR'], titulo: 'Configuración' },
+        data: { roles: ['ADMINISTRADOR'] },
       },
     ],
   },
