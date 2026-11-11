@@ -1,0 +1,26 @@
+h2 { margin: 0 0 12px; font-size: 1.2rem; color: var(--verde); }
+.estado { color: #55574a; }
+.enlace { background: none; border: 0; padding: 0; font: inherit; font-weight: 700; color: var(--verde); text-decoration: underline; cursor: pointer; }
+
+.resumen { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; margin-bottom: 16px; }
+.promedio {
+  display: grid; justify-items: center; padding: 12px 18px; border-radius: 14px; background: var(--verde-suave);
+  strong { font-size: 1.8rem; color: var(--verde); }
+  span { font-size: .8rem; color: #55574a; }
+}
+.distribucion {
+  list-style: none; margin: 0; padding: 0; display: grid; gap: 4px;
+  li { display: grid; grid-template-columns: 34px 1fr 28px; gap: 8px; align-items: center; font-size: .8rem; }
+  .barra { height: 8px; border-radius: 999px; background: #eee9d6; overflow: hidden; span { display: block; height: 100%; background: #e3a008; } }
+  .cuenta { text-align: right; color: #55574a; }
+}
+
+.resena {
+  padding: 12px 0; border-top: 1px solid var(--gris-borde);
+  .cab { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; margin: 0; }
+  .nota { color: #e3a008; letter-spacing: 1px; }
+  small { color: #55574a; }
+  .texto { margin: 6px 0 0; white-space: pre-line; overflow-wrap: anywhere; }
+}
+.mas { margin-top: 12px; }
+@media (max-width: 560px) { .resumen { grid-template-columns: 1fr; } }
