@@ -32,6 +32,11 @@
           @if (cancelable(r)) {
             <button type="button" class="accion" (click)="aviso.set(''); aCancelar.set(r)">Cancelar reserva</button>
           }
+          @if (resenable(r)) {
+            <button type="button" class="accion positiva" (click)="aviso.set(''); aResenar.set(r)">Calificar estadía</button>
+          } @else if (r.estado === 'COMPLETADA') {
+            <small class="resenada">Ya la reseñaste</small>
+          }
         </div>
       </article>
     } @empty {
@@ -45,4 +50,8 @@
 
 @if (aCancelar(); as r) {
   <app-cancelar-reserva [reserva]="r" (cerrar)="aCancelar.set(null)" (cancelada)="alCancelar($event)" />
+}
+
+@if (aResenar(); as r) {
+  <app-resena-form [reserva]="r" (cerrar)="aResenar.set(null)" (publicada)="alResenar(r)" />
 }
