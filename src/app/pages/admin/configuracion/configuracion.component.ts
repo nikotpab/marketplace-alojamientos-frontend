@@ -1,16 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
-import {
-  CAMPOS_TARIFA,
-  CambioConfiguracion,
-  ConfiguracionService,
-  ConfiguracionTarifas,
-  Tarifas,
-} from '../../../core/configuracion.service';
+import { CAMPOS_TARIFA, CambioTarifas, ConfiguracionService, Tarifas } from '../../../core/configuracion.service';
 import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
 
-const rango = (max: number): ValidatorFn[] => [Validators.required, Validators.min(0), Validators.max(max)];
+const rango = (min: number, max: number): ValidatorFn[] => [Validators.required, Validators.min(min), Validators.max(max)];
 
 interface Diferencia {
   texto: string;
@@ -31,19 +25,21 @@ export class ConfiguracionComponent {
   private fb = inject(FormBuilder);
 
   campos = CAMPOS_TARIFA;
-  actual = signal<ConfiguracionTarifas | null>(null);
-  historial = signal<CambioConfiguracion[]>([]);
+  actual = signal<Tarifas | null>(null);
+  historial = signal<CambioTarifas[]>([]);
+  /** Quién modificó por última vez y cuándo: el cambio más reciente de la auditoría. */
+  ultimo = computed(() => this.historial()[0] ?? null);
   error = signal('');
   aviso = signal('');
   guardando = signal(false);
   diferencias = signal<Diferencia[] | null>(null);
 
   form = this.fb.nonNullable.group({
-    tarifaServicio: [0, rango(100)],
-    tarifaLimpieza: [0, rango(100)],
-    descuentoPromocional: [0, rango(100)],
-    descuentoEstanciaLarga: [0, rango(100)],
-    nochesEstanciaLarga: [0, rango(365)],
+    porcentajeServicio: [0, rango(0, 100)],
+    porcentajeLimpieza: [0, rango(0, 100)],
+    porcentajeDescuento: [0, rango(0, 100)],
+    porcentajeDescuentoEstanciaLarga: [0, rango(0, 100)],
+    nochesEstanciaLarga: [1, rango(1, 365)],
   });
 
   constructor() {
@@ -52,21 +48,23 @@ export class ConfiguracionComponent {
 
   cargar() {
     this.api.tarifas().subscribe({
-      next: (c) => {
-        this.actual.set(c);
-        this.form.reset(this.soloTarifas(c));
+      next: (t) => {
+        // LIMPIEZA puede llegar en null hasta que se configure (pendiente 5 del backend)
+        const limpio = { ...t, porcentajeLimpieza: t.porcentajeLimpieza ?? 0 };
+        this.actual.set(limpio);
+        this.form.reset(limpio);
       },
       error: () => this.error.set('No pudimos cargar la configuración. Intenta de nuevo.'),
     });
+    this.cargarHistorial();
+  }
+
+  private cargarHistorial() {
     this.api.historial().subscribe({ next: (h) => this.historial.set(h), error: () => this.historial.set([]) });
   }
 
-  textoCampo(campo: keyof Tarifas) {
-    return CAMPOS_TARIFA.find((c) => c.campo === campo)?.texto ?? campo;
-  }
-
-  unidad(campo: keyof Tarifas) {
-    return CAMPOS_TARIFA.find((c) => c.campo === campo)?.unidad ?? '';
+  textoCambios(c: Record<string, unknown>) {
+    return Object.entries(c).map(([k, v]) => `${k}: ${v}`);
   }
 
   invalido(campo: keyof Tarifas) {
@@ -80,7 +78,7 @@ export class ConfiguracionComponent {
     const a = this.actual();
     if (this.form.invalid || !a) return;
     const v: Tarifas = this.form.getRawValue();
-    const d = CAMPOS_TARIFA.filter((c) => Number(v[c.campo]) !== a[c.campo]).map((c) => ({
+    const d = CAMPOS_TARIFA.filter((c) => Number(v[c.campo]) !== Number(a[c.campo])).map((c) => ({
       texto: c.texto,
       anterior: a[c.campo],
       nuevo: Number(v[c.campo]),
@@ -97,15 +95,21 @@ export class ConfiguracionComponent {
   guardar() {
     this.guardando.set(true);
     const v: Tarifas = this.form.getRawValue();
-    const t = Object.fromEntries(CAMPOS_TARIFA.map((c) => [c.campo, Number(v[c.campo])])) as unknown as Tarifas;
+    const t: Tarifas = {
+      porcentajeServicio: Number(v.porcentajeServicio),
+      porcentajeLimpieza: Number(v.porcentajeLimpieza),
+      porcentajeDescuento: Number(v.porcentajeDescuento),
+      porcentajeDescuentoEstanciaLarga: Number(v.porcentajeDescuentoEstanciaLarga),
+      nochesEstanciaLarga: Number(v.nochesEstanciaLarga),
+    };
     this.api.actualizarTarifas(t).subscribe({
-      next: (c) => {
+      next: () => {
         this.guardando.set(false);
         this.diferencias.set(null);
-        this.actual.set(c);
-        this.form.reset(this.soloTarifas(c));
-        this.aviso.set('Configuración guardada. Se aplicará a las cotizaciones nuevas en máximo 1 minuto.');
-        this.api.historial().subscribe({ next: (h) => this.historial.set(h) });
+        this.actual.set(t);
+        this.form.reset(t);
+        this.aviso.set('Configuración guardada. Se aplica a las cotizaciones nuevas.');
+        this.cargarHistorial();
       },
       error: () => {
         this.guardando.set(false);
@@ -117,11 +121,7 @@ export class ConfiguracionComponent {
 
   descartar() {
     const a = this.actual();
-    if (a) this.form.reset(this.soloTarifas(a));
+    if (a) this.form.reset(a);
     this.aviso.set('');
-  }
-
-  private soloTarifas(c: ConfiguracionTarifas): Tarifas {
-    return Object.fromEntries(CAMPOS_TARIFA.map((x) => [x.campo, c[x.campo]])) as unknown as Tarifas;
   }
 }

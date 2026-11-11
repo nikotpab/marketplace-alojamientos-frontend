@@ -1,55 +1,59 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { AuditoriaService } from './auditoria.service';
 
-/** Parámetros de la cotización (en porcentaje), editables sin redesplegar. */
+/** ConfiguracionTarifas del backend: porcentajes de la cotización, editables sin redesplegar. */
 export interface Tarifas {
-  tarifaServicio: number;
-  tarifaLimpieza: number;
-  descuentoPromocional: number;
-  descuentoEstanciaLarga: number;
+  porcentajeServicio: number;
+  porcentajeLimpieza: number;
+  porcentajeDescuento: number;
+  porcentajeDescuentoEstanciaLarga: number;
   /** Noches mínimas para aplicar el descuento por estancia larga. */
   nochesEstanciaLarga: number;
 }
 
-export interface ConfiguracionTarifas extends Tarifas {
-  modificadoPor: string | null;
-  modificadoEn: string | null;
-}
-
-export interface CambioConfiguracion {
+/** Un cambio de tarifas leído de la auditoría (evento TarifasActualizadas). */
+export interface CambioTarifas {
   fecha: string;
   usuario: string;
-  campo: keyof Tarifas;
-  anterior: number;
-  nuevo: number;
+  /** Ej. { "Tarifa de servicio": "9 % → 10 %" } (solo lo que cambió). */
+  cambios: Record<string, unknown>;
 }
 
-export const CAMPOS_TARIFA: { campo: keyof Tarifas; texto: string; unidad: string; max: number }[] = [
-  { campo: 'tarifaServicio', texto: 'Tarifa de servicio', unidad: '%', max: 100 },
-  { campo: 'tarifaLimpieza', texto: 'Tarifa de limpieza', unidad: '%', max: 100 },
-  { campo: 'descuentoPromocional', texto: 'Descuento promocional', unidad: '%', max: 100 },
-  { campo: 'descuentoEstanciaLarga', texto: 'Descuento por estancia larga', unidad: '%', max: 100 },
-  { campo: 'nochesEstanciaLarga', texto: 'Noches para estancia larga', unidad: 'noches', max: 365 },
+export const CAMPOS_TARIFA: { campo: keyof Tarifas; texto: string; unidad: string; min: number; max: number }[] = [
+  { campo: 'porcentajeServicio', texto: 'Tarifa de servicio', unidad: '%', min: 0, max: 100 },
+  { campo: 'porcentajeLimpieza', texto: 'Tarifa de limpieza', unidad: '%', min: 0, max: 100 },
+  { campo: 'porcentajeDescuento', texto: 'Descuento promocional', unidad: '%', min: 0, max: 100 },
+  { campo: 'porcentajeDescuentoEstanciaLarga', texto: 'Descuento por estancia larga', unidad: '%', min: 0, max: 100 },
+  { campo: 'nochesEstanciaLarga', texto: 'Noches para estancia larga', unidad: 'noches', min: 1, max: 365 },
 ];
 
 @Injectable({ providedIn: 'root' })
 export class ConfiguracionService {
   private http = inject(HttpClient);
+  private auditoria = inject(AuditoriaService);
 
-  tarifas(): Observable<ConfiguracionTarifas> {
-    return this.http.get<ConfiguracionTarifas>('/api/admin/configuracion/tarifas');
+  tarifas(): Observable<Tarifas> {
+    return this.http.get<Tarifas>('/api/admin/tarifas');
   }
 
   /**
-   * Aplica a las cotizaciones nuevas (≤ 1 min); las reservas confirmadas conservan sus valores.
-   * El backend registra cada cambio en auditoría (ej. "Tarifa de servicio 9 % → 10 %").
+   * 204. Aplica a las cotizaciones nuevas de inmediato; las reservas confirmadas conservan sus valores.
+   * El backend registra el cambio en auditoría como TarifasActualizadas.
    */
-  actualizarTarifas(t: Tarifas): Observable<ConfiguracionTarifas> {
-    return this.http.put<ConfiguracionTarifas>('/api/admin/configuracion/tarifas', t);
+  actualizarTarifas(t: Tarifas): Observable<void> {
+    return this.http.put<void>('/api/admin/tarifas', t);
   }
 
-  historial(): Observable<CambioConfiguracion[]> {
-    return this.http.get<CambioConfiguracion[]>('/api/admin/configuracion/tarifas/historial');
+  /** El historial de cambios es la auditoría filtrada por TarifasActualizadas (más reciente primero). */
+  historial(): Observable<CambioTarifas[]> {
+    return this.auditoria.consultar({ accion: 'TarifasActualizadas' }).pipe(
+      map((eventos) =>
+        eventos
+          .map((e) => ({ fecha: e.fecha, usuario: e.actor ?? '—', cambios: e.detalle ?? {} }))
+          .sort((a, b) => b.fecha.localeCompare(a.fecha)),
+      ),
+    );
   }
 }
