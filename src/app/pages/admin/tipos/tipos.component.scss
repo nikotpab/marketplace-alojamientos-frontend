@@ -1,0 +1,6 @@
+.acciones { display: flex; gap: 8px; justify-content: flex-end; }
+.edicion {
+  display: flex; gap: 8px; align-items: center;
+  input { font: inherit; padding: 6px 10px; border: 1px solid var(--gris-borde); border-radius: 8px; }
+}
+code { font-size: .8rem; color: #55574a; }
