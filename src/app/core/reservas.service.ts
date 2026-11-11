@@ -10,76 +10,73 @@ export interface SolicitudReserva {
   adicionales: string[];
 }
 
-/** REVISION_MANUAL: la publicación fue bloqueada y la reserva queda pendiente de revisión. */
-export type EstadoReserva = 'CONFIRMADA' | 'COMPLETADA' | 'CANCELADA' | 'REVISION_MANUAL';
+/** EN_REVISION: la publicación fue bloqueada y la reserva queda en revisión manual. */
+export type EstadoReserva = 'CONFIRMADA' | 'COMPLETADA' | 'CANCELADA' | 'EN_REVISION';
 
 export const ESTADO_RESERVA_TEXTO: Record<EstadoReserva, string> = {
   CONFIRMADA: 'Confirmada',
   COMPLETADA: 'Completada',
   CANCELADA: 'Cancelada',
-  REVISION_MANUAL: 'En revisión manual',
+  EN_REVISION: 'En revisión manual',
 };
 
-/** PROCESADA: devolución simulada registrada. NO_PROCESADA: falló; la reserva igual queda cancelada. */
-export type EstadoDevolucion = 'PROCESADA' | 'NO_PROCESADA';
+/** Estado final de la cancelación según la devolución simulada (RF-23). */
+export type EstadoFinalCancelacion = 'DEVOLUCION_PROCESADA' | 'DEVOLUCION_NO_PROCESADA' | 'SIN_DEVOLUCION';
 
-/** Registro de la cancelación y su devolución (trazabilidad, RF-23). */
+/** Registro de la cancelación (POST /reservas/{id}/cancelacion). */
 export interface Cancelacion {
-  motivo: string;
+  id: string;
+  reservaId: string;
+  usuarioId: string;
   fecha: string;
-  /** Nombre de quien canceló. */
-  canceladaPor: string;
+  motivo: string;
   valorDevolucion: number;
-  estadoDevolucion: EstadoDevolucion;
+  estadoFinal: EstadoFinalCancelacion;
 }
 
+/** Reserva tal como la devuelve GET /reservas (ReservaVista del backend). */
 export interface Reserva {
   id: string;
   codigo: string;
   estado: EstadoReserva;
   publicacionId: string;
+  /** Título del alojamiento (no viene en la respuesta de confirmación). */
+  alojamiento?: string;
   llegada: string;
   salida: string;
   huespedes: number;
+  noches?: number;
   total: number;
-  /** Datos del alojamiento para mostrar en listados. */
-  alojamiento?: { titulo: string; ciudad: string };
   /**
-   * Datos del huésped (vista del anfitrión). El backend solo envía teléfono y correo
-   * si la reserva está CONFIRMADA con ese anfitrión; en otro caso llegan nulos.
+   * Teléfono y correo del huésped (vista del anfitrión). El backend solo los envía si la reserva
+   * está CONFIRMADA; en otro caso llega null.
    */
-  huesped?: { nombre: string; telefono: string | null; correo: string | null };
-  /** true si el huésped ya reseñó esta reserva (una sola reseña por reserva). */
-  resenada?: boolean;
-  /** Solo en reservas CANCELADAS. */
+  contactoHuesped?: { telefono: string | null; correo: string | null } | null;
+  /** Solo en el front: cancelación hecha en esta sesión (el historial no la trae). */
   cancelacion?: Cancelacion | null;
+  /** Solo en el front: reseña publicada en esta sesión. */
+  resenada?: boolean;
 }
 
-/** Valor que se devolvería si el huésped cancela hoy, según la política de la publicación. */
-export interface PrevisualizacionCancelacion {
-  /** Nombre de la política de cancelación (Flexible, Moderada, Estricta…). */
-  politica: string;
-  /** Regla aplicada hoy, ej. "100 % hasta 5 días antes de la llegada". */
-  reglaAplicada: string;
-  porcentajeDevolucion: number;
-  totalPagado: number;
-  /** Conceptos que no se devuelven (la tarifa de servicio no es reembolsable). */
-  noReembolsable: number;
+/** Devolución que se haría si el huésped cancela hoy. */
+export interface EstimacionDevolucion {
   valorDevolucion: number;
+  /** Nombre de la política de cancelación aplicada. */
+  politica: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class ReservasService {
   private http = inject(HttpClient);
 
-  /** Reservas del huésped autenticado. */
+  /** Reservas del huésped autenticado (el backend filtra por el rol del token). */
   misReservas(): Observable<Reserva[]> {
-    return this.http.get<Reserva[]>('/api/reservas/mias');
+    return this.http.get<Reserva[]>('/api/reservas');
   }
 
-  /** Reservas de los alojamientos del anfitrión autenticado. */
+  /** Reservas de los alojamientos del anfitrión autenticado (mismo endpoint, rol ANFITRION). */
   reservasAnfitrion(): Observable<Reserva[]> {
-    return this.http.get<Reserva[]>('/api/anfitrion/reservas');
+    return this.http.get<Reserva[]>('/api/reservas');
   }
 
   /**
@@ -101,15 +98,15 @@ export class ReservasService {
   }
 
   /** Calcula la devolución sin cancelar: el huésped la revisa antes de confirmar. */
-  previsualizarCancelacion(id: string): Observable<PrevisualizacionCancelacion> {
-    return this.http.get<PrevisualizacionCancelacion>(`/api/reservas/${encodeURIComponent(id)}/cancelacion`);
+  estimarDevolucion(id: string): Observable<EstimacionDevolucion> {
+    return this.http.get<EstimacionDevolucion>(`/api/reservas/${encodeURIComponent(id)}/cancelacion/estimacion`);
   }
 
   /**
-   * Cancela la reserva con motivo obligatorio. El backend aplica la política, deja la reserva
-   * CANCELADA, libera el periodo y notifica al huésped y al anfitrión.
+   * Cancela con motivo obligatorio. El backend aplica la política, deja la reserva CANCELADA,
+   * libera el periodo y notifica. 409 si la política no tiene reglas o la reserva ya no se puede cancelar.
    */
-  cancelar(id: string, motivo: string): Observable<Reserva> {
-    return this.http.post<Reserva>(`/api/reservas/${encodeURIComponent(id)}/cancelar`, { motivo });
+  cancelar(id: string, motivo: string): Observable<Cancelacion> {
+    return this.http.post<Cancelacion>(`/api/reservas/${encodeURIComponent(id)}/cancelacion`, { motivo });
   }
 }

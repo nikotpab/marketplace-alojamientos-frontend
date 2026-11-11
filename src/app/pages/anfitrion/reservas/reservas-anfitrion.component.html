@@ -17,13 +17,13 @@
     @for (r of visibles(); track r.id) {
       <article class="reserva">
         <div class="datos">
-          <h2>{{ r.alojamiento?.titulo ?? 'Alojamiento' }}</h2>
+          <h2>{{ r.alojamiento ?? 'Alojamiento' }}</h2>
           <p>{{ r.llegada | date: 'd MMM' }} → {{ r.salida | date: 'd MMM y' }} · {{ r.huespedes }}
             {{ r.huespedes === 1 ? 'huésped' : 'huéspedes' }} · {{ r.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
           <p class="huesped">
-            <strong>{{ r.huesped?.nombre ?? 'Huésped' }}</strong>
+            <strong>Huésped</strong>
             @if (verContacto(r)) {
-              · {{ r.huesped?.telefono }} · {{ r.huesped?.correo }}
+              · {{ r.contactoHuesped?.telefono }} · {{ r.contactoHuesped?.correo }}
             } @else {
               · <span class="oculto">Contacto visible solo en reservas confirmadas</span>
             }
