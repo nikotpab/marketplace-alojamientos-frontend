@@ -1,0 +1,67 @@
+<main class="admin-contenido">
+  <h1>Auditoría</h1>
+  <p class="admin-subtitulo">Quién hizo qué, cuándo y con qué resultado. El registro es de solo consulta: nadie puede modificarlo ni borrarlo.</p>
+
+  <form class="admin-filtros" (ngSubmit)="consultar(0)">
+    <label>Usuario <input type="search" name="usuario" [(ngModel)]="filtros.usuario" placeholder="Nombre o correo" /></label>
+    <label>
+      Tipo de evento
+      <select name="tipo" [(ngModel)]="filtros.tipo">
+        <option value="">Todos</option>
+        @for (t of tipos; track t[0]) { <option [value]="t[0]">{{ t[1] }}</option> }
+      </select>
+    </label>
+    <label>Desde <input type="date" name="desde" [(ngModel)]="filtros.desde" /></label>
+    <label>Hasta <input type="date" name="hasta" [(ngModel)]="filtros.hasta" [min]="filtros.desde ?? ''" /></label>
+    <button type="submit" class="btn-mini" [disabled]="cargando()">Filtrar</button>
+    <button type="button" class="btn-mini" (click)="limpiar()">Limpiar</button>
+  </form>
+  @if (rangoInvalido) { <p class="texto-error" role="alert">La fecha final no puede ser anterior a la inicial.</p> }
+
+  @if (error()) {
+    <p class="aviso-mal" role="alert">{{ error() }}</p>
+  } @else if (resultado(); as r) {
+    <p class="total">{{ r.total }} {{ r.total === 1 ? 'evento' : 'eventos' }}</p>
+    <div class="admin-scroll" [class.actualizando]="cargando()">
+      <table class="admin-tabla">
+        <thead>
+          <tr>
+            <th scope="col">Fecha y hora</th><th scope="col">Usuario</th><th scope="col">Rol</th>
+            <th scope="col">Acción</th><th scope="col">Entidad</th><th scope="col">Resultado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (e of r.contenido; track e.id) {
+            <tr>
+              <td class="fecha">{{ e.fecha | date: 'd MMM y, HH:mm:ss' }}</td>
+              <td>{{ e.usuario }}</td>
+              <td>{{ e.rol }}</td>
+              <td>
+                {{ e.accion }}
+                <small>{{ tipoTexto[e.tipo] }}@if (e.detalle) { · {{ e.detalle }} }</small>
+              </td>
+              <td>{{ e.entidad }}@if (e.entidadId) { <small>#{{ e.entidadId }}</small> }</td>
+              <td>
+                <span class="chip-estado" [class.ok]="e.resultado === 'EXITO'" [class.mal]="e.resultado === 'FALLO'">
+                  {{ e.resultado === 'EXITO' ? 'Éxito' : 'Fallo' }}
+                </span>
+                <small class="hash" [attr.title]="e.hash">Hash {{ e.hash.slice(0, 10) }}…</small>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="6" class="vacio-tabla">No hay eventos con estos filtros.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (r.totalPaginas > 1) {
+      <nav class="paginacion" aria-label="Paginación">
+        <button type="button" class="btn-mini" [disabled]="r.pagina === 0 || cargando()" (click)="consultar(r.pagina - 1)">Anterior</button>
+        <span>Página {{ r.pagina + 1 }} de {{ r.totalPaginas }}</span>
+        <button type="button" class="btn-mini" [disabled]="r.pagina + 1 >= r.totalPaginas || cargando()" (click)="consultar(r.pagina + 1)">Siguiente</button>
+      </nav>
+    }
+  } @else {
+    <p>Cargando eventos…</p>
+  }
+</main>
