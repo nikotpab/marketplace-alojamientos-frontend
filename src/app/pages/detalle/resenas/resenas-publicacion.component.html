@@ -5,7 +5,8 @@
     <p class="estado">Cargando reseñas…</p>
   } @else if (error() && !resumen()) {
     <p class="estado">No pudimos cargar las reseñas. <button type="button" class="enlace" (click)="cargar(0)">Reintentar</button></p>
-  } @else if (resumen(); as r) {
+  } @else if (resumen()) {
+    @if (resumen(); as r) {
     @if (r.total === 0) {
       <p class="estado">Aún no hay reseñas para este alojamiento.</p>
     } @else {
@@ -42,6 +43,7 @@
           {{ cargandoMas() ? 'Cargando…' : 'Ver más reseñas' }}
         </button>
       }
+    }
     }
   }
 </section>
