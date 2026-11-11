@@ -47,6 +47,8 @@ export class BusquedaComponent {
   /** Panel lateral con tipo, precio y servicios. */
   panelAbierto = signal(false);
   readonly esqueletos = [1, 2, 3, 4, 5, 6];
+  /** Foto de portada: la primera foto real que llega en los resultados (se fija una sola vez). */
+  portada = signal<string | null>(null);
   buscado = signal(false);
   error = signal('');
   resultados = signal<AlojamientoResumen[]>([]);
@@ -203,6 +205,7 @@ export class BusquedaComponent {
     this.api.buscar(this.filtros(pagina)).subscribe({
       next: (r) => {
         this.resultados.set(r.contenido);
+        if (!this.portada()) this.portada.set(r.contenido.find((a) => a.imagen)?.imagen ?? null);
         this.total.set(r.total);
         this.pagina.set(r.pagina);
         this.totalPaginas.set(r.totalPaginas);

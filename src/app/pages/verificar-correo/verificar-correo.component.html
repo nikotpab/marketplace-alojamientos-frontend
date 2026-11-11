@@ -9,7 +9,7 @@
       @case ('verificado') {
         <h1>Correo verificado</h1>
         <p class="texto">Tu cuenta está lista. Ya puedes iniciar sesión.</p>
-        <a class="principal" routerLink="/auth">Ir a iniciar sesión</a>
+        <a class="btn btn-primario principal" routerLink="/auth">Ir a iniciar sesión</a>
       }
       @case ('invalido') {
         <h1>El enlace no es válido</h1>
@@ -21,7 +21,7 @@
             <label>Correo electrónico
               <input type="email" name="correo" autocomplete="email" [(ngModel)]="correo" required />
             </label>
-            <button type="submit" class="principal">Reenviar enlace</button>
+            <button type="submit" class="btn btn-primario principal">Reenviar enlace</button>
           </form>
         }
         <a class="volver" routerLink="/auth">Volver a iniciar sesión</a>

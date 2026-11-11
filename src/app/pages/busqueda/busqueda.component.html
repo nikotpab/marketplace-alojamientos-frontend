@@ -1,7 +1,12 @@
 <main class="busqueda">
-  <section class="hero">
-    <h1>Encuentra tu próximo alojamiento</h1>
-    <p>Explora y compara sin crear una cuenta.</p>
+  <section class="hero" [class.con-foto]="portada()">
+    @if (portada(); as foto) {
+      <img class="portada" [src]="foto" alt="" width="1200" height="600" fetchpriority="high" />
+    }
+    <div class="hero-texto">
+      <h1>Encuentra tu próximo alojamiento</h1>
+      <p>Casas, cabañas y apartamentos para tu próxima escapada. Explora y compara sin crear una cuenta.</p>
+    </div>
 
     <form class="barra-busqueda" [formGroup]="form" (ngSubmit)="buscar()" novalidate role="search" aria-label="Buscar alojamientos">
       <label class="campo ciudad">Destino

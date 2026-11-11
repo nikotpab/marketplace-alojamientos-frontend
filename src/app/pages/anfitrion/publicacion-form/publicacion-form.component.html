@@ -113,7 +113,7 @@
     @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
 
     <div class="acciones">
-      <button type="submit" class="principal" [disabled]="guardando()">
+      <button type="submit" class="btn btn-primario principal" [disabled]="guardando()">
         {{ guardando() ? 'Guardando…' : id ? 'Guardar cambios' : 'Guardar borrador' }}
       </button>
       @if (puedeSolicitar()) {

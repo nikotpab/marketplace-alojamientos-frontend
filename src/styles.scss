@@ -159,7 +159,7 @@ h1, h2 { font-family: var(--fuente-titulos); font-weight: 700; color: var(--text
   &.mal { background: #f3d6d6; color: var(--rojo); }
 }
 .btn-mini {
-  padding: 6px 14px; border-radius: 999px; font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer;
+  padding: 6px 14px; border-radius: var(--radio-sm); font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer;
   background: #fff; border: 1px solid var(--verde); color: var(--verde);
   &:hover:not(:disabled) { background: var(--verde); color: #fff; }
   &.peligro { border-color: var(--rojo); color: var(--rojo); &:hover:not(:disabled) { background: var(--rojo); color: #fff; } }

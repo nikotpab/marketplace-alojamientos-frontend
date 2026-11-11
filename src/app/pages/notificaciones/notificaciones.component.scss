@@ -4,7 +4,7 @@ h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
 .sub { margin: 4px 0 0; color: #55574a; }
 
 .todas {
-  padding: 9px 18px; border-radius: 999px; border: 2px solid var(--verde); background: #fff;
+  padding: 9px 18px; border-radius: var(--radio-md); border: 2px solid var(--verde); background: #fff;
   color: var(--verde); font: inherit; font-weight: 700; cursor: pointer;
   &:disabled { opacity: .4; cursor: default; }
 }

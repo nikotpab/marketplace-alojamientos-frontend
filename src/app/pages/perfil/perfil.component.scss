@@ -34,11 +34,7 @@ input {
 .error { color: var(--rojo); font-weight: 500; margin: 0; }
 .exito { color: var(--verde); font-weight: 600; margin: 0; }
 
-.principal {
-  align-self: flex-start; background: var(--rojo); color: #fff; border: 0; padding: 12px 22px;
-  border-radius: var(--radio); font-weight: 700; font-size: .95rem; cursor: pointer;
-  &:disabled { opacity: .6; cursor: wait; }
-}
+.principal { align-self: flex-start; }
 .secundario {
   background: #fff; color: var(--verde); border: 1.5px solid var(--verde); padding: 11px 20px;
   border-radius: var(--radio); font-weight: 700; font-size: .95rem; cursor: pointer;

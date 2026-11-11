@@ -40,7 +40,7 @@
           @if (error()) { <p class="error">{{ error() }}</p> }
           @if (exito()) { <p class="exito">Cambios guardados.</p> }
 
-          <button type="submit" class="principal" [disabled]="guardando()">
+          <button type="submit" class="btn btn-primario principal" [disabled]="guardando()">
             {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
           </button>
         </form>
