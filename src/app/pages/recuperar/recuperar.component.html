@@ -5,7 +5,7 @@
     @switch (paso()) {
       @case (1) {
         <h1>Recupera tu contraseña</h1>
-        <p class="texto">Ingresa tu correo y te guiaremos para crear una contraseña nueva.</p>
+        <p class="texto">Ingresa tu correo y te enviaremos un enlace para crear una contraseña nueva.</p>
 
         <form [formGroup]="correo" (ngSubmit)="solicitar()" novalidate>
           <label>Correo electrónico
@@ -15,14 +15,13 @@
 
           @if (error()) { <p class="error">{{ error() }}</p> }
           <button type="submit" class="principal" [disabled]="cargando()">
-            {{ cargando() ? 'Enviando...' : 'Continuar' }}
+            {{ cargando() ? 'Enviando...' : 'Enviar enlace' }}
           </button>
         </form>
       }
 
       @case (2) {
         <h1>Crea tu nueva contraseña</h1>
-        <p class="nota">Procedimiento simulado: no se envía ningún correo real.</p>
 
         <form [formGroup]="nueva" (ngSubmit)="guardar()" novalidate>
           <label>Contraseña nueva
@@ -37,11 +36,20 @@
             }
           </label>
 
-          @if (error()) { <p class="error">{{ error() }}</p> }
+          @if (error()) {
+            <p class="error">{{ error() }}</p>
+            <button type="button" class="volver" (click)="pedirOtro()">Pedir un enlace nuevo</button>
+          }
           <button type="submit" class="principal" [disabled]="cargando()">
             {{ cargando() ? 'Guardando...' : 'Guardar contraseña' }}
           </button>
         </form>
+      }
+
+      @case (4) {
+        <h1>Revisa tu correo</h1>
+        <p class="texto">Si {{ correo.getRawValue().correo }} está registrado, te enviamos un enlace para crear una contraseña nueva. Vence en 15 minutos.</p>
+        <button type="button" class="volver" (click)="pedirOtro()">¿No llegó? Pedir otro enlace</button>
       }
 
       @case (3) {

@@ -30,3 +30,5 @@ input:focus { outline: 2px solid var(--verde); }
   font-size: .9rem; font-weight: 600; color: var(--verde); cursor: pointer;
   &:hover { text-decoration: underline; }
 }
+
+a.principal, a.volver { display: block; text-align: center; text-decoration: none; box-sizing: border-box; }

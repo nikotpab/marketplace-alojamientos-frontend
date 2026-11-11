@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 
 function coinciden(g: AbstractControl) {
@@ -21,11 +21,12 @@ export class RecuperarComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
 
-  paso = signal<1 | 2 | 3>(1);
+  /** 1: pedir correo · 4: enlace enviado · 2: nueva contraseña (llega con ?token=) · 3: listo. */
+  paso = signal<1 | 2 | 3 | 4>(1);
   cargando = signal(false);
   error = signal('');
   enviado = signal(false);
-  private token = '';
+  private token = inject(ActivatedRoute).snapshot.queryParamMap.get('token') ?? '';
 
   correo = this.fb.nonNullable.group({
     correo: ['', [Validators.required, Validators.email]],
@@ -38,6 +39,10 @@ export class RecuperarComponent {
     },
     { validators: coinciden },
   );
+
+  constructor() {
+    if (this.token) this.paso.set(2);
+  }
 
   invalido(grupo: 'correo' | 'nueva', campo: string) {
     const g: AbstractControl = this[grupo];
@@ -52,11 +57,10 @@ export class RecuperarComponent {
 
     this.cargando.set(true);
     this.auth.solicitarRecuperacion(this.correo.getRawValue().correo).subscribe({
-      next: (r) => {
+      next: () => {
         this.cargando.set(false);
-        this.token = r.token;
         this.enviado.set(false);
-        this.paso.set(2);
+        this.paso.set(4);
       },
       error: () => {
         this.cargando.set(false);
@@ -76,11 +80,22 @@ export class RecuperarComponent {
         this.cargando.set(false);
         this.paso.set(3);
       },
-      error: () => {
+      error: (e) => {
         this.cargando.set(false);
-        this.error.set('No se pudo cambiar la contraseña. Vuelve a empezar la recuperación.');
+        this.error.set(
+          e.status === 400
+            ? 'El enlace no es válido o ya venció (dura 15 minutos). Pide uno nuevo.'
+            : 'No se pudo cambiar la contraseña. Intenta de nuevo.',
+        );
       },
     });
+  }
+
+  pedirOtro() {
+    this.error.set('');
+    this.enviado.set(false);
+    this.paso.set(1);
+    this.router.navigate([], { queryParams: {} });
   }
 
   irALogin() {
