@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -19,6 +19,17 @@ export interface ResenaPublicada {
   fecha: string;
 }
 
+/** Resumen público de reseñas; las ocultadas por un administrador no se incluyen ni cuentan. */
+export interface ResumenResenas {
+  promedio: number | null;
+  total: number;
+  /** Cantidad de reseñas por calificación (clave 1 a 5). */
+  distribucion: Record<string, number>;
+  resenas: ResenaPublicada[];
+  pagina: number;
+  totalPaginas: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ResenasService {
   private http = inject(HttpClient);
@@ -30,5 +41,11 @@ export class ResenasService {
    */
   crear(reservaId: string, r: NuevaResena): Observable<ResenaPublicada> {
     return this.http.post<ResenaPublicada>(`/api/reservas/${encodeURIComponent(reservaId)}/resena`, r);
+  }
+
+  /** Reseñas visibles de una publicación, paginadas (más recientes primero). */
+  dePublicacion(publicacionId: string, pagina = 0): Observable<ResumenResenas> {
+    const params = new HttpParams().set('pagina', pagina).set('tamano', 10);
+    return this.http.get<ResumenResenas>(`/api/alojamientos/${encodeURIComponent(publicacionId)}/resenas`, { params });
   }
 }
