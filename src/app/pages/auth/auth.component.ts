@@ -88,7 +88,10 @@ export class AuthComponent {
         else if (e.status === 403 && e.error?.codigo === 'CUENTA_DESACTIVADA')
           this.errorLogin.set('Tu cuenta está desactivada. No puedes iniciar sesión hasta reactivarla.');
         else if (e.status === 403)
-          this.errorLogin.set('Tu cuenta está restringida y no puede iniciar sesión.');
+          this.errorLogin.set(
+            'Tu cuenta fue restringida por un administrador y no puede iniciar sesión.' +
+              (e.error?.motivo ? ` Motivo: ${e.error.motivo}` : ''),
+          );
         else if (e.status === 401)
           this.errorLogin.set('Correo o contraseña incorrectos.');
         else this.errorLogin.set('No se pudo iniciar sesión. Intenta de nuevo.');
