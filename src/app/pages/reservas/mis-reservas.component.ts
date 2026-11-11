@@ -3,6 +3,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ESTADO_RESERVA_TEXTO, Reserva, ReservasService } from '../../core/reservas.service';
 import { CancelarReservaComponent } from './cancelar/cancelar-reserva.component';
+import { ResenaFormComponent } from './resena/resena-form.component';
 
 type Grupo = 'proximas' | 'completadas' | 'canceladas';
 
@@ -11,7 +12,7 @@ import { DetalleCancelacionComponent } from '../../shared/detalle-cancelacion/de
 @Component({
   selector: 'app-mis-reservas',
   standalone: true,
-  imports: [RouterLink, CurrencyPipe, DatePipe, CancelarReservaComponent, DetalleCancelacionComponent],
+  imports: [RouterLink, CurrencyPipe, DatePipe, CancelarReservaComponent, DetalleCancelacionComponent, ResenaFormComponent],
   templateUrl: './mis-reservas.component.html',
   styleUrl: './mis-reservas.component.scss',
 })
@@ -24,6 +25,8 @@ export class MisReservasComponent {
   /** Reserva abierta en el diálogo de cancelación. */
   aCancelar = signal<Reserva | null>(null);
   aviso = signal('');
+  /** Reserva completada abierta en el formulario de reseña. */
+  aResenar = signal<Reserva | null>(null);
 
   private hoy = new Date().toISOString().slice(0, 10);
 
@@ -49,6 +52,17 @@ export class MisReservasComponent {
   /** Solo se cancelan reservas confirmadas cuya estadía no ha comenzado. */
   cancelable(r: Reserva) {
     return r.estado === 'CONFIRMADA' && r.llegada > this.hoy;
+  }
+
+  /** Solo reservas completadas y aún sin reseña. */
+  resenable(r: Reserva) {
+    return r.estado === 'COMPLETADA' && !r.resenada;
+  }
+
+  alResenar(r: Reserva) {
+    this.reservas.update((l) => l.map((x) => (x.id === r.id ? { ...x, resenada: true } : x)));
+    this.aResenar.set(null);
+    this.aviso.set('¡Gracias! Tu reseña quedó publicada.');
   }
 
   alCancelar(r: Reserva) {

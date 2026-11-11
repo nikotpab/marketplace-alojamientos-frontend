@@ -49,6 +49,8 @@ export interface Reserva {
    * si la reserva está CONFIRMADA con ese anfitrión; en otro caso llegan nulos.
    */
   huesped?: { nombre: string; telefono: string | null; correo: string | null };
+  /** true si el huésped ya reseñó esta reserva (una sola reseña por reserva). */
+  resenada?: boolean;
   /** Solo en reservas CANCELADAS. */
   cancelacion?: Cancelacion | null;
 }

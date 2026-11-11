@@ -1,0 +1,31 @@
+<app-dialogo titulo="Calificar estadía" [bloqueado]="enviando()" (cerrar)="cerrar.emit()">
+  <p><strong>{{ reserva().alojamiento?.titulo ?? 'Alojamiento' }}</strong> · Código {{ reserva().codigo }}</p>
+
+  <fieldset class="estrellas">
+    <legend>Calificación</legend>
+    @for (n of estrellas; track n) {
+      <label [class.on]="n <= calificacion()">
+        <input type="radio" name="calificacion" [value]="n" [checked]="calificacion() === n" (change)="calificacion.set(n)" />
+        <span aria-hidden="true">★</span>
+        <span class="oculto">{{ n }} {{ n === 1 ? 'estrella' : 'estrellas' }}</span>
+      </label>
+    }
+  </fieldset>
+  @if (intento() && !calificacion()) { <p class="texto-error" role="alert">Elige una calificación de 1 a 5.</p> }
+
+  <label class="campo-dialogo">
+    Tu reseña
+    <textarea rows="5" [maxlength]="max" [(ngModel)]="comentario" placeholder="¿Cómo fue tu estadía?"
+              [attr.aria-invalid]="intento() && !comentarioValido"></textarea>
+    <small class="contador">{{ comentario.length }} / {{ max }}</small>
+    @if (intento() && !comentarioValido) { <small class="texto-error" role="alert">Escribe tu reseña (máximo {{ max }} caracteres).</small> }
+  </label>
+
+  @if (error()) { <p class="texto-error" role="alert">{{ error() }}</p> }
+  <div class="acciones-dialogo">
+    <button type="button" class="btn-secundario" [disabled]="enviando()" (click)="cerrar.emit()">Cancelar</button>
+    <button type="button" class="btn-primario" [disabled]="enviando()" (click)="enviar()">
+      {{ enviando() ? 'Publicando…' : 'Publicar reseña' }}
+    </button>
+  </div>
+</app-dialogo>
