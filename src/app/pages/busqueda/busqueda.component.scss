@@ -61,7 +61,9 @@
   legend { font-size: .75rem; font-weight: 600; color: var(--texto-suave); padding: 0 0 6px; }
 }
 
-.resultados { margin-top: 8px; }
+/* Reserva el alto de la pantalla: al pasar de esqueletos a resultados (o a un aviso corto) el pie de página
+   no salta dentro de la vista, así el CLS se mantiene en 0 */
+.resultados { margin-top: 8px; min-height: 100vh; }
 .contador { font-size: 1rem; margin: 0 0 14px; color: var(--texto-suave); font-family: inherit; font-weight: 600; }
 .estado { color: var(--texto-suave); &.error { color: var(--peligro); } }
 

@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
+import { BusquedaComponent } from './pages/busqueda/busqueda.component';
 import { rolGuard } from './core/auth.guard';
 
 /**
- * Cada pantalla se carga bajo demanda (loadComponent): el bundle inicial solo trae el layout,
+ * Cada pantalla se carga bajo demanda (loadComponent): el bundle inicial solo trae el layout y Explorar,
  * y las pantallas de anfitrión y administrador llegan cuando alguien con ese rol las abre.
  */
 export const routes: Routes = [
@@ -19,7 +20,8 @@ export const routes: Routes = [
     children: [
       // Públicas: se puede explorar sin cuenta
       { path: '', pathMatch: 'full', redirectTo: 'buscar' },
-      { path: 'buscar', loadComponent: () => import('./pages/busqueda/busqueda.component').then((m) => m.BusquedaComponent), title: 'Explorar alojamientos' },
+      // Explorar es la página de inicio: se carga con el bundle inicial para no esperar un segundo pedido (mejor LCP)
+      { path: 'buscar', component: BusquedaComponent, title: 'Explorar alojamientos' },
       { path: 'alojamientos/:id', loadComponent: () => import('./pages/detalle/detalle.component').then((m) => m.DetalleComponent), title: 'Detalle del alojamiento' },
 
       {
