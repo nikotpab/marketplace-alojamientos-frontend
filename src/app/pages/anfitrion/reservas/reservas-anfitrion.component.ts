@@ -4,10 +4,12 @@ import { ESTADO_RESERVA_TEXTO, EstadoReserva, Reserva, ReservasService } from '.
 
 type Filtro = EstadoReserva | 'TODAS';
 
+import { DetalleCancelacionComponent } from '../../../shared/detalle-cancelacion/detalle-cancelacion.component';
+
 @Component({
   selector: 'app-reservas-anfitrion',
   standalone: true,
-  imports: [CurrencyPipe, DatePipe],
+  imports: [CurrencyPipe, DatePipe, DetalleCancelacionComponent],
   templateUrl: './reservas-anfitrion.component.html',
   styleUrl: './reservas-anfitrion.component.scss',
 })

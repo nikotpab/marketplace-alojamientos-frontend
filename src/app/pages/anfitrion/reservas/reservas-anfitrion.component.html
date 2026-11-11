@@ -28,6 +28,7 @@
               · <span class="oculto">Contacto visible solo en reservas confirmadas</span>
             }
           </p>
+          @if (r.cancelacion; as c) { <app-detalle-cancelacion [c]="c" /> }
         </div>
         <span class="estado" [attr.data-estado]="r.estado">{{ estados[r.estado] }}</span>
       </article>
