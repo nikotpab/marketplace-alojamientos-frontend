@@ -6,12 +6,12 @@
 }
 
 .lado-marca {
-  position: relative; overflow: hidden; background: var(--crema); color: var(--verde);
+  position: relative; overflow: hidden; background: var(--marca-suave); color: var(--marca);
   padding: 48px; display: flex; flex-direction: column;
 }
 .lado-marca::before {
   content: ''; position: absolute; width: 280px; height: 280px; border-radius: 50%;
-  right: -90px; top: -90px; background: rgba(255, 214, 79, .45);
+  right: -90px; top: -90px; background: rgba(45, 80, 22, .08);
 }
 .lado-marca > * { position: relative; }
 .beneficios {
@@ -34,7 +34,7 @@
 .pestanas { display: flex; gap: 8px; margin-bottom: 24px; }
 .pestanas button {
   border: 1px solid var(--gris-borde); background: #fff; color: var(--texto);
-  padding: 8px 16px; border-radius: 999px; font-weight: 600; cursor: pointer;
+  padding: 8px 16px; border-radius: var(--radio-sm); font-weight: 600; cursor: pointer;
   &.activa { background: var(--verde); color: #fff; border-color: var(--verde); }
 }
 
@@ -59,7 +59,7 @@ input:focus { outline: 2px solid var(--verde); }
 .exito { color: var(--verde); font-weight: 600; margin: 0; } 
 
 .principal {
-  background: var(--rojo); color: #fff; border: 0; padding: 14px;
+  background: var(--marca); color: #fff; border: 0; padding: 14px;
   border-radius: var(--radio); font-weight: 700; font-size: 1rem; cursor: pointer;
   &:disabled { opacity: .6; cursor: wait; }
 }

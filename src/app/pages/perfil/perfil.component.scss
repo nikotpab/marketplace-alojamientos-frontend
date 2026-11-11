@@ -35,7 +35,7 @@ input {
 .exito { color: var(--verde); font-weight: 600; margin: 0; }
 
 .principal {
-  align-self: flex-start; background: var(--rojo); color: #fff; border: 0; padding: 12px 22px;
+  align-self: flex-start; background: var(--marca); color: #fff; border: 0; padding: 12px 22px;
   border-radius: var(--radio); font-weight: 700; font-size: .95rem; cursor: pointer;
   &:disabled { opacity: .6; cursor: wait; }
 }
