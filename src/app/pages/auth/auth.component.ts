@@ -5,7 +5,7 @@ import { SoloNumerosDirective } from '../../shared/solo-numeros.directive';
 import { AuthService, Rol, RolUsuario } from '../../core/auth.service';
 
 const INICIO_POR_ROL: Record<RolUsuario, string> = {
-  HUESPED: '/inicio',
+  HUESPED: '/buscar',
   ANFITRION: '/anfitrion',
   ADMINISTRADOR: '/admin',
 };
