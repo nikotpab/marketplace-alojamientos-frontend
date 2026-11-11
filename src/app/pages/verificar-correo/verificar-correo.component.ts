@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -10,7 +11,7 @@ type Estado = 'verificando' | 'verificado' | 'invalido';
   selector: 'app-verificar-correo',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, RouterLink],
+  imports: [NgOptimizedImage, FormsModule, RouterLink],
   templateUrl: './verificar-correo.component.html',
   styleUrl: '../recuperar/recuperar.component.scss',
 })

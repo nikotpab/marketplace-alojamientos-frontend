@@ -21,8 +21,8 @@
         @for (img of a.imagenes.slice(0, 5); track img; let i = $index) {
           <button type="button" class="foto" [class.principal]="i === 0" (click)="visor.set(i)"
                   [attr.aria-label]="'Ampliar imagen ' + (i + 1) + ' de ' + a.imagenes.length">
-            <img [src]="img" [alt]="a.titulo + ', imagen ' + (i + 1)" [attr.width]="i === 0 ? 800 : 400"
-                 [attr.height]="i === 0 ? 600 : 300" [attr.loading]="i === 0 ? null : 'lazy'" />
+            <img [ngSrc]="img" [alt]="a.titulo + ', imagen ' + (i + 1)" fill [priority]="i === 0"
+                 [sizes]="i === 0 ? '(max-width: 800px) 100vw, 560px' : '280px'" />
           </button>
         }
         @if (a.imagenes.length > 5) {

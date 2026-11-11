@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
@@ -22,7 +22,7 @@ function salidaPosterior(control: AbstractControl): ValidationErrors | null {
   selector: 'app-busqueda',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, CurrencyPipe],
+  imports: [NgOptimizedImage, ReactiveFormsModule, RouterLink, CurrencyPipe],
   templateUrl: './busqueda.component.html',
   styleUrl: './busqueda.component.scss',
 })

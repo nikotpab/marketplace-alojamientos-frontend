@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +15,7 @@ const INICIO_POR_ROL: Record<RolUsuario, string> = {
   selector: 'app-auth',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, SoloNumerosDirective],
+  imports: [NgOptimizedImage, ReactiveFormsModule, SoloNumerosDirective],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss',
 })

@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TiposAlojamientoService } from '../../../core/tipos-alojamiento.service';
@@ -10,7 +10,7 @@ const MOTIVO_MINIMO = 10;
   selector: 'app-revision',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, CurrencyPipe],
+  imports: [NgOptimizedImage, FormsModule, CurrencyPipe],
   templateUrl: './revision.component.html',
   styleUrl: './revision.component.scss',
 })
