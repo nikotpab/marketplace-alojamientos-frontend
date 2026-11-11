@@ -2,13 +2,14 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ESTADO_RESERVA_TEXTO, Reserva, ReservasService } from '../../core/reservas.service';
+import { CancelarReservaComponent } from './cancelar/cancelar-reserva.component';
 
 type Grupo = 'proximas' | 'completadas' | 'canceladas';
 
 @Component({
   selector: 'app-mis-reservas',
   standalone: true,
-  imports: [RouterLink, CurrencyPipe, DatePipe],
+  imports: [RouterLink, CurrencyPipe, DatePipe, CancelarReservaComponent],
   templateUrl: './mis-reservas.component.html',
   styleUrl: './mis-reservas.component.scss',
 })
@@ -18,6 +19,9 @@ export class MisReservasComponent {
   reservas = signal<Reserva[]>([]);
   cargando = signal(true);
   error = signal('');
+  /** Reserva abierta en el diálogo de cancelación. */
+  aCancelar = signal<Reserva | null>(null);
+  aviso = signal('');
 
   private hoy = new Date().toISOString().slice(0, 10);
 
@@ -39,6 +43,18 @@ export class MisReservasComponent {
     { valor: 'completadas', texto: 'Completadas' },
     { valor: 'canceladas', texto: 'Canceladas' },
   ];
+
+  /** Solo se cancelan reservas confirmadas cuya estadía no ha comenzado. */
+  cancelable(r: Reserva) {
+    return r.estado === 'CONFIRMADA' && r.llegada > this.hoy;
+  }
+
+  alCancelar(r: Reserva) {
+    this.reservas.update((l) => l.map((x) => (x.id === r.id ? { ...x, ...r } : x)));
+    this.aCancelar.set(null);
+    this.aviso.set(`La reserva ${r.codigo} fue cancelada. Las fechas quedaron libres.`);
+    this.grupo.set('canceladas');
+  }
 
   constructor() {
     inject(ReservasService).misReservas().subscribe({

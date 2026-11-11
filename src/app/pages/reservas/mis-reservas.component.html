@@ -11,6 +11,8 @@
     }
   </div>
 
+  @if (aviso()) { <p class="aviso-ok" role="status">{{ aviso() }}</p> }
+
   @if (cargando()) {
     <p>Cargando tus reservas…</p>
   } @else if (error()) {
@@ -24,7 +26,12 @@
             {{ r.huespedes }} {{ r.huespedes === 1 ? 'huésped' : 'huéspedes' }}</p>
           <p class="codigo">Código {{ r.codigo }} · {{ r.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
         </div>
-        <span class="estado" [attr.data-estado]="r.estado">{{ estados[r.estado] }}</span>
+        <div class="lado">
+          <span class="estado" [attr.data-estado]="r.estado">{{ estados[r.estado] }}</span>
+          @if (cancelable(r)) {
+            <button type="button" class="accion" (click)="aviso.set(''); aCancelar.set(r)">Cancelar reserva</button>
+          }
+        </div>
       </article>
     } @empty {
       <section class="vacio">
@@ -34,3 +41,7 @@
     }
   }
 </main>
+
+@if (aCancelar(); as r) {
+  <app-cancelar-reserva [reserva]="r" (cerrar)="aCancelar.set(null)" (cancelada)="alCancelar($event)" />
+}
