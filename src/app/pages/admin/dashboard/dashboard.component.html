@@ -1,0 +1,67 @@
+<main class="admin-contenido">
+  <h1>Panel de administración</h1>
+  <p class="admin-subtitulo">Indicadores de la plataforma en el periodo elegido.</p>
+
+  <div class="periodos" role="group" aria-label="Periodo">
+    @for (p of periodos; track p.valor) {
+      <button type="button" class="chip" [class.on]="periodo() === p.valor" [attr.aria-pressed]="periodo() === p.valor"
+              (click)="elegir(p.valor)">{{ p.texto }}</button>
+    }
+  </div>
+  @if (periodo() === 'personalizado') {
+    <form class="admin-filtros" (ngSubmit)="consultar()">
+      <label>Desde <input type="date" name="desde" [(ngModel)]="desde" /></label>
+      <label>Hasta <input type="date" name="hasta" [(ngModel)]="hasta" [min]="desde" /></label>
+      <button type="submit" class="btn-mini" [disabled]="rangoInvalido || cargando()">Aplicar</button>
+    </form>
+    @if (rangoInvalido) { <p class="texto-error" role="alert">Elige un rango válido.</p> }
+  }
+
+  @if (error()) {
+    <p class="aviso-mal" role="alert">{{ error() }} <button type="button" class="btn-mini" (click)="consultar()">Reintentar</button></p>
+  }
+
+  @if (datos(); as d) {
+    <div [class.actualizando]="cargando()">
+      <section class="kpis" aria-label="Indicadores principales">
+        <article><span>Usuarios</span><strong>{{ d.usuarios.total | number }}</strong>
+          <small>{{ d.usuarios.huespedes | number }} huéspedes · {{ d.usuarios.anfitriones | number }} anfitriones</small></article>
+        <article><span>Publicaciones activas</span><strong>{{ d.publicacionesActivas | number }}</strong></article>
+        <article><span>Reservas</span><strong>{{ totalReservas() | number }}</strong><small>en el periodo</small></article>
+        <article><span>Ingresos estimados</span><strong>{{ d.ingresosEstimados | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong>
+          <small>confirmadas y completadas</small></article>
+      </section>
+
+      <div class="graficos">
+        <section class="tarjeta">
+          <h2>Reservas por estado</h2>
+          <ul class="barras">
+            @for (e of estados; track e) {
+              <li>
+                <span class="etiqueta">{{ estadoTexto[e] }}</span>
+                <span class="barra"><span [attr.data-estado]="e" [style.width.%]="porcentaje(d.reservasPorEstado[e] ?? 0, totalReservas())"></span></span>
+                <span class="valor">{{ d.reservasPorEstado[e] ?? 0 | number }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+        <section class="tarjeta">
+          <h2>Ciudades con mayor demanda</h2>
+          <ol class="barras">
+            @for (c of d.ciudadesDemanda; track c.ciudad) {
+              <li>
+                <span class="etiqueta">{{ c.ciudad }}</span>
+                <span class="barra"><span [style.width.%]="porcentaje(c.reservas, maxCiudad())"></span></span>
+                <span class="valor">{{ c.reservas | number }}</span>
+              </li>
+            } @empty {
+              <li class="vacio">Sin reservas en el periodo.</li>
+            }
+          </ol>
+        </section>
+      </div>
+    </div>
+  } @else if (cargando()) {
+    <p>Cargando indicadores…</p>
+  }
+</main>
