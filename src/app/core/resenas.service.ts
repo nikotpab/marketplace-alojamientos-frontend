@@ -30,6 +30,13 @@ export interface ResumenResenas {
   totalPaginas: number;
 }
 
+/** Reseña con reportes de usuarios, pendiente de decisión del administrador. */
+export interface ResenaReportada extends ResenaPublicada {
+  alojamiento: string;
+  reportes: number;
+  motivosReporte: string[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class ResenasService {
   private http = inject(HttpClient);
@@ -47,5 +54,26 @@ export class ResenasService {
   dePublicacion(publicacionId: string, pagina = 0): Observable<ResumenResenas> {
     const params = new HttpParams().set('pagina', pagina).set('tamano', 10);
     return this.http.get<ResumenResenas>(`/api/alojamientos/${encodeURIComponent(publicacionId)}/resenas`, { params });
+  }
+
+  /** Cualquier usuario autenticado puede reportar una reseña ofensiva o sin relación con la estadía. */
+  reportar(resenaId: string, motivo: string): Observable<void> {
+    return this.http.post<void>(`/api/resenas/${encodeURIComponent(resenaId)}/reportes`, { motivo });
+  }
+
+  // --- Administrador (Moderación) ---
+
+  reportadas(): Observable<ResenaReportada[]> {
+    return this.http.get<ResenaReportada[]>('/api/admin/resenas/reportadas');
+  }
+
+  /** Descarta los reportes y la reseña sigue visible. Queda en auditoría. */
+  mantener(resenaId: string): Observable<void> {
+    return this.http.post<void>(`/api/admin/resenas/${encodeURIComponent(resenaId)}/mantener`, {});
+  }
+
+  /** La reseña deja de mostrarse y de contar en el promedio. Queda en auditoría. */
+  ocultar(resenaId: string, motivo: string): Observable<void> {
+    return this.http.post<void>(`/api/admin/resenas/${encodeURIComponent(resenaId)}/ocultar`, { motivo });
   }
 }

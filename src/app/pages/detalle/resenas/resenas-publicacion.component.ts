@@ -1,11 +1,13 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit, inject, input, signal } from '@angular/core';
+import { AuthService } from '../../../core/auth.service';
 import { ResenaPublicada, ResenasService, ResumenResenas } from '../../../core/resenas.service';
+import { DialogoMotivoComponent } from '../../../shared/dialogo-motivo/dialogo-motivo.component';
 
 @Component({
   selector: 'app-resenas-publicacion',
   standalone: true,
-  imports: [DatePipe, DecimalPipe],
+  imports: [DatePipe, DecimalPipe, DialogoMotivoComponent],
   templateUrl: './resenas-publicacion.component.html',
   styleUrl: './resenas-publicacion.component.scss',
 })
@@ -20,6 +22,34 @@ export class ResenasPublicacionComponent implements OnInit {
   cargandoMas = signal(false);
   error = signal(false);
   readonly niveles = [5, 4, 3, 2, 1];
+
+  auth = inject(AuthService);
+  aReportar = signal<ResenaPublicada | null>(null);
+  reportadas = signal<string[]>([]);
+  reportando = signal(false);
+  errorReporte = signal('');
+
+  reportar(motivo: string) {
+    const r = this.aReportar();
+    if (!r) return;
+    this.reportando.set(true);
+    this.errorReporte.set('');
+    this.api.reportar(r.id, motivo).subscribe({
+      next: () => {
+        this.reportadas.update((l) => [...l, r.id]);
+        this.reportando.set(false);
+        this.aReportar.set(null);
+      },
+      error: (e) => {
+        this.reportando.set(false);
+        if (e.status === 409) {
+          // Ya la había reportado: se considera hecho
+          this.reportadas.update((l) => [...l, r.id]);
+          this.aReportar.set(null);
+        } else this.errorReporte.set('No pudimos enviar el reporte. Intenta de nuevo.');
+      },
+    });
+  }
 
   ngOnInit() {
     this.cargar(0);

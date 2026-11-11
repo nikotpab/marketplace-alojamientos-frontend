@@ -25,6 +25,7 @@ const ENLACES: Record<RolUsuario, Enlace[]> = {
     { texto: 'Publicaciones', ruta: '/admin/publicaciones' },
     { texto: 'Revisión', ruta: '/admin/revision' },
     { texto: 'Usuarios', ruta: '/admin/usuarios' },
+    { texto: 'Moderación', ruta: '/admin/moderacion' },
     { texto: 'Configuración', ruta: '/admin/configuracion' },
     { texto: 'Mi perfil', ruta: '/perfil' },
   ],
