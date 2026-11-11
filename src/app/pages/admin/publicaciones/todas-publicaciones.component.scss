@@ -13,7 +13,7 @@ h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
 
 .tabla { background: #fff; border: 1px solid var(--gris-borde); border-radius: 16px; overflow: hidden; }
 .fila {
-  display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) 170px; gap: 12px; align-items: center;
+  display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) 250px; gap: 12px; align-items: center;
   padding: 14px 20px; border-top: 1px solid var(--gris-borde); font-size: .9rem;
   strong { display: block; color: var(--verde); }
   small { color: #55574a; }
