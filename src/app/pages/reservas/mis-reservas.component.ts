@@ -66,7 +66,7 @@ export class MisReservasComponent {
   }
 
   alCancelar(r: Reserva, c: Cancelacion) {
-    this.reservas.update((l) => l.map((x) => (x.id === r.id ? { ...x, estado: 'CANCELADA', cancelacion: c } : x)));
+    this.reservas.update((l) => l.map((x) => (x.id === r.id ? { ...x, estado: 'CANCELADA' as const, cancelacion: c } : x)));
     this.aCancelar.set(null);
     this.aviso.set(
       c.estadoFinal === 'DEVOLUCION_NO_PROCESADA'
