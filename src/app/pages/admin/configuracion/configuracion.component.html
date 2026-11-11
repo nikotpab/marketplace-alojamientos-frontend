@@ -26,7 +26,7 @@
           } @else { Sin modificaciones registradas. }
         </p>
         <div class="acciones-dialogo">
-          <button type="button" class="btn-secundario" [disabled]="form.pristine" (click)="form.reset(); aviso.set('')">Descartar</button>
+          <button type="button" class="btn-secundario" [disabled]="form.pristine" (click)="descartar()">Descartar</button>
           <button type="submit" class="btn-primario" [disabled]="form.pristine">Guardar cambios</button>
         </div>
       </form>

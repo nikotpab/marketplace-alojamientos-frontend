@@ -115,6 +115,12 @@ export class ConfiguracionComponent {
     });
   }
 
+  descartar() {
+    const a = this.actual();
+    if (a) this.form.reset(this.soloTarifas(a));
+    this.aviso.set('');
+  }
+
   private soloTarifas(c: ConfiguracionTarifas): Tarifas {
     return Object.fromEntries(CAMPOS_TARIFA.map((x) => [x.campo, c[x.campo]])) as unknown as Tarifas;
   }
