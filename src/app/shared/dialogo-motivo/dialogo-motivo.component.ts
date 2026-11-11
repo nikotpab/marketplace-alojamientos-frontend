@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DialogoComponent } from '../dialogo/dialogo.component';
 
@@ -9,6 +9,7 @@ import { DialogoComponent } from '../dialogo/dialogo.component';
 @Component({
   selector: 'app-dialogo-motivo',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, DialogoComponent],
   template: `
     <app-dialogo [titulo]="titulo()" [bloqueado]="procesando()" (cerrar)="cerrar.emit()">

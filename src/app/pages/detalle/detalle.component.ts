@@ -1,5 +1,5 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { CurrencyPipe, DatePipe, NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NOMBRE_SITIO } from '../../core/titulo.strategy';
@@ -18,7 +18,8 @@ const NOMBRES_TIPO: Record<string, string> = {
 @Component({
   selector: 'app-detalle',
   standalone: true,
-  imports: [RouterLink, CurrencyPipe, DatePipe, CalendarioComponent, ResenasPublicacionComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgOptimizedImage, RouterLink, CurrencyPipe, DatePipe, CalendarioComponent, ResenasPublicacionComponent],
   templateUrl: './detalle.component.html',
   styleUrl: './detalle.component.scss',
 })

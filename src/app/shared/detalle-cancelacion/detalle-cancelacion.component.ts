@@ -1,11 +1,12 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { Cancelacion } from '../../core/reservas.service';
 
 /** Resumen de la cancelación y de la devolución simulada registrada (RF-23). */
 @Component({
   selector: 'app-detalle-cancelacion',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CurrencyPipe, DatePipe],
   template: `
     <div class="cancelacion">

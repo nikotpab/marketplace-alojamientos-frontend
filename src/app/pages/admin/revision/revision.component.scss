@@ -26,7 +26,8 @@ h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
 .imagenes { display: flex; gap: 8px; flex-wrap: wrap; }
 .miniatura {
   width: 96px; height: 64px; border-radius: 8px; border: 1px solid var(--gris-borde);
-  background: var(--crema-claro) center / cover no-repeat;
+  background: var(--superficie-alt); overflow: hidden;
+  img { width: 100%; height: 100%; object-fit: cover; display: block; }
 }
 
 .datos {

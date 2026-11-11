@@ -1,7 +1,7 @@
 <main class="busqueda">
   <section class="hero" [class.con-foto]="portada()">
     @if (portada(); as foto) {
-      <img class="portada" [src]="foto" alt="" width="1200" height="600" fetchpriority="high" />
+      <img class="portada" [ngSrc]="foto" alt="" fill priority sizes="(max-width: 1180px) 100vw, 1180px" />
     }
     <div class="hero-texto">
       <h1>Encuentra tu próximo alojamiento</h1>
@@ -106,7 +106,7 @@
           <a class="tarjeta" [routerLink]="['/alojamientos', a.id]">
             <div class="foto">
               @if (a.imagen) {
-                <img [src]="a.imagen" [alt]="a.titulo" width="400" height="300" [attr.loading]="i < 4 ? null : 'lazy'" />
+                <img [ngSrc]="a.imagen" [alt]="a.titulo" fill [priority]="i < 2" sizes="(max-width: 560px) 100vw, (max-width: 1180px) 50vw, 300px" />
               }
             </div>
             <div class="cuerpo">

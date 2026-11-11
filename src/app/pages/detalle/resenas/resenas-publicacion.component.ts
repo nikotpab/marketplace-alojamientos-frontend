@@ -1,5 +1,5 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, signal } from '@angular/core';
 import { ResenaVisible, ResenasService } from '../../../core/resenas.service';
 
 const POR_PAGINA = 10;
@@ -7,6 +7,7 @@ const POR_PAGINA = 10;
 @Component({
   selector: 'app-resenas-publicacion',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DatePipe, DecimalPipe],
   templateUrl: './resenas-publicacion.component.html',
   styleUrl: './resenas-publicacion.component.scss',

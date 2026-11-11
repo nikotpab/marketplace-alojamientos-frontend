@@ -1,35 +1,16 @@
 import { Routes } from '@angular/router';
-import { AuthComponent } from './pages/auth/auth.component';
-import { AccesoDenegadoComponent } from './pages/acceso-denegado/acceso-denegado.component';
-import { RecuperarComponent } from './pages/recuperar/recuperar.component';
-import { PerfilComponent } from './pages/perfil/perfil.component';
-import { BusquedaComponent } from './pages/busqueda/busqueda.component';
-import { DetalleComponent } from './pages/detalle/detalle.component';
-import { MisPublicacionesComponent } from './pages/anfitrion/mis-publicaciones/mis-publicaciones.component';
-import { PublicacionFormComponent } from './pages/anfitrion/publicacion-form/publicacion-form.component';
-import { RevisionComponent } from './pages/admin/revision/revision.component';
-import { TodasPublicacionesComponent } from './pages/admin/publicaciones/todas-publicaciones.component';
-import { DisponibilidadComponent } from './pages/anfitrion/disponibilidad/disponibilidad.component';
-import { CotizacionComponent } from './pages/cotizacion/cotizacion.component';
-import { MisReservasComponent } from './pages/reservas/mis-reservas.component';
-import { ReservasAnfitrionComponent } from './pages/anfitrion/reservas/reservas-anfitrion.component';
-import { NotificacionesComponent } from './pages/notificaciones/notificaciones.component';
-import { UsuariosComponent } from './pages/admin/usuarios/usuarios.component';
-import { ModeracionComponent } from './pages/admin/moderacion/moderacion.component';
-import { AuditoriaComponent } from './pages/admin/auditoria/auditoria.component';
-import { ConfiguracionComponent } from './pages/admin/configuracion/configuracion.component';
-import { TiposComponent } from './pages/admin/tipos/tipos.component';
-import { DashboardComponent } from './pages/admin/dashboard/dashboard.component';
-import { ReportesComponent } from './pages/admin/reportes/reportes.component';
-import { VerificarCorreoComponent } from './pages/verificar-correo/verificar-correo.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
+/**
+ * Cada pantalla se carga bajo demanda (loadComponent): el bundle inicial solo trae el layout,
+ * y las pantallas de anfitrión y administrador llegan cuando alguien con ese rol las abre.
+ */
 export const routes: Routes = [
-  { path: 'auth', component: AuthComponent, title: 'Iniciar sesión' },
-  { path: 'recuperar', component: RecuperarComponent, title: 'Recuperar contraseña' },
-  { path: 'verificar-correo', component: VerificarCorreoComponent, title: 'Verificar correo' },
-  { path: 'acceso-denegado', component: AccesoDenegadoComponent, title: 'Acceso denegado' },
+  { path: 'auth', loadComponent: () => import('./pages/auth/auth.component').then((m) => m.AuthComponent), title: 'Iniciar sesión' },
+  { path: 'recuperar', loadComponent: () => import('./pages/recuperar/recuperar.component').then((m) => m.RecuperarComponent), title: 'Recuperar contraseña' },
+  { path: 'verificar-correo', loadComponent: () => import('./pages/verificar-correo/verificar-correo.component').then((m) => m.VerificarCorreoComponent), title: 'Verificar correo' },
+  { path: 'acceso-denegado', loadComponent: () => import('./pages/acceso-denegado/acceso-denegado.component').then((m) => m.AccesoDenegadoComponent), title: 'Acceso denegado' },
 
   // Rutas protegidas dentro del layout: cada una declara los roles permitidos (sin roles = denegada)
   {
@@ -38,19 +19,19 @@ export const routes: Routes = [
     children: [
       // Públicas: se puede explorar sin cuenta
       { path: '', pathMatch: 'full', redirectTo: 'buscar' },
-      { path: 'buscar', component: BusquedaComponent, title: 'Explorar alojamientos' },
-      { path: 'alojamientos/:id', component: DetalleComponent, title: 'Detalle del alojamiento' },
+      { path: 'buscar', loadComponent: () => import('./pages/busqueda/busqueda.component').then((m) => m.BusquedaComponent), title: 'Explorar alojamientos' },
+      { path: 'alojamientos/:id', loadComponent: () => import('./pages/detalle/detalle.component').then((m) => m.DetalleComponent), title: 'Detalle del alojamiento' },
 
       {
         path: 'reservas',
-        component: MisReservasComponent,
+        loadComponent: () => import('./pages/reservas/mis-reservas.component').then((m) => m.MisReservasComponent),
         title: 'Mis reservas',
         canActivate: [rolGuard],
         data: { roles: ['HUESPED'] },
       },
       {
         path: 'anfitrion/reservas',
-        component: ReservasAnfitrionComponent,
+        loadComponent: () => import('./pages/anfitrion/reservas/reservas-anfitrion.component').then((m) => m.ReservasAnfitrionComponent),
         title: 'Reservas de mis alojamientos',
         canActivate: [rolGuard],
         data: { roles: ['ANFITRION'] },
@@ -58,7 +39,7 @@ export const routes: Routes = [
       {
         // Cotizar y reservar requiere sesión de huésped
         path: 'alojamientos/:id/cotizar',
-        component: CotizacionComponent,
+        loadComponent: () => import('./pages/cotizacion/cotizacion.component').then((m) => m.CotizacionComponent),
         title: 'Cotización y pago',
         canActivate: [rolGuard],
         data: { roles: ['HUESPED'] },
@@ -66,14 +47,14 @@ export const routes: Routes = [
 
       {
         path: 'notificaciones',
-        component: NotificacionesComponent,
+        loadComponent: () => import('./pages/notificaciones/notificaciones.component').then((m) => m.NotificacionesComponent),
         title: 'Notificaciones',
         canActivate: [rolGuard],
         data: { roles: ['HUESPED', 'ANFITRION', 'ADMINISTRADOR'] },
       },
       {
         path: 'perfil',
-        component: PerfilComponent,
+        loadComponent: () => import('./pages/perfil/perfil.component').then((m) => m.PerfilComponent),
         title: 'Mi perfil',
         canActivate: [rolGuard],
         data: { roles: ['HUESPED', 'ANFITRION', 'ADMINISTRADOR'] },
@@ -82,14 +63,14 @@ export const routes: Routes = [
       { path: 'inicio', redirectTo: 'buscar' },
       {
         path: 'anfitrion',
-        component: MisPublicacionesComponent,
+        loadComponent: () => import('./pages/anfitrion/mis-publicaciones/mis-publicaciones.component').then((m) => m.MisPublicacionesComponent),
         title: 'Mis alojamientos',
         canActivate: [rolGuard],
         data: { roles: ['ANFITRION'] },
       },
       {
         path: 'anfitrion/publicaciones/nueva',
-        component: PublicacionFormComponent,
+        loadComponent: () => import('./pages/anfitrion/publicacion-form/publicacion-form.component').then((m) => m.PublicacionFormComponent),
         title: 'Nueva publicación',
         canActivate: [rolGuard],
         data: { roles: ['ANFITRION'] },
@@ -97,7 +78,7 @@ export const routes: Routes = [
       {
         // Solo el anfitrión propietario; la propiedad la verifica el backend (403)
         path: 'anfitrion/publicaciones/:id/disponibilidad',
-        component: DisponibilidadComponent,
+        loadComponent: () => import('./pages/anfitrion/disponibilidad/disponibilidad.component').then((m) => m.DisponibilidadComponent),
         title: 'Disponibilidad',
         canActivate: [rolGuard],
         data: { roles: ['ANFITRION'] },
@@ -105,70 +86,70 @@ export const routes: Routes = [
       {
         // Propietario o administrador; la propiedad la verifica el backend (403 si no corresponde)
         path: 'anfitrion/publicaciones/:id/editar',
-        component: PublicacionFormComponent,
+        loadComponent: () => import('./pages/anfitrion/publicacion-form/publicacion-form.component').then((m) => m.PublicacionFormComponent),
         title: 'Editar publicación',
         canActivate: [rolGuard],
         data: { roles: ['ANFITRION', 'ADMINISTRADOR'] },
       },
       {
         path: 'admin',
-        component: DashboardComponent,
+        loadComponent: () => import('./pages/admin/dashboard/dashboard.component').then((m) => m.DashboardComponent),
         title: 'Panel de administración',
         canActivate: [rolGuard],
         data: { roles: ['ADMINISTRADOR'] },
       },
       {
         path: 'admin/publicaciones',
-        component: TodasPublicacionesComponent,
+        loadComponent: () => import('./pages/admin/publicaciones/todas-publicaciones.component').then((m) => m.TodasPublicacionesComponent),
         title: 'Publicaciones',
         canActivate: [rolGuard],
         data: { roles: ['ADMINISTRADOR'] },
       },
       {
         path: 'admin/revision',
-        component: RevisionComponent,
+        loadComponent: () => import('./pages/admin/revision/revision.component').then((m) => m.RevisionComponent),
         title: 'Revisión de publicaciones',
         canActivate: [rolGuard],
         data: { roles: ['ADMINISTRADOR'] },
       },
       {
         path: 'admin/usuarios',
-        component: UsuariosComponent,
+        loadComponent: () => import('./pages/admin/usuarios/usuarios.component').then((m) => m.UsuariosComponent),
         title: 'Usuarios',
         canActivate: [rolGuard],
         data: { roles: ['ADMINISTRADOR'] },
       },
       {
         path: 'admin/moderacion',
-        component: ModeracionComponent,
+        loadComponent: () => import('./pages/admin/moderacion/moderacion.component').then((m) => m.ModeracionComponent),
         title: 'Moderación',
         canActivate: [rolGuard],
         data: { roles: ['ADMINISTRADOR'] },
       },
       {
         path: 'admin/auditoria',
-        component: AuditoriaComponent,
+        loadComponent: () => import('./pages/admin/auditoria/auditoria.component').then((m) => m.AuditoriaComponent),
         title: 'Auditoría',
         canActivate: [rolGuard],
         data: { roles: ['ADMINISTRADOR'] },
       },
       {
         path: 'admin/tipos-alojamiento',
-        component: TiposComponent,
+        loadComponent: () => import('./pages/admin/tipos/tipos.component').then((m) => m.TiposComponent),
         title: 'Tipos de alojamiento',
         canActivate: [rolGuard],
         data: { roles: ['ADMINISTRADOR'] },
       },
       {
         path: 'admin/reportes',
-        component: ReportesComponent,
+        loadComponent: () => import('./pages/admin/reportes/reportes.component').then((m) => m.ReportesComponent),
         title: 'Reportes',
         canActivate: [rolGuard],
         data: { roles: ['ADMINISTRADOR'] },
       },
       {
         path: 'admin/configuracion',
-        component: ConfiguracionComponent,
+        loadComponent: () => import('./pages/admin/configuracion/configuracion.component').then((m) => m.ConfiguracionComponent),
         title: 'Configuración',
         canActivate: [rolGuard],
         data: { roles: ['ADMINISTRADOR'] },

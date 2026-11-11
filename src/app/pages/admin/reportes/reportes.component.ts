@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   Exportacion,
@@ -15,6 +15,7 @@ const hoyISO = () => new Date().toISOString().slice(0, 10);
 @Component({
   selector: 'app-reportes',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, DatePipe],
   templateUrl: './reportes.component.html',
   styleUrl: './reportes.component.scss',

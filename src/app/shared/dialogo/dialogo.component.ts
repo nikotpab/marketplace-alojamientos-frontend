@@ -1,4 +1,4 @@
-import { Component, ElementRef, afterNextRender, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, afterNextRender, inject, input, output } from '@angular/core';
 
 /**
  * Ventana modal reutilizable. El contenido se proyecta; se cierra con Escape o con el fondo
@@ -7,6 +7,7 @@ import { Component, ElementRef, afterNextRender, inject, input, output } from '@
 @Component({
   selector: 'app-dialogo',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="fondo" (click)="!bloqueado() && cerrar.emit()"></div>
     <section class="dialogo" role="dialog" aria-modal="true" [attr.aria-label]="titulo()" tabindex="-1"

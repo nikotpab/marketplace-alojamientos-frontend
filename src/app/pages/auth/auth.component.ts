@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SoloNumerosDirective } from '../../shared/solo-numeros.directive';
@@ -13,7 +14,8 @@ const INICIO_POR_ROL: Record<RolUsuario, string> = {
 @Component({
   selector: 'app-auth',
   standalone: true,
-  imports: [ReactiveFormsModule, SoloNumerosDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgOptimizedImage, ReactiveFormsModule, SoloNumerosDirective],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss',
 })

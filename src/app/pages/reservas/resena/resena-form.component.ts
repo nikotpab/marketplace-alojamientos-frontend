@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Reserva } from '../../../core/reservas.service';
 import { MAX_COMENTARIO, ResenasService } from '../../../core/resenas.service';
@@ -7,6 +7,7 @@ import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
 @Component({
   selector: 'app-resena-form',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, DialogoComponent],
   templateUrl: './resena-form.component.html',
   styleUrl: './resena-form.component.scss',

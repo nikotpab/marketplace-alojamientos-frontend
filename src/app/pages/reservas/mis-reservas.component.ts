@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Cancelacion, ESTADO_RESERVA_TEXTO, Reserva, ReservasService } from '../../core/reservas.service';
 import { CancelarReservaComponent } from './cancelar/cancelar-reserva.component';
@@ -12,6 +12,7 @@ import { DetalleCancelacionComponent } from '../../shared/detalle-cancelacion/de
 @Component({
   selector: 'app-mis-reservas',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, CurrencyPipe, DatePipe, CancelarReservaComponent, DetalleCancelacionComponent, ResenaFormComponent],
   templateUrl: './mis-reservas.component.html',
   styleUrl: './mis-reservas.component.scss',

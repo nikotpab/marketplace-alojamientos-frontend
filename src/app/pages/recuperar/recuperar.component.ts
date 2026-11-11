@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
@@ -12,7 +13,8 @@ function coinciden(g: AbstractControl) {
 @Component({
   selector: 'app-recuperar',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgOptimizedImage, ReactiveFormsModule],
   templateUrl: './recuperar.component.html',
   styleUrl: './recuperar.component.scss',
 })

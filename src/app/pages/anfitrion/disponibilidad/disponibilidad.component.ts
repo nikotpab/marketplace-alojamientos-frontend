@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Disponibilidad, DisponibilidadService, EstadoPeriodo } from '../../../core/disponibilidad.service';
 import { CalendarioComponent, RangoFechas } from '../../../shared/calendario/calendario.component';
@@ -7,6 +7,7 @@ import { CalendarioComponent, RangoFechas } from '../../../shared/calendario/cal
 @Component({
   selector: 'app-disponibilidad',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, DatePipe, CalendarioComponent],
   templateUrl: './disponibilidad.component.html',
   styleUrl: './disponibilidad.component.scss',

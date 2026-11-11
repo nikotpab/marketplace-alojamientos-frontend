@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TimeoutError } from 'rxjs';
 import { timeout } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { PagoFormComponent } from './pago/pago-form.component';
 @Component({
   selector: 'app-cotizacion',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, CurrencyPipe, DatePipe, FormsModule, PagoFormComponent],
   templateUrl: './cotizacion.component.html',
   styleUrl: './cotizacion.component.scss',

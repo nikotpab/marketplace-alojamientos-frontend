@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, input, output, signal } from '@angular/core';
 
 export interface RangoFechas {
   desde: string;
@@ -25,6 +25,7 @@ export const aIso = (f: Date) =>
 @Component({
   selector: 'app-calendario',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calendario.component.html',
   styleUrl: './calendario.component.scss',
 })

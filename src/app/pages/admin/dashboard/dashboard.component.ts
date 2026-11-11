@@ -1,5 +1,5 @@
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Indicadores, IndicadoresService } from '../../../core/indicadores.service';
 import { ESTADO_RESERVA_TEXTO, EstadoReserva } from '../../../core/reservas.service';
@@ -12,6 +12,7 @@ const haceDias = (n: number) => new Date(Date.now() - n * 86_400_000).toISOStrin
 @Component({
   selector: 'app-dashboard',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CurrencyPipe, DecimalPipe, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',

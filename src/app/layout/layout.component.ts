@@ -1,4 +1,5 @@
-import { Component, DestroyRef, computed, effect, inject } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService, RolUsuario } from '../core/auth.service';
 import { NotificacionesService } from '../core/notificaciones.service';
@@ -50,7 +51,8 @@ const ETIQUETA_ROL: Record<RolUsuario, string> = {
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgOptimizedImage, RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
 })

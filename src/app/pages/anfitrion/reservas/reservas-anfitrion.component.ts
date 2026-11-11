@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ESTADO_RESERVA_TEXTO, EstadoReserva, Reserva, ReservasService } from '../../../core/reservas.service';
 
 type Filtro = EstadoReserva | 'TODAS';
@@ -9,6 +9,7 @@ import { DetalleCancelacionComponent } from '../../../shared/detalle-cancelacion
 @Component({
   selector: 'app-reservas-anfitrion',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CurrencyPipe, DatePipe, DetalleCancelacionComponent],
   templateUrl: './reservas-anfitrion.component.html',
   styleUrl: './reservas-anfitrion.component.scss',

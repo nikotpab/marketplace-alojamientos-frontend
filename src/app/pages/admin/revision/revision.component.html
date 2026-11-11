@@ -26,9 +26,10 @@
 
         @if (p.imagenes.length) {
           <div class="imagenes">
-            @for (img of p.imagenes; track img) {
-              <a [href]="img" target="_blank" rel="noopener noreferrer" class="miniatura"
-                 [style.background-image]="'url(' + img + ')'" aria-label="Abrir imagen"></a>
+            @for (img of p.imagenes; track img; let i = $index) {
+              <a [href]="img" target="_blank" rel="noopener noreferrer" class="miniatura">
+                <img [ngSrc]="img" width="96" height="64" [alt]="'Imagen ' + (i + 1) + ' de ' + (p.titulo || 'la publicación') + ' (abre en otra pestaña)'" />
+              </a>
             }
           </div>
         }

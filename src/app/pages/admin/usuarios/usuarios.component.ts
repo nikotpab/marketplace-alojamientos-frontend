@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService, RolUsuario } from '../../../core/auth.service';
 import { UsuarioAdmin, UsuariosAdminService } from '../../../core/usuarios-admin.service';
@@ -13,6 +13,7 @@ const ROL_TEXTO: Record<RolUsuario, string> = {
 @Component({
   selector: 'app-usuarios',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, DialogoMotivoComponent],
   templateUrl: './usuarios.component.html',
 })
