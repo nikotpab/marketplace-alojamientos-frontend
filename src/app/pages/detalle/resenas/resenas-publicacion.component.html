@@ -32,6 +32,13 @@
             <strong>{{ x.autor }}</strong>
             <span class="nota" [attr.aria-label]="x.calificacion + ' de 5'">{{ estrellas(x.calificacion) }}</span>
             <small>{{ x.fecha | date: 'mediumDate' }}</small>
+            @if (auth.usuario()) {
+              @if (reportadas().includes(x.id)) {
+                <small class="reportada">Reportada, gracias</small>
+              } @else {
+                <button type="button" class="reportar" (click)="errorReporte.set(''); aReportar.set(x)">Reportar</button>
+              }
+            }
           </p>
           <!-- Interpolación: el contenido siempre se muestra escapado (sin innerHTML) -->
           <p class="texto">{{ x.comentario }}</p>
@@ -47,3 +54,9 @@
     }
   }
 </section>
+
+@if (aReportar(); as x) {
+  <app-dialogo-motivo titulo="Reportar reseña" [descripcion]="'Reseña de ' + x.autor + '. Un administrador la revisará.'"
+    etiquetaMotivo="¿Por qué la reportas?" textoAccion="Enviar reporte" [peligro]="false"
+    [procesando]="reportando()" [error]="errorReporte()" (confirmar)="reportar($event)" (cerrar)="aReportar.set(null)" />
+}
