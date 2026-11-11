@@ -62,7 +62,7 @@
 
           @if (errorGeneral()) { <p class="error" role="alert">{{ errorGeneral() }}</p> }
           @if (exito()) { <p class="exito" role="status">Cuenta creada. Te enviamos un enlace a tu correo para verificarla; ábrelo antes de iniciar sesión (vence en 24 horas).</p> }
-          <button type="submit" class="principal" [disabled]="cargando()">
+          <button type="submit" class="btn btn-primario principal" [disabled]="cargando()">
             {{ cargando() ? 'Creando cuenta...' : 'Crear cuenta' }}
           </button>
         </form>
@@ -89,7 +89,7 @@
               <button type="button" class="olvido" (click)="reenviarVerificacion()">Reenviar correo de verificación</button>
             }
           }
-          <button type="submit" class="principal" [disabled]="cargandoLogin()">
+          <button type="submit" class="btn btn-primario principal" [disabled]="cargandoLogin()">
             {{ cargandoLogin() ? 'Ingresando...' : 'Iniciar sesión' }}
           </button>
           <button type="button" class="olvido" (click)="irARecuperar()">¿Olvidaste tu contraseña?</button>

@@ -58,11 +58,7 @@ input:focus { outline: 2px solid var(--verde); }
 .error { color: var(--rojo); font-weight: 500; }
 .exito { color: var(--verde); font-weight: 600; margin: 0; } 
 
-.principal {
-  background: var(--marca); color: #fff; border: 0; padding: 14px;
-  border-radius: var(--radio); font-weight: 700; font-size: 1rem; cursor: pointer;
-  &:disabled { opacity: .6; cursor: wait; }
-}
+.principal { padding: 13px; font-size: 1rem; }
 
 @media (max-width: 800px) {
   .tarjeta { grid-template-columns: 1fr; }

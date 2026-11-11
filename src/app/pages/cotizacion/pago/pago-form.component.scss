@@ -12,11 +12,7 @@ input {
 .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .err { font-size: .75rem; font-weight: 500; color: var(--rojo); }
 .ayuda { margin: 0; font-size: .75rem; color: #55574a; code { background: #f1efe4; padding: 1px 4px; border-radius: 4px; } }
-.pagar {
-  width: 100%; padding: 13px; border: 0; border-radius: var(--radio-md); background: var(--verde); color: #fff;
-  font: inherit; font-weight: 700; font-size: 1rem; cursor: pointer;
-  &:disabled { opacity: .6; cursor: wait; }
-}
+.pagar { padding: 13px; font-size: 1rem; }
 .cancelar {
   background: none; border: 0; color: var(--verde); font: inherit; font-weight: 600; cursor: pointer; text-decoration: underline;
   &:disabled { opacity: .4; cursor: default; }

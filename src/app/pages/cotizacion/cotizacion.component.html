@@ -76,7 +76,7 @@
 
           @if (errorReserva()) { <p class="aviso mal" role="alert">{{ errorReserva() }}</p> }
           @if (!pagando()) {
-            <button type="button" class="confirmar" [disabled]="cargando()" (click)="pagando.set(true)">Continuar al pago</button>
+            <button type="button" class="btn btn-primario confirmar btn-bloque" [disabled]="cargando()" (click)="pagando.set(true)">Continuar al pago</button>
           } @else {
             <app-pago-form [total]="c.total" [procesando]="confirmando()" (pagar)="confirmar($event)" (cancelar)="pagando.set(false)" />
           }

@@ -38,7 +38,7 @@
 
   <p class="ayuda">Prueba: <code>4242 4242 4242 4242</code> aprobada · <code>4000 0000 0000 0002</code> rechazada · <code>4000 0000 0000 0119</code> error de la pasarela.</p>
 
-  <button type="submit" class="pagar" [disabled]="procesando()">
+  <button type="submit" class="btn btn-primario pagar btn-bloque" [disabled]="procesando()">
     {{ procesando() ? 'Procesando pago…' : 'Pagar ' + (total() | currency: 'COP' : 'symbol-narrow' : '1.0-0') }}
   </button>
   <button type="button" class="cancelar" [disabled]="procesando()" (click)="cancelar.emit()">Volver al desglose</button>

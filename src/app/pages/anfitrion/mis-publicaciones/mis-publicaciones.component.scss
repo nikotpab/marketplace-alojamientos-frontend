@@ -3,10 +3,6 @@
 h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
 .subtitulo { margin: 4px 0 0; color: #55574a; }
 
-.principal {
-  background: var(--verde); color: #fff; padding: 11px 22px; border-radius: var(--radio-md);
-  font-weight: 700; text-decoration: none;
-}
 .aviso {
   padding: 12px 16px; border-radius: 12px; margin: 0 0 16px; font-weight: 500;
   &.ok { background: var(--verde-suave); color: var(--verde); }

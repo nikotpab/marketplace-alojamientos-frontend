@@ -50,11 +50,7 @@ table {
   .fechas { grid-template-columns: 1fr; }
 }
 
-.confirmar {
-  width: 100%; margin-top: 16px; padding: 13px; border: 0; border-radius: var(--radio-md);
-  background: var(--verde); color: #fff; font: inherit; font-weight: 700; font-size: 1rem; cursor: pointer;
-  &:disabled { opacity: .6; cursor: wait; }
-}
+.confirmar { margin-top: 16px; padding: 13px; font-size: 1rem; }
 .aviso.mal { margin-top: 12px; }
 .exito {
   text-align: center; padding: 40px 24px;

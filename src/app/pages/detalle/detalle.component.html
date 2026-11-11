@@ -100,7 +100,7 @@
           } @else {
             <p class="ayuda">Elige tus fechas en el calendario de disponibilidad.</p>
           }
-          <a class="cotizar" [class.inactivo]="!noches() || cruzaNoDisponibles()"
+          <a class="btn btn-primario cotizar btn-bloque" [class.inactivo]="!noches() || cruzaNoDisponibles()"
              [routerLink]="['/alojamientos', a.id, 'cotizar']"
              [queryParams]="rango() ? { llegada: rango()!.desde, salida: rango()!.hasta } : {}"
              [attr.aria-disabled]="!noches() || cruzaNoDisponibles()">Cotizar y reservar</a>

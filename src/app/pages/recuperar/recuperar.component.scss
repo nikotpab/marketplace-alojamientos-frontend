@@ -19,11 +19,7 @@ input {
 input:focus { outline: 2px solid var(--verde); }
 .error { color: var(--rojo); font-weight: 500; margin: 0; }
 
-.principal {
-  background: var(--marca); color: #fff; border: 0; padding: 14px;
-  border-radius: var(--radio); font-weight: 700; font-size: 1rem; cursor: pointer;
-  &:disabled { opacity: .6; cursor: wait; }
-}
+.principal { padding: 13px; font-size: 1rem; }
 
 .volver {
   align-self: center; background: none; border: 0; padding: 0; font: inherit;

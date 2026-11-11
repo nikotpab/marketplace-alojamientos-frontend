@@ -19,10 +19,7 @@
   }
 }
 
-.ingresar {
-  justify-self: end; padding: 8px 18px; border-radius: var(--radio-sm); text-decoration: none;
-  background: var(--verde); color: #fff; font-weight: 600;
-}
+.ingresar { justify-self: end; }
 
 .usuario { display: flex; align-items: center; gap: 12px; justify-self: end; }
 .campana {

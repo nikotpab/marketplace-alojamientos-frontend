@@ -75,12 +75,7 @@ p { margin: 0 0 8px; line-height: 1.5; }
 .ayuda { color: #55574a; font-size: .9rem; }
 .aviso-error { color: var(--rojo); font-size: .9rem; }
 
-.cotizar {
-  display: block; margin-top: 16px; text-align: center; padding: 12px; border-radius: var(--radio-md);
-  background: var(--verde); color: #fff; font-weight: 700; text-decoration: none;
-  &:hover { opacity: .92; }
-  &.inactivo { opacity: .45; pointer-events: none; }
-}
+.cotizar { margin-top: 16px; padding: 12px; &.inactivo { opacity: .45; pointer-events: none; } }
 
 @media (max-width: 800px) {
   .columnas { grid-template-columns: 1fr; }
