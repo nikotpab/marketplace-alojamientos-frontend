@@ -1,7 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TIPOS } from '../../../core/alojamientos.service';
+import { TiposAlojamientoService } from '../../../core/tipos-alojamiento.service';
 import { DialogoMotivoComponent } from '../../../shared/dialogo-motivo/dialogo-motivo.component';
 import {
   ESTADO_TEXTO,
@@ -20,6 +20,7 @@ type Filtro = EstadoPublicacion | 'TODAS';
   styleUrl: './todas-publicaciones.component.scss',
 })
 export class TodasPublicacionesComponent {
+  private tiposApi = inject(TiposAlojamientoService);
   private api = inject(PublicacionesService);
 
   estados = ESTADO_TEXTO;
@@ -107,6 +108,6 @@ export class TodasPublicacionesComponent {
   }
 
   nombreTipo(codigo: string) {
-    return TIPOS.find((t) => t.valor === codigo)?.texto ?? codigo;
+    return this.tiposApi.nombre(codigo);
   }
 }

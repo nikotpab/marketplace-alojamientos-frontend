@@ -7,8 +7,8 @@ import {
   AlojamientosService,
   FiltrosBusqueda,
   SERVICIOS,
-  TIPOS,
 } from '../../core/alojamientos.service';
+import { TiposAlojamientoService } from '../../core/tipos-alojamiento.service';
 
 function salidaPosterior(control: AbstractControl): ValidationErrors | null {
   const llegada = control.parent?.get('llegada')?.value;
@@ -28,7 +28,7 @@ export class BusquedaComponent {
   private fb = inject(FormBuilder);
   private api = inject(AlojamientosService);
 
-  tipos = TIPOS;
+  tiposApi = inject(TiposAlojamientoService);
   servicios = SERVICIOS;
 
   form = this.fb.nonNullable.group({
@@ -51,6 +51,7 @@ export class BusquedaComponent {
   totalPaginas = signal(0);
 
   constructor() {
+    this.tiposApi.cargarActivos();
     this.form.controls.llegada.valueChanges.subscribe(() =>
       this.form.controls.salida.updateValueAndValidity(),
     );
