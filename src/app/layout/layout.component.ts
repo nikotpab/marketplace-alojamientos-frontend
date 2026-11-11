@@ -32,6 +32,7 @@ const ENLACES: Record<RolUsuario, Enlace[]> = {
 /** Enlaces secundarios agrupados en el menú "Más" para no saturar la barra. */
 const ENLACES_MAS: Partial<Record<RolUsuario, Enlace[]>> = {
   ADMINISTRADOR: [
+    { texto: 'Reportes', ruta: '/admin/reportes' },
     { texto: 'Auditoría', ruta: '/admin/auditoria' },
     { texto: 'Configuración', ruta: '/admin/configuracion' },
     { texto: 'Tipos de alojamiento', ruta: '/admin/tipos-alojamiento' },
