@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TiposAlojamientoService } from '../../../core/tipos-alojamiento.service';
 import { Publicacion, PublicacionesService } from '../../../core/publicaciones.service';
@@ -9,6 +9,7 @@ const MOTIVO_MINIMO = 10;
 @Component({
   selector: 'app-revision',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, CurrencyPipe],
   templateUrl: './revision.component.html',
   styleUrl: './revision.component.scss',

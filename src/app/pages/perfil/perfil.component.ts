@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, Perfil, RolUsuario } from '../../core/auth.service';
@@ -13,6 +13,7 @@ const ETIQUETA_ROL: Record<RolUsuario, string> = {
 @Component({
   selector: 'app-perfil',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, SoloNumerosDirective],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.scss',

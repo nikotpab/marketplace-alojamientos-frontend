@@ -1,10 +1,11 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NotificacionesService, TIPO_NOTIFICACION_TEXTO } from '../../core/notificaciones.service';
 
 @Component({
   selector: 'app-notificaciones',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DatePipe],
   templateUrl: './notificaciones.component.html',
   styleUrl: './notificaciones.component.scss',

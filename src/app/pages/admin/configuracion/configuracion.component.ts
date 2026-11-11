@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { CAMPOS_TARIFA, CambioTarifas, ConfiguracionService, Tarifas } from '../../../core/configuracion.service';
 import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
@@ -16,6 +16,7 @@ interface Diferencia {
 @Component({
   selector: 'app-configuracion',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DatePipe, ReactiveFormsModule, DialogoComponent],
   templateUrl: './configuracion.component.html',
   styleUrl: './configuracion.component.scss',

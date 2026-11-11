@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-acceso-denegado',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <main class="aviso">
       <h1>403</h1>

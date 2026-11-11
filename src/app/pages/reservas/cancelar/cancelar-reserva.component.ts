@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Cancelacion, EstimacionDevolucion, Reserva, ReservasService } from '../../../core/reservas.service';
 import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
@@ -9,6 +9,7 @@ type Paso = 'motivo' | 'revision';
 @Component({
   selector: 'app-cancelar-reserva',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, CurrencyPipe, DatePipe, DialogoComponent],
   templateUrl: './cancelar-reserva.component.html',
 })

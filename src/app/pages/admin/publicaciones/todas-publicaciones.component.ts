@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TiposAlojamientoService } from '../../../core/tipos-alojamiento.service';
 import { DialogoMotivoComponent } from '../../../shared/dialogo-motivo/dialogo-motivo.component';
@@ -15,6 +15,7 @@ type Filtro = EstadoPublicacion | 'TODAS';
 @Component({
   selector: 'app-todas-publicaciones',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, CurrencyPipe, DialogoMotivoComponent],
   templateUrl: './todas-publicaciones.component.html',
   styleUrl: './todas-publicaciones.component.scss',

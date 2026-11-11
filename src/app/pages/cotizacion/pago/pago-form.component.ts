@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 
 /**
@@ -32,6 +32,7 @@ function tarjetaDePrueba(c: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-pago-form',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, CurrencyPipe],
   templateUrl: './pago-form.component.html',
   styleUrl: './pago-form.component.scss',

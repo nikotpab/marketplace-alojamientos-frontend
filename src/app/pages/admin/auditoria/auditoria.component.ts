@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ACCIONES_AUDITORIA, AuditoriaService, EventoAuditoria, FiltrosAuditoria } from '../../../core/auditoria.service';
 
@@ -8,6 +8,7 @@ const POR_PAGINA = 25;
 @Component({
   selector: 'app-auditoria',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DatePipe, FormsModule],
   templateUrl: './auditoria.component.html',
   styleUrl: './auditoria.component.scss',

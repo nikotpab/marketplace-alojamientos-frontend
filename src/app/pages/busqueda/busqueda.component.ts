@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Params, Router, RouterLink } from '@angular/router';
@@ -21,6 +21,7 @@ function salidaPosterior(control: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-busqueda',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, CurrencyPipe],
   templateUrl: './busqueda.component.html',
   styleUrl: './busqueda.component.scss',

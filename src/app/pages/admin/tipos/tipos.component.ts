@@ -1,10 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TipoAlojamientoConfig, TiposAlojamientoService } from '../../../core/tipos-alojamiento.service';
 
 @Component({
   selector: 'app-tipos',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule],
   templateUrl: './tipos.component.html',
   styleUrl: './tipos.component.scss',

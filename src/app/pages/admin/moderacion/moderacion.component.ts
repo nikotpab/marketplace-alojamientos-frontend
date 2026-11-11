@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Publicacion, PublicacionesService } from '../../../core/publicaciones.service';
 import { ResenaVisible, ResenasService } from '../../../core/resenas.service';
@@ -12,6 +12,7 @@ import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
 @Component({
   selector: 'app-moderacion',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DatePipe, FormsModule, DialogoComponent],
   templateUrl: './moderacion.component.html',
   styleUrl: './moderacion.component.scss',
