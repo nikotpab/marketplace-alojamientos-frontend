@@ -20,3 +20,31 @@ body {
   color: var(--texto);
   background: var(--crema-claro);
 }
+/* Controles compartidos de diálogos y formularios de acciones */
+.campo-dialogo {
+  display: grid; gap: 6px; margin: 12px 0; font-size: .85rem; font-weight: 700; color: #55574a;
+  textarea, input, select {
+    font: inherit; font-weight: 500; color: var(--texto); padding: 10px 12px;
+    border: 1px solid var(--gris-borde); border-radius: 10px; resize: vertical;
+    &:focus-visible { outline: 2px solid var(--verde); outline-offset: 1px; }
+  }
+  small { font-weight: 500; }
+}
+.acciones-dialogo { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.btn-primario, .btn-secundario, .btn-peligro {
+  padding: 10px 18px; border-radius: 999px; font: inherit; font-weight: 700; cursor: pointer;
+  &:disabled { opacity: .55; cursor: default; }
+}
+.btn-primario { border: 0; background: var(--verde); color: #fff; }
+.btn-peligro { border: 0; background: var(--rojo); color: #fff; }
+.btn-secundario { border: 2px solid var(--verde); background: #fff; color: var(--verde); }
+.texto-error { color: var(--rojo); font-size: .85rem; margin: 8px 0 0; }
+
+.devolucion {
+  margin: 12px 0 0; display: grid; gap: 0;
+  div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--gris-borde); }
+  dt { color: #55574a; }
+  dd { margin: 0; font-weight: 600; text-align: right; }
+  .total { border-bottom: 0; border-top: 2px solid var(--texto); dt, dd { font-weight: 800; color: var(--texto); } }
+}
+.nota { font-size: .82rem; color: #55574a; }
