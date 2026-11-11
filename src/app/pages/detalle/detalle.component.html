@@ -16,24 +16,38 @@
       </p>
     </header>
 
-    <section class="galeria" aria-label="Imágenes del alojamiento">
+    <section class="galeria" [class.unica]="a.imagenes.length === 1" aria-label="Imágenes del alojamiento">
       @if (a.imagenes.length) {
-        <div class="principal" [style.background-image]="'url(' + a.imagenes[imagenActiva()] + ')'"></div>
-        <div class="miniaturas">
-          @for (img of a.imagenes; track img; let i = $index) {
-            <button type="button" [class.on]="i === imagenActiva()" [style.background-image]="'url(' + img + ')'"
-                    [attr.aria-label]="'Ver imagen ' + (i + 1)" (click)="imagenActiva.set(i)"></button>
-          }
-        </div>
+        @for (img of a.imagenes.slice(0, 5); track img; let i = $index) {
+          <button type="button" class="foto" [class.principal]="i === 0" (click)="visor.set(i)"
+                  [attr.aria-label]="'Ampliar imagen ' + (i + 1) + ' de ' + a.imagenes.length">
+            <img [src]="img" [alt]="a.titulo + ', imagen ' + (i + 1)" [attr.width]="i === 0 ? 800 : 400"
+                 [attr.height]="i === 0 ? 600 : 300" [attr.loading]="i === 0 ? null : 'lazy'" />
+          </button>
+        }
+        @if (a.imagenes.length > 5) {
+          <button type="button" class="btn btn-secundario todas" (click)="visor.set(0)">Ver las {{ a.imagenes.length }} fotos</button>
+        }
       } @else {
-        <div class="principal vacia">Sin imágenes</div>
+        <div class="foto principal vacia">Sin imágenes</div>
       }
     </section>
+
+    @if (visor() !== null) {
+      <div class="visor" role="dialog" aria-modal="true" aria-label="Fotos del alojamiento" tabindex="-1"
+           (keydown.escape)="visor.set(null)" (keydown.arrowRight)="mover(1, a.imagenes.length)" (keydown.arrowLeft)="mover(-1, a.imagenes.length)">
+        <button type="button" class="cerrar" aria-label="Cerrar" (click)="visor.set(null)">×</button>
+        <button type="button" class="flecha anterior" aria-label="Imagen anterior" (click)="mover(-1, a.imagenes.length)">‹</button>
+        <img [src]="a.imagenes[visor()!]" [alt]="a.titulo + ', imagen ' + (visor()! + 1)" />
+        <button type="button" class="flecha siguiente" aria-label="Imagen siguiente" (click)="mover(1, a.imagenes.length)">›</button>
+        <p class="posicion">{{ visor()! + 1 }} / {{ a.imagenes.length }}</p>
+      </div>
+    }
 
     <div class="columnas">
       <div class="info">
         @if (activo()) {
-          <section class="disponibilidad">
+          <section class="disponibilidad" id="calendario">
             <h2>Disponibilidad</h2>
             <app-calendario [meses]="2" [bloqueados]="disponibilidad().bloqueados"
                             [reservados]="disponibilidad().reservados"
@@ -69,7 +83,7 @@
         <app-resenas-publicacion [publicacionId]="a.id" />
       </div>
 
-      <aside class="reserva">
+      <aside class="reserva" id="reservar">
         <p class="precio"><strong>{{ a.precioNoche | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong> / noche</p>
 
         @if (activo()) {
@@ -94,6 +108,20 @@
           <p class="aviso-error">Este alojamiento no está disponible para reservas en este momento.</p>
         }
       </aside>
+    </div>
+
+    <!-- Móvil: barra fija con el precio y el acceso a cotizar -->
+    <div class="barra-movil">
+      <p><strong>{{ a.precioNoche | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong> noche
+        @if (noches() && !cruzaNoDisponibles()) { <small>{{ noches() }} {{ noches() === 1 ? 'noche' : 'noches' }}</small> }</p>
+      @if (!activo()) {
+        <span class="no-disponible">No disponible</span>
+      } @else if (noches() && !cruzaNoDisponibles()) {
+        <a class="btn btn-primario" [routerLink]="['/alojamientos', a.id, 'cotizar']"
+           [queryParams]="{ llegada: rango()!.desde, salida: rango()!.hasta }">Cotizar</a>
+      } @else {
+        <a class="btn btn-primario" href="#calendario" (click)="irAlCalendario($event)">Elegir fechas</a>
+      }
     </div>
   }
 </main>

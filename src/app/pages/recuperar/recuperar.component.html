@@ -10,10 +10,10 @@
         <form [formGroup]="correo" (ngSubmit)="solicitar()" novalidate>
           <label>Correo electrónico
             <input formControlName="correo" type="email" autocomplete="email" />
-            @if (invalido('correo', 'correo')) { <small class="error">Ingresa un correo válido</small> }
+            @if (invalido('correo', 'correo')) { <small class="error" role="alert">Ingresa un correo válido</small> }
           </label>
 
-          @if (error()) { <p class="error">{{ error() }}</p> }
+          @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
           <button type="submit" class="principal" [disabled]="cargando()">
             {{ cargando() ? 'Enviando...' : 'Enviar enlace' }}
           </button>
@@ -26,18 +26,18 @@
         <form [formGroup]="nueva" (ngSubmit)="guardar()" novalidate>
           <label>Contraseña nueva
             <input formControlName="contrasena" type="password" autocomplete="new-password" />
-            @if (invalido('nueva', 'contrasena')) { <small class="error">Mínimo 8 caracteres</small> }
+            @if (invalido('nueva', 'contrasena')) { <small class="error" role="alert">Mínimo 8 caracteres</small> }
           </label>
 
           <label>Confirmar contraseña
             <input formControlName="confirmar" type="password" autocomplete="new-password" />
             @if ((nueva.touched || enviado()) && nueva.hasError('noCoinciden')) {
-              <small class="error">Las contraseñas no coinciden</small>
+              <small class="error" role="alert">Las contraseñas no coinciden</small>
             }
           </label>
 
           @if (error()) {
-            <p class="error">{{ error() }}</p>
+            <p class="error" role="alert">{{ error() }}</p>
             <button type="button" class="volver" (click)="pedirOtro()">Pedir un enlace nuevo</button>
           }
           <button type="submit" class="principal" [disabled]="cargando()">

@@ -1,91 +1,129 @@
 <main class="busqueda">
   <section class="hero">
     <h1>Encuentra tu próximo alojamiento</h1>
-    <p>Puedes explorar y comparar alojamientos sin una cuenta.</p>
-  </section>
+    <p>Explora y compara sin crear una cuenta.</p>
 
-  <form class="filtros" [formGroup]="form" (ngSubmit)="buscar()" novalidate>
-    <div class="fila">
-      <label class="campo">Ciudad
-        <input type="text" formControlName="ciudad" placeholder="¿A dónde vas?" />
+    <form class="barra-busqueda" [formGroup]="form" (ngSubmit)="buscar()" novalidate role="search" aria-label="Buscar alojamientos">
+      <label class="campo ciudad">Destino
+        <input type="text" formControlName="ciudad" placeholder="¿A dónde vas?" autocomplete="address-level2" />
       </label>
       <label class="campo">Llegada
         <input type="date" formControlName="llegada" />
       </label>
       <label class="campo" [class.con-error]="form.controls.salida.touched && form.controls.salida.invalid">Salida
-        <input type="date" formControlName="salida" [min]="form.controls.llegada.value" />
-        @if (form.controls.salida.touched && form.controls.salida.hasError('salidaInvalida')) {
-          <small class="error" role="alert">La fecha de salida debe ser posterior a la de llegada.</small>
-        }
+        <input type="date" formControlName="salida" [min]="form.controls.llegada.value"
+               [attr.aria-invalid]="form.controls.salida.hasError('salidaInvalida')"
+               [attr.aria-describedby]="form.controls.salida.hasError('salidaInvalida') ? 'error-salida' : null" />
       </label>
       <label class="campo corto">Huéspedes
         <input type="number" min="1" formControlName="huespedes" placeholder="1" />
       </label>
-    </div>
+      <button type="submit" class="btn btn-primario buscar" [disabled]="cargando()">Buscar</button>
+    </form>
+    @if (form.controls.salida.touched && form.controls.salida.hasError('salidaInvalida')) {
+      <p class="error" id="error-salida" role="alert">La fecha de salida debe ser posterior a la de llegada.</p>
+    }
+  </section>
 
-    <div class="fila">
-      <label class="campo">Tipo
+  <div class="herramientas">
+    <button type="button" class="btn btn-secundario" (click)="panelAbierto.set(true)" aria-controls="panel-filtros"
+            [attr.aria-expanded]="panelAbierto()">
+      Filtros @if (filtrosPanel()) { <span class="insignia">{{ filtrosPanel() }}</span> }
+    </button>
+    @if (chips().length) {
+      <ul class="activos" aria-label="Filtros activos">
+        @for (c of chips(); track c.clave) {
+          <li><button type="button" class="chip on" (click)="quitar(c.clave)" [attr.aria-label]="'Quitar filtro ' + c.texto">{{ c.texto }} <span aria-hidden="true">×</span></button></li>
+        }
+        <li><button type="button" class="enlace" (click)="limpiar()">Limpiar todo</button></li>
+      </ul>
+    }
+  </div>
+
+  @if (panelAbierto()) {
+    <div class="fondo-panel" (click)="panelAbierto.set(false)"></div>
+    <aside class="panel" id="panel-filtros" role="dialog" aria-modal="true" aria-labelledby="titulo-filtros"
+           (keydown.escape)="panelAbierto.set(false)" [formGroup]="form">
+      <header>
+        <h2 id="titulo-filtros">Filtros</h2>
+        <button type="button" class="cerrar" aria-label="Cerrar filtros" (click)="panelAbierto.set(false)">×</button>
+      </header>
+
+      <label class="campo">Tipo de alojamiento
         <select formControlName="tipo">
           <option value="">Todos</option>
-          @for (t of tiposApi.activos(); track t.codigo) {
-            <option [value]="t.codigo">{{ t.nombre }}</option>
-          }
+          @for (t of tiposApi.activos(); track t.codigo) { <option [value]="t.codigo">{{ t.nombre }}</option> }
         </select>
       </label>
-      <label class="campo corto">Precio mín. (COP)
-        <input type="number" min="0" formControlName="precioMin" />
-      </label>
-      <label class="campo corto">Precio máx. (COP)
-        <input type="number" min="0" formControlName="precioMax" />
-      </label>
-    </div>
+      <div class="fila">
+        <label class="campo">Precio mínimo (COP)
+          <input type="number" min="0" formControlName="precioMin" inputmode="numeric" />
+        </label>
+        <label class="campo">Precio máximo (COP)
+          <input type="number" min="0" formControlName="precioMax" inputmode="numeric" />
+        </label>
+      </div>
+      <fieldset class="servicios">
+        <legend>Servicios</legend>
+        @for (s of servicios; track s) {
+          <button type="button" class="chip" [class.on]="seleccionados().includes(s)"
+                  [attr.aria-pressed]="seleccionados().includes(s)" (click)="alternarServicio(s)">{{ s }}</button>
+        }
+      </fieldset>
 
-    <fieldset class="servicios">
-      <legend>Servicios</legend>
-      @for (s of servicios; track s) {
-        <button type="button" class="chip" [class.on]="seleccionados().includes(s)"
-                [attr.aria-pressed]="seleccionados().includes(s)" (click)="alternarServicio(s)">{{ s }}</button>
-      }
-    </fieldset>
+      <footer>
+        <button type="button" class="enlace" (click)="limpiar()">Limpiar filtros</button>
+        <button type="button" class="btn btn-primario" (click)="aplicarPanel()">Ver resultados</button>
+      </footer>
+    </aside>
+  }
 
-    <div class="acciones">
-      <button type="submit" class="primario" [disabled]="cargando()">Buscar</button>
-      <button type="button" class="enlace" (click)="limpiar()">Limpiar filtros</button>
-    </div>
-  </form>
-
-  <section class="resultados" aria-live="polite">
+  <section class="resultados" aria-live="polite" [attr.aria-busy]="cargando()">
     @if (cargando()) {
-      <p class="estado">Buscando alojamientos…</p>
+      <p class="oculto">Buscando alojamientos…</p>
+      <div class="rejilla" aria-hidden="true">
+        @for (e of esqueletos; track e) {
+          <div class="tarjeta esqueleto">
+            <div class="foto"></div>
+            <div class="cuerpo"><span class="linea larga"></span><span class="linea"></span><span class="linea corta"></span></div>
+          </div>
+        }
+      </div>
     } @else if (error()) {
       <p class="estado error" role="alert">{{ error() }}</p>
     } @else if (buscado()) {
-      <h2>{{ total() }} alojamiento{{ total() === 1 ? '' : 's' }} encontrado{{ total() === 1 ? '' : 's' }}</h2>
+      <h2 class="contador">{{ total() }} alojamiento{{ total() === 1 ? '' : 's' }}</h2>
       @if (resultados().length === 0) {
         <p class="estado">No hay alojamientos disponibles con esos filtros. Prueba con otras fechas o menos filtros.</p>
       }
       <div class="rejilla">
-        @for (a of resultados(); track a.id) {
-          <article class="tarjeta">
-            <div class="foto" [style.background-image]="a.imagen ? 'url(' + a.imagen + ')' : null"></div>
-            <div class="cuerpo">
-              <h3>{{ a.titulo }}</h3>
-              <p class="meta">{{ a.ciudad }} · {{ tiposApi.nombre(a.tipo) }} · hasta {{ a.capacidad }} huéspedes</p>
-              <p class="pie-tarjeta">
-                <strong>{{ a.precioNoche | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong> / noche
-                @if (a.calificacion !== null) { <span class="nota">★ {{ a.calificacion.toFixed(1) }}</span> }
-              </p>
-              <a class="ver" [routerLink]="['/alojamientos', a.id]">Ver detalle</a>
+        @for (a of resultados(); track a.id; let i = $index) {
+          <a class="tarjeta" [routerLink]="['/alojamientos', a.id]">
+            <div class="foto">
+              @if (a.imagen) {
+                <img [src]="a.imagen" [alt]="a.titulo" width="400" height="300" [attr.loading]="i < 4 ? null : 'lazy'" />
+              }
             </div>
-          </article>
+            <div class="cuerpo">
+              <div class="titulo">
+                <h3>{{ a.titulo }}</h3>
+                @if (a.calificacion !== null) { <span class="nota" [attr.aria-label]="'Calificación ' + a.calificacion.toFixed(1) + ' de 5'">★ {{ a.calificacion.toFixed(1) }}</span> }
+              </div>
+              <p class="meta">{{ a.ciudad }} · {{ tiposApi.nombre(a.tipo) }} · hasta {{ a.capacidad }} huéspedes</p>
+              <p class="precio"><strong>{{ a.precioNoche | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</strong> noche</p>
+              @if (noches()) {
+                <p class="total">{{ totalEstadia(a.precioNoche) | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} por {{ noches() }} {{ noches() === 1 ? 'noche' : 'noches' }} · sin tarifas</p>
+              }
+            </div>
+          </a>
         }
       </div>
 
       @if (totalPaginas() > 1) {
         <nav class="paginacion" aria-label="Paginación de resultados">
-          <button type="button" (click)="buscar(pagina() - 1)" [disabled]="pagina() === 0">Anterior</button>
+          <button type="button" class="btn btn-secundario" (click)="buscar(pagina() - 1)" [disabled]="pagina() === 0">Anterior</button>
           <span>Página {{ pagina() + 1 }} de {{ totalPaginas() }}</span>
-          <button type="button" (click)="buscar(pagina() + 1)" [disabled]="pagina() + 1 >= totalPaginas()">Siguiente</button>
+          <button type="button" class="btn btn-secundario" (click)="buscar(pagina() + 1)" [disabled]="pagina() + 1 >= totalPaginas()">Siguiente</button>
         </nav>
       }
     }

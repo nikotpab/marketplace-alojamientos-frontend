@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Params, Router, RouterLink } from '@angular/router';
@@ -44,12 +44,22 @@ export class BusquedaComponent {
   seleccionados = signal<string[]>([]);
 
   cargando = signal(false);
+  /** Panel lateral con tipo, precio y servicios. */
+  panelAbierto = signal(false);
+  readonly esqueletos = [1, 2, 3, 4, 5, 6];
   buscado = signal(false);
   error = signal('');
   resultados = signal<AlojamientoResumen[]>([]);
   total = signal(0);
   pagina = signal(0);
   totalPaginas = signal(0);
+
+  /** Noches entre las fechas elegidas (para mostrar el total de la estadía en cada tarjeta). */
+  noches = signal(0);
+
+  /** Filtros del panel que están activos, como chips que se pueden quitar. */
+  chips = signal<{ clave: string; texto: string }[]>([]);
+  filtrosPanel = computed(() => this.chips().filter((c) => ['tipo', 'precioMin', 'precioMax'].includes(c.clave) || c.clave.startsWith('servicio:')).length);
 
   private router = inject(Router);
   private ruta = inject(ActivatedRoute);
@@ -85,6 +95,7 @@ export class BusquedaComponent {
   limpiar() {
     this.form.reset();
     this.seleccionados.set([]);
+    this.panelAbierto.set(false);
     this.error.set('');
     this.router.navigate([], { relativeTo: this.ruta, queryParams: {} });
   }
@@ -138,6 +149,50 @@ export class BusquedaComponent {
       precioMax: num('precioMax'),
     });
     this.seleccionados.set(q.get('servicios')?.split(',').filter(Boolean) ?? []);
+    this.actualizarChips();
+    const v = this.form.getRawValue();
+    this.noches.set(v.llegada && v.salida && v.salida > v.llegada
+      ? Math.round((new Date(v.salida).getTime() - new Date(v.llegada).getTime()) / 86_400_000)
+      : 0);
+  }
+
+  private actualizarChips() {
+    const v = this.form.getRawValue();
+    const c: { clave: string; texto: string }[] = [];
+    if (v.ciudad) c.push({ clave: 'ciudad', texto: v.ciudad });
+    if (v.llegada && v.salida) c.push({ clave: 'fechas', texto: `${v.llegada} → ${v.salida}` });
+    if (v.huespedes) c.push({ clave: 'huespedes', texto: `${v.huespedes} ${v.huespedes === 1 ? 'huésped' : 'huéspedes'}` });
+    if (v.tipo) c.push({ clave: 'tipo', texto: this.tiposApi.nombre(v.tipo) });
+    if (v.precioMin != null) c.push({ clave: 'precioMin', texto: `Desde $${v.precioMin.toLocaleString('es-CO')}` });
+    if (v.precioMax != null) c.push({ clave: 'precioMax', texto: `Hasta $${v.precioMax.toLocaleString('es-CO')}` });
+    for (const sv of this.seleccionados()) c.push({ clave: `servicio:${sv}`, texto: sv });
+    this.chips.set(c);
+  }
+
+  /** Quita un filtro activo y repite la búsqueda. */
+  quitar(clave: string) {
+    const f = this.form.controls;
+    if (clave === 'fechas') {
+      f.llegada.setValue('');
+      f.salida.setValue('');
+    } else if (clave.startsWith('servicio:')) {
+      const sv = clave.slice('servicio:'.length);
+      this.seleccionados.update((l) => l.filter((x) => x !== sv));
+    } else if (clave === 'huespedes' || clave === 'precioMin' || clave === 'precioMax') {
+      f[clave].setValue(null);
+    } else if (clave === 'ciudad' || clave === 'tipo') {
+      f[clave].setValue('');
+    }
+    this.buscar();
+  }
+
+  aplicarPanel() {
+    this.panelAbierto.set(false);
+    this.buscar();
+  }
+
+  totalEstadia(precioNoche: number) {
+    return precioNoche * this.noches();
   }
 
   /** Ejecuta la búsqueda con los filtros del formulario (ya sincronizados con la URL). */

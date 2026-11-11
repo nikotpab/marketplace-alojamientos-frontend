@@ -30,7 +30,8 @@ export class DetalleComponent {
   alojamiento = signal<AlojamientoDetalle | null>(null);
   cargando = signal(true);
   error = signal('');
-  imagenActiva = signal(0);
+  /** Índice de la foto abierta en el visor (null = cerrado). */
+  visor = signal<number | null>(null);
 
   tipoTexto = computed(() => NOMBRES_TIPO[this.alojamiento()?.tipo ?? ''] ?? '');
 
@@ -73,6 +74,17 @@ export class DetalleComponent {
         this.cargando.set(false);
       },
     });
+  }
+
+  mover(paso: number, total: number) {
+    const i = this.visor();
+    if (i === null) return;
+    this.visor.set((i + paso + total) % total);
+  }
+
+  irAlCalendario(e: Event) {
+    e.preventDefault();
+    document.getElementById('calendario')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   cargarDisponibilidad(vista: RangoFechas) {
