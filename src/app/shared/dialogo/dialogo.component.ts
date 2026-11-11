@@ -37,7 +37,7 @@ export class DialogoComponent {
   cerrar = output<void>();
 
   constructor() {
-    const el = inject(ElementRef<HTMLElement>);
+    const el = inject<ElementRef<HTMLElement>>(ElementRef);
     afterNextRender(() => el.nativeElement.querySelector('.dialogo')?.focus());
   }
 }

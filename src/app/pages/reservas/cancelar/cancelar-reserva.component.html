@@ -22,7 +22,8 @@
     </div>
   }
 
-  @if (paso() === 'revision' && previa(); as p) {
+  @if (paso() === 'revision') {
+  @if (previa(); as p) {
     <dl class="devolucion">
       <div><dt>Política</dt><dd>{{ p.politica }}</dd></div>
       <div><dt>Regla aplicada</dt><dd>{{ p.reglaAplicada }}</dd></div>
@@ -38,5 +39,6 @@
         {{ procesando() ? 'Cancelando…' : 'Confirmar cancelación' }}
       </button>
     </div>
+  }
   }
 </app-dialogo>
