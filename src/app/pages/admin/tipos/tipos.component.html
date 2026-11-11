@@ -15,12 +15,12 @@
     <p class="aviso-mal" role="alert">{{ error() }}</p>
   } @else {
     <table class="admin-tabla">
-      <thead><tr><th scope="col">Nombre</th><th scope="col">Código</th><th scope="col">Estado</th><th scope="col"><span class="oculto">Acciones</span></th></tr></thead>
+      <thead><tr><th scope="col">Nombre</th><th scope="col">Estado</th><th scope="col"><span class="oculto">Acciones</span></th></tr></thead>
       <tbody>
-        @for (t of tipos(); track t.codigo) {
+        @for (t of tipos(); track t.id) {
           <tr>
             <td>
-              @if (editando() === t.codigo) {
+              @if (editando() === t.id) {
                 <form class="edicion" (ngSubmit)="guardarNombre(t)">
                   <input type="text" name="nombre" maxlength="40" [(ngModel)]="nombreEditado" aria-label="Nuevo nombre" />
                   <button type="submit" class="btn-mini" [disabled]="nombreEditado.trim().length < 3">Guardar</button>
@@ -30,17 +30,17 @@
                 <strong>{{ t.nombre }}</strong>
               }
             </td>
-            <td><code>{{ t.codigo }}</code></td>
+            
             <td><span class="chip-estado" [class.ok]="t.activo">{{ t.activo ? 'Activo' : 'Inactivo' }}</span></td>
             <td class="acciones">
-              @if (editando() !== t.codigo) {
+              @if (editando() !== t.id) {
                 <button type="button" class="btn-mini" (click)="editar(t)">Renombrar</button>
               }
               <button type="button" class="btn-mini" [class.peligro]="t.activo" (click)="alternar(t)">{{ t.activo ? 'Desactivar' : 'Activar' }}</button>
             </td>
           </tr>
         } @empty {
-          <tr><td colspan="4" class="vacio-tabla">No hay tipos configurados.</td></tr>
+          <tr><td colspan="3" class="vacio-tabla">No hay tipos configurados.</td></tr>
         }
       </tbody>
     </table>
