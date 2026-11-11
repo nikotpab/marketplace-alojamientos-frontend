@@ -48,3 +48,40 @@ body {
   .total { border-bottom: 0; border-top: 2px solid var(--texto); dt, dd { font-weight: 800; color: var(--texto); } }
 }
 .nota { font-size: .82rem; color: #55574a; }
+
+/* Pantallas de administración: contenedor, filtros y tablas */
+.admin-contenido { width: min(1100px, 100%); margin: 0 auto; padding: 32px 24px 56px; }
+.admin-contenido > h1 { margin: 0; font-size: 2rem; color: var(--texto); }
+.admin-subtitulo { margin: 4px 0 20px; color: #55574a; }
+.admin-filtros {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-bottom: 20px;
+  label { display: grid; gap: 4px; font-size: .78rem; font-weight: 700; color: #55574a; }
+  input, select {
+    font: inherit; font-size: .9rem; padding: 8px 12px; border: 1px solid var(--gris-borde); border-radius: 10px; background: #fff;
+  }
+}
+.admin-tabla {
+  width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--gris-borde); border-radius: 16px;
+  overflow: hidden; font-size: .88rem;
+  th { text-align: left; background: var(--crema-claro); color: #55574a; font-size: .78rem; padding: 12px 16px; }
+  td { padding: 12px 16px; border-top: 1px solid var(--gris-borde); vertical-align: middle; }
+  td small { display: block; color: #55574a; }
+}
+.admin-scroll { overflow-x: auto; border-radius: 16px; }
+.chip-estado {
+  display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: .76rem; font-weight: 700; white-space: nowrap;
+  background: #eee; color: #555;
+  &.ok { background: var(--verde-suave); color: var(--verde); }
+  &.alerta { background: #fff1c2; color: #7a5a00; }
+  &.mal { background: #f3d6d6; color: var(--rojo); }
+}
+.btn-mini {
+  padding: 6px 14px; border-radius: 999px; font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer;
+  background: #fff; border: 1px solid var(--verde); color: var(--verde);
+  &:hover:not(:disabled) { background: var(--verde); color: #fff; }
+  &.peligro { border-color: var(--rojo); color: var(--rojo); &:hover:not(:disabled) { background: var(--rojo); color: #fff; } }
+  &:disabled { opacity: .5; cursor: default; }
+}
+.aviso-ok { padding: 12px 16px; border-radius: 12px; background: var(--verde-suave); color: var(--verde); font-weight: 600; }
+.aviso-mal { padding: 12px 16px; border-radius: 12px; background: #fbe4e4; color: var(--rojo); font-weight: 500; }
+.vacio-tabla { padding: 32px; text-align: center; color: #55574a; }
