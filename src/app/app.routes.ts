@@ -20,6 +20,7 @@ import { ModeracionComponent } from './pages/admin/moderacion/moderacion.compone
 import { AuditoriaComponent } from './pages/admin/auditoria/auditoria.component';
 import { ConfiguracionComponent } from './pages/admin/configuracion/configuracion.component';
 import { TiposComponent } from './pages/admin/tipos/tipos.component';
+import { DashboardComponent } from './pages/admin/dashboard/dashboard.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
@@ -103,9 +104,9 @@ export const routes: Routes = [
       },
       {
         path: 'admin',
-        component: PanelComponent,
+        component: DashboardComponent,
         canActivate: [rolGuard],
-        data: { roles: ['ADMINISTRADOR'], titulo: 'Panel de administración' },
+        data: { roles: ['ADMINISTRADOR'] },
       },
       {
         path: 'admin/publicaciones',
