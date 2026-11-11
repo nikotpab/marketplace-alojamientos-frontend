@@ -38,6 +38,14 @@ export interface Publicacion extends DatosPublicacion {
   anfitrion?: string;
 }
 
+/** Catálogos del backend (GET /catalogos) para los formularios. */
+export interface Catalogos {
+  tipos: { id: string; nombre: string; activo: boolean }[];
+  servicios: { id: string; nombre: string }[];
+  /** Políticas de cancelación ofrecidas. La devolución se calcula según la elegida. */
+  politicas: { id: string; nombre: string }[];
+}
+
 export interface TipoConfigurado {
   codigo: string;
   nombre: string;
@@ -121,5 +129,9 @@ export class PublicacionesService {
     return this.http.get<TipoConfigurado[]>('/api/configuracion/tipos-alojamiento', {
       params: { activos: true },
     });
+  }
+
+  catalogos(): Observable<Catalogos> {
+    return this.http.get<Catalogos>('/api/catalogos');
   }
 }

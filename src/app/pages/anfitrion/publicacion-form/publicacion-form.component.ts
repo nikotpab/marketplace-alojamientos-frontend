@@ -27,7 +27,7 @@ function validarActivacion(d: DatosPublicacion): Partial<Record<CampoActivacion,
   if (!d.capacidad || d.capacidad <= 0) e.capacidad = 'Indica una capacidad mayor que 0 (mínimo 1 huésped).';
   if (!d.precioNoche || d.precioNoche <= 0) e.precioNoche = 'Indica un precio por noche mayor que 0.';
   if (!d.imagenes.length) e.imagenes = 'Agrega al menos una referencia de imagen (URL).';
-  if (!d.politicaCancelacion) e.politicaCancelacion = 'Describe la política de cancelación.';
+  if (!d.politicaCancelacion) e.politicaCancelacion = 'Elige la política de cancelación.';
   return e;
 }
 
@@ -62,6 +62,8 @@ export class PublicacionFormComponent {
   servicios = SERVICIOS;
   tipos = signal<TipoConfigurado[]>([]);
   errorTipos = signal('');
+  /** Políticas de cancelación del backend; se envía su nombre (ajuste 8 del README del backend). */
+  politicas = signal<string[]>([]);
   seleccionados = signal<string[]>([]);
   guardando = signal(false);
   error = signal('');
@@ -82,6 +84,10 @@ export class PublicacionFormComponent {
     this.api.tiposActivos().subscribe({
       next: (t) => this.tipos.set(t),
       error: () => this.errorTipos.set('No pudimos cargar los tipos de alojamiento. Recarga la página.'),
+    });
+    this.api.catalogos().subscribe({
+      next: (c) => this.politicas.set(c.politicas.map((p) => p.nombre)),
+      error: () => this.politicas.set([]),
     });
     if (this.id) this.cargar(this.id);
     // Si ya se mostraron errores de activación, se actualizan mientras el anfitrión corrige
