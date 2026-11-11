@@ -1,0 +1,64 @@
+<main class="admin-contenido">
+  <h1>Configuración</h1>
+  <p class="admin-subtitulo">Porcentajes de la cotización. Los cambios se aplican a las cotizaciones nuevas sin redesplegar; las reservas confirmadas conservan sus valores.</p>
+
+  @if (aviso()) { <p class="aviso-ok" role="status">{{ aviso() }}</p> }
+  @if (error()) { <p class="aviso-mal" role="alert">{{ error() }}</p> }
+
+  @if (actual(); as a) {
+    <div class="columnas">
+      <form class="tarjeta" [formGroup]="form" (ngSubmit)="revisar()" novalidate>
+        <h2>Tarifas y descuentos</h2>
+        @for (c of campos; track c.campo) {
+          <label class="campo">
+            <span>{{ c.texto }}</span>
+            <span class="entrada">
+              <input type="number" min="0" [max]="c.max" [step]="c.unidad === '%' ? 0.1 : 1" [formControlName]="c.campo"
+                     [attr.aria-invalid]="invalido(c.campo)" />
+              <span class="unidad">{{ c.unidad }}</span>
+            </span>
+            @if (invalido(c.campo)) { <small class="texto-error" role="alert">Ingresa un valor entre 0 y {{ c.max }}.</small> }
+          </label>
+        }
+        <p class="modificado">
+          @if (a.modificadoPor) {
+            Última modificación: {{ a.modificadoPor }} · {{ a.modificadoEn | date: "d MMM y, h:mm a" }}
+          } @else { Sin modificaciones registradas. }
+        </p>
+        <div class="acciones-dialogo">
+          <button type="button" class="btn-secundario" [disabled]="form.pristine" (click)="form.reset(); aviso.set('')">Descartar</button>
+          <button type="submit" class="btn-primario" [disabled]="form.pristine">Guardar cambios</button>
+        </div>
+      </form>
+
+      <section class="tarjeta">
+        <h2>Historial de cambios</h2>
+        <ul class="historial">
+          @for (h of historial(); track $index) {
+            <li>
+              <strong>{{ textoCampo(h.campo) }} {{ h.anterior }} {{ unidad(h.campo) }} → {{ h.nuevo }} {{ unidad(h.campo) }}</strong>
+              <small>{{ h.usuario }} · {{ h.fecha | date: "d MMM y, h:mm a" }}</small>
+            </li>
+          } @empty {
+            <li class="vacio">Aún no hay cambios registrados.</li>
+          }
+        </ul>
+      </section>
+    </div>
+  } @else if (!error()) {
+    <p>Cargando configuración…</p>
+  }
+</main>
+
+@if (diferencias(); as d) {
+  <app-dialogo titulo="Confirmar cambios" [bloqueado]="guardando()" (cerrar)="diferencias.set(null)">
+    <p>Se aplicarán a las cotizaciones nuevas en máximo 1 minuto y quedarán en auditoría:</p>
+    <ul class="cambios">
+      @for (x of d; track x.texto) { <li>{{ x.texto }}: {{ x.anterior }} {{ x.unidad }} → <strong>{{ x.nuevo }} {{ x.unidad }}</strong></li> }
+    </ul>
+    <div class="acciones-dialogo">
+      <button type="button" class="btn-secundario" [disabled]="guardando()" (click)="diferencias.set(null)">Volver</button>
+      <button type="button" class="btn-primario" [disabled]="guardando()" (click)="guardar()">{{ guardando() ? 'Guardando…' : 'Confirmar' }}</button>
+    </div>
+  </app-dialogo>
+}
