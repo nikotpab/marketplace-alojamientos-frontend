@@ -2,7 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-export type TipoAlojamiento = 'CASA' | 'APARTAMENTO' | 'HABITACION' | 'CABANA';
+/** Código del tipo; los tipos se administran como configuración (RF-35). */
+export type TipoAlojamiento = string;
 
 export interface FiltrosBusqueda {
   ciudad?: string;
@@ -37,6 +38,7 @@ export interface PaginaAlojamientos {
 
 export const TAMANO_PAGINA = 20;
 
+/** Tipos iniciales, usados solo como respaldo si la configuración no responde. */
 export const TIPOS: { valor: TipoAlojamiento; texto: string }[] = [
   { valor: 'CASA', texto: 'Casa' },
   { valor: 'APARTAMENTO', texto: 'Apartamento' },
