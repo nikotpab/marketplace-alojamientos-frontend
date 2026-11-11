@@ -10,7 +10,6 @@ interface Enlace {
 
 const ENLACES: Record<RolUsuario, Enlace[]> = {
   HUESPED: [
-    { texto: 'Inicio', ruta: '/inicio' },
     { texto: 'Explorar', ruta: '/buscar' },
     { texto: 'Mis reservas', ruta: '/reservas' },
     { texto: 'Mi perfil', ruta: '/perfil' },
