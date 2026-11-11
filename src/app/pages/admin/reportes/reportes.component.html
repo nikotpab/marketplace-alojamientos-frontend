@@ -1,0 +1,49 @@
+<main class="admin-contenido">
+  <h1>Reportes</h1>
+  <p class="admin-subtitulo">Exporta reportes de gestión en PDF o Excel (hasta 10.000 registros). Cada exportación queda registrada.</p>
+
+  <form class="tarjeta formulario" (ngSubmit)="exportar()">
+    <label>
+      Reporte
+      <select name="tipo" [(ngModel)]="solicitud.tipo">
+        @for (t of tipos; track t[0]) { <option [value]="t[0]">{{ t[1] }}</option> }
+      </select>
+    </label>
+    <label>Desde <input type="date" name="desde" [(ngModel)]="solicitud.desde" required /></label>
+    <label>Hasta <input type="date" name="hasta" [(ngModel)]="solicitud.hasta" [min]="solicitud.desde" required /></label>
+    <label>Ciudad (opcional) <input type="text" name="ciudad" [(ngModel)]="solicitud.ciudad" placeholder="Todas" /></label>
+    <fieldset class="formatos">
+      <legend>Formato</legend>
+      <label><input type="radio" name="formato" value="EXCEL" [(ngModel)]="solicitud.formato" /> Excel</label>
+      <label><input type="radio" name="formato" value="PDF" [(ngModel)]="solicitud.formato" /> PDF</label>
+    </fieldset>
+    <button type="submit" class="btn-primario" [disabled]="rangoInvalido || generando()">
+      {{ generando() ? 'Generando…' : 'Exportar' }}
+    </button>
+  </form>
+  @if (rangoInvalido) { <p class="texto-error" role="alert">La fecha final no puede ser anterior a la inicial.</p> }
+  @if (aviso()) { <p class="aviso-ok" role="status">{{ aviso() }}</p> }
+  @if (error()) { <p class="aviso-mal" role="alert">{{ error() }}</p> }
+
+  <h2>Historial de exportaciones</h2>
+  <div class="admin-scroll">
+    <table class="admin-tabla">
+      <thead>
+        <tr><th scope="col">Fecha</th><th scope="col">Pedido por</th><th scope="col">Reporte</th><th scope="col">Filtros</th><th scope="col">Registros</th></tr>
+      </thead>
+      <tbody>
+        @for (e of historial(); track e.id) {
+          <tr>
+            <td>{{ e.fecha | date: "d MMM y, h:mm a" }}</td>
+            <td>{{ e.usuario }}</td>
+            <td>{{ tipoTexto[e.tipo] }} <small>{{ e.formato === 'PDF' ? 'PDF' : 'Excel' }}</small></td>
+            <td>{{ e.desde | date: 'd MMM y' }} → {{ e.hasta | date: 'd MMM y' }}<small>{{ e.ciudad || 'Todas las ciudades' }}</small></td>
+            <td>{{ e.registros | number }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="vacio-tabla">Aún no hay exportaciones.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</main>
