@@ -25,8 +25,3 @@ h2 { margin: 0 0 12px; font-size: 1.2rem; color: var(--verde); }
 .mas { margin-top: 12px; }
 @media (max-width: 560px) { .resumen { grid-template-columns: 1fr; } }
 
-.reportar {
-  margin-left: auto; background: none; border: 0; padding: 0; font: inherit; font-size: .78rem;
-  color: #55574a; text-decoration: underline; cursor: pointer; &:hover { color: var(--rojo); }
-}
-.reportada { margin-left: auto; font-style: italic; }

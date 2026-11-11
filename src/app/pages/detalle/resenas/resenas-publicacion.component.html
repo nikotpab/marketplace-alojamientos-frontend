@@ -3,60 +3,41 @@
 
   @if (cargando()) {
     <p class="estado">Cargando reseñas…</p>
-  } @else if (error() && !resumen()) {
-    <p class="estado">No pudimos cargar las reseñas. <button type="button" class="enlace" (click)="cargar(0)">Reintentar</button></p>
-  } @else if (resumen()) {
-    @if (resumen(); as r) {
-    @if (r.total === 0) {
-      <p class="estado">Aún no hay reseñas para este alojamiento.</p>
-    } @else {
-      <div class="resumen">
-        <div class="promedio">
-          <strong>★ {{ r.promedio | number: '1.1-1' }}</strong>
-          <span>{{ r.total }} {{ r.total === 1 ? 'reseña' : 'reseñas' }}</span>
-        </div>
-        <ul class="distribucion" aria-label="Distribución de calificaciones">
-          @for (n of niveles; track n) {
-            <li>
-              <span>{{ n }} ★</span>
-              <span class="barra"><span [style.width.%]="porcentaje(n)"></span></span>
-              <span class="cuenta">{{ r.distribucion[n] ?? 0 }}</span>
-            </li>
-          }
-        </ul>
+  } @else if (error()) {
+    <p class="estado">No pudimos cargar las reseñas. <button type="button" class="enlace" (click)="cargar()">Reintentar</button></p>
+  } @else if (total() === 0) {
+    <p class="estado">Aún no hay reseñas para este alojamiento.</p>
+  } @else {
+    <div class="resumen">
+      <div class="promedio">
+        <strong>★ {{ promedio() | number: '1.1-1' }}</strong>
+        <span>{{ total() }} {{ total() === 1 ? 'reseña' : 'reseñas' }}</span>
       </div>
+      <ul class="distribucion" aria-label="Distribución de calificaciones">
+        @for (n of niveles; track n) {
+          <li>
+            <span>{{ n }} ★</span>
+            <span class="barra"><span [style.width.%]="porcentaje(n)"></span></span>
+            <span class="cuenta">{{ distribucion()[n] }}</span>
+          </li>
+        }
+      </ul>
+    </div>
 
-      @for (x of resenas(); track x.id) {
-        <article class="resena">
-          <p class="cab">
-            <strong>{{ x.autor }}</strong>
-            <span class="nota" [attr.aria-label]="x.calificacion + ' de 5'">{{ estrellas(x.calificacion) }}</span>
-            <small>{{ x.fecha | date: 'mediumDate' }}</small>
-            @if (auth.usuario()) {
-              @if (reportadas().includes(x.id)) {
-                <small class="reportada">Reportada, gracias</small>
-              } @else {
-                <button type="button" class="reportar" (click)="errorReporte.set(''); aReportar.set(x)">Reportar</button>
-              }
-            }
-          </p>
-          <!-- Interpolación: el contenido siempre se muestra escapado (sin innerHTML) -->
-          <p class="texto">{{ x.comentario }}</p>
-        </article>
-      }
-
-      @if (r.pagina + 1 < r.totalPaginas) {
-        <button type="button" class="btn-secundario mas" [disabled]="cargandoMas()" (click)="cargar(r.pagina + 1)">
-          {{ cargandoMas() ? 'Cargando…' : 'Ver más reseñas' }}
-        </button>
-      }
+    @for (x of mostradas(); track x.id) {
+      <article class="resena">
+        <p class="cab">
+          <strong>{{ x.autor }}</strong>
+          <span class="nota" [attr.aria-label]="x.calificacion + ' de 5'">{{ estrellas(x.calificacion) }}</span>
+          <small>{{ x.fecha | date: 'mediumDate' }}</small>
+        </p>
+        <!-- Interpolación: el contenido siempre se muestra escapado (sin innerHTML) -->
+        <p class="texto">{{ x.comentario }}</p>
+      </article>
     }
+
+    @if (visibles() < total()) {
+      <button type="button" class="btn-secundario mas" (click)="verMas()">Ver más reseñas</button>
     }
   }
 </section>
-
-@if (aReportar(); as x) {
-  <app-dialogo-motivo titulo="Reportar reseña" [descripcion]="'Reseña de ' + x.autor + '. Un administrador la revisará.'"
-    etiquetaMotivo="¿Por qué la reportas?" textoAccion="Enviar reporte" [peligro]="false"
-    [procesando]="reportando()" [error]="errorReporte()" (confirmar)="reportar($event)" (cerrar)="aReportar.set(null)" />
-}
