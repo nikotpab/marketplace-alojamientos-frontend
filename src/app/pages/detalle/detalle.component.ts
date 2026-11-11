@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AlojamientoDetalle, DetalleService } from '../../core/detalle.service';
 import { Disponibilidad, DisponibilidadService } from '../../core/disponibilidad.service';
 import { CalendarioComponent, RangoFechas } from '../../shared/calendario/calendario.component';
+import { ResenasPublicacionComponent } from './resenas/resenas-publicacion.component';
 
 const NOMBRES_TIPO: Record<string, string> = {
   CASA: 'Casa',
@@ -15,7 +16,7 @@ const NOMBRES_TIPO: Record<string, string> = {
 @Component({
   selector: 'app-detalle',
   standalone: true,
-  imports: [RouterLink, CurrencyPipe, DatePipe, CalendarioComponent],
+  imports: [RouterLink, CurrencyPipe, DatePipe, CalendarioComponent, ResenasPublicacionComponent],
   templateUrl: './detalle.component.html',
   styleUrl: './detalle.component.scss',
 })

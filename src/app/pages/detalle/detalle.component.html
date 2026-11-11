@@ -66,20 +66,7 @@
           <p>{{ a.politicaCancelacion }}</p>
         </section>
 
-        <section>
-          <h2>Reseñas
-            @if (a.calificacionPromedio !== null) { <span class="nota">· ★ {{ a.calificacionPromedio.toFixed(1) }} promedio</span> }
-          </h2>
-          @for (r of a.resenas; track r.id) {
-            <article class="resena">
-              <p class="cab"><strong>{{ r.autor }}</strong> <span>★ {{ r.calificacion }}</span>
-                <small>{{ r.fecha | date: 'mediumDate' }}</small></p>
-              <p>{{ r.comentario }}</p>
-            </article>
-          } @empty {
-            <p class="estado">Aún no hay reseñas para este alojamiento.</p>
-          }
-        </section>
+        <app-resenas-publicacion [publicacionId]="a.id" />
       </div>
 
       <aside class="reserva">
