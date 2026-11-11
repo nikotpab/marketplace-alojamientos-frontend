@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "tmp-web": {
+    "marketplace-alojamientos-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/tmp-web",
+            "outputPath": "dist/marketplace-alojamientos-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -67,10 +67,10 @@
           },
           "configurations": {
             "production": {
-              "buildTarget": "tmp-web:build:production"
+              "buildTarget": "marketplace-alojamientos-frontend:build:production"
             },
             "development": {
-              "buildTarget": "tmp-web:build:development"
+              "buildTarget": "marketplace-alojamientos-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
