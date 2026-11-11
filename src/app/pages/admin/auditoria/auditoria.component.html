@@ -20,7 +20,8 @@
 
   @if (error()) {
     <p class="aviso-mal" role="alert">{{ error() }}</p>
-  } @else if (resultado(); as r) {
+  } @else if (resultado()) {
+    @if (resultado(); as r) {
     <p class="total">{{ r.total }} {{ r.total === 1 ? 'evento' : 'eventos' }}</p>
     <div class="admin-scroll" [class.actualizando]="cargando()">
       <table class="admin-tabla">
@@ -60,6 +61,7 @@
         <span>Página {{ r.pagina + 1 }} de {{ r.totalPaginas }}</span>
         <button type="button" class="btn-mini" [disabled]="r.pagina + 1 >= r.totalPaginas || cargando()" (click)="consultar(r.pagina + 1)">Siguiente</button>
       </nav>
+    }
     }
   } @else {
     <p>Cargando eventos…</p>
