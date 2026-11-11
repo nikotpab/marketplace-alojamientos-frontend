@@ -13,7 +13,7 @@ input {
 .err { font-size: .75rem; font-weight: 500; color: var(--rojo); }
 .ayuda { margin: 0; font-size: .75rem; color: #55574a; code { background: #f1efe4; padding: 1px 4px; border-radius: 4px; } }
 .pagar {
-  width: 100%; padding: 13px; border: 0; border-radius: 999px; background: var(--verde); color: #fff;
+  width: 100%; padding: 13px; border: 0; border-radius: var(--radio-md); background: var(--verde); color: #fff;
   font: inherit; font-weight: 700; font-size: 1rem; cursor: pointer;
   &:disabled { opacity: .6; cursor: wait; }
 }

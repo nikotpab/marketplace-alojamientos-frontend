@@ -4,7 +4,7 @@ h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
 .subtitulo { margin: 4px 0 0; color: #55574a; }
 
 .principal {
-  background: var(--verde); color: #fff; padding: 11px 22px; border-radius: 999px;
+  background: var(--verde); color: #fff; padding: 11px 22px; border-radius: var(--radio-md);
   font-weight: 700; text-decoration: none;
 }
 .aviso {
@@ -38,14 +38,14 @@ h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
 }
 
 .editar {
-  padding: 7px 16px; border-radius: 999px; border: 1px solid var(--verde); color: var(--verde);
+  padding: 7px 16px; border-radius: var(--radio-md); border: 1px solid var(--verde); color: var(--verde);
   font-weight: 600; text-decoration: none; font-size: .85rem;
   &:hover { background: var(--verde); color: #fff; }
 }
 
 .acciones { display: flex; gap: 8px; align-items: center; }
 .sec, .pausar {
-  font: inherit; font-size: .85rem; font-weight: 600; padding: 7px 16px; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: .85rem; font-weight: 600; padding: 7px 16px; border-radius: var(--radio-md); cursor: pointer;
   &:disabled { opacity: .6; cursor: wait; }
 }
 .sec { background: #fff; border: 1px solid #3b4a63; color: #3b4a63; &:hover { background: #e3e8f0; } }

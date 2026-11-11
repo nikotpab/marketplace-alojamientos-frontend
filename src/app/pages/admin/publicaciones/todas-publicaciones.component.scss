@@ -32,7 +32,7 @@ h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
 
 .acciones { display: flex; gap: 8px; justify-content: flex-end; }
 .revisar, .editar {
-  padding: 6px 14px; border-radius: 999px; font-weight: 600; font-size: .8rem; text-decoration: none;
+  padding: 6px 14px; border-radius: var(--radio-sm); font-weight: 600; font-size: .8rem; text-decoration: none;
 }
 .revisar { background: var(--verde); color: #fff; }
 .editar { border: 1px solid var(--verde); color: var(--verde); &:hover { background: var(--verde); color: #fff; } }
@@ -47,7 +47,7 @@ h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
 }
 
 .bloquear {
-  padding: 6px 14px; border-radius: 999px; font: inherit; font-weight: 600; font-size: .8rem; cursor: pointer; background: #fff;
+  padding: 6px 14px; border-radius: var(--radio-sm); font: inherit; font-weight: 600; font-size: .8rem; cursor: pointer; background: #fff;
 }
 .bloquear { border: 1px solid var(--rojo); color: var(--rojo); &:hover { background: var(--rojo); color: #fff; } }
 .motivo { color: var(--rojo) !important; }

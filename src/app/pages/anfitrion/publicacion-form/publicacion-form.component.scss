@@ -32,7 +32,7 @@ textarea { resize: vertical; }
 
 .acciones { display: flex; align-items: center; gap: 20px; }
 .principal {
-  background: var(--verde); color: #fff; border: 0; padding: 12px 26px; border-radius: 999px;
+  background: var(--verde); color: #fff; border: 0; padding: 12px 26px; border-radius: var(--radio-md);
   font: inherit; font-weight: 700; cursor: pointer;
   &:disabled { opacity: .6; cursor: wait; }
 }
@@ -49,7 +49,7 @@ textarea { resize: vertical; }
 }
 
 .activar {
-  background: #fff; color: var(--verde); border: 2px solid var(--verde); padding: 10px 24px; border-radius: 999px;
+  background: #fff; color: var(--verde); border: 2px solid var(--verde); padding: 10px 24px; border-radius: var(--radio-md);
   font: inherit; font-weight: 700; cursor: pointer;
   &:hover:not(:disabled) { background: var(--verde-suave); }
   &:disabled { opacity: .6; cursor: wait; }

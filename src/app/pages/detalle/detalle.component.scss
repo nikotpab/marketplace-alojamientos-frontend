@@ -76,7 +76,7 @@ p { margin: 0 0 8px; line-height: 1.5; }
 .aviso-error { color: var(--rojo); font-size: .9rem; }
 
 .cotizar {
-  display: block; margin-top: 16px; text-align: center; padding: 12px; border-radius: 999px;
+  display: block; margin-top: 16px; text-align: center; padding: 12px; border-radius: var(--radio-md);
   background: var(--verde); color: #fff; font-weight: 700; text-decoration: none;
   &:hover { opacity: .92; }
   &.inactivo { opacity: .45; pointer-events: none; }

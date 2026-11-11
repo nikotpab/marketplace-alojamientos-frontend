@@ -51,7 +51,7 @@ table {
 }
 
 .confirmar {
-  width: 100%; margin-top: 16px; padding: 13px; border: 0; border-radius: 999px;
+  width: 100%; margin-top: 16px; padding: 13px; border: 0; border-radius: var(--radio-md);
   background: var(--verde); color: #fff; font: inherit; font-weight: 700; font-size: 1rem; cursor: pointer;
   &:disabled { opacity: .6; cursor: wait; }
 }
@@ -62,7 +62,7 @@ table {
   p { margin: 6px 0; }
   .total { font-weight: 800; font-size: 1.2rem; margin-top: 12px; }
   .seguir {
-    display: inline-block; margin-top: 20px; padding: 11px 24px; border-radius: 999px;
+    display: inline-block; margin-top: 20px; padding: 11px 24px; border-radius: var(--radio-md);
     border: 2px solid var(--verde); color: var(--verde); font-weight: 700; text-decoration: none;
   }
 }
