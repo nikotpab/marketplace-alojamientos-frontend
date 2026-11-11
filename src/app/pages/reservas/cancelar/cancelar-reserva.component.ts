@@ -1,7 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { PrevisualizacionCancelacion, Reserva, ReservasService } from '../../../core/reservas.service';
+import { Cancelacion, EstimacionDevolucion, Reserva, ReservasService } from '../../../core/reservas.service';
 import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
 
 type Paso = 'motivo' | 'revision';
@@ -17,12 +17,12 @@ export class CancelarReservaComponent {
 
   reserva = input.required<Reserva>();
   cerrar = output<void>();
-  cancelada = output<Reserva>();
+  cancelada = output<Cancelacion>();
 
   paso = signal<Paso>('motivo');
   motivo = '';
   intentoEnviar = signal(false);
-  previa = signal<PrevisualizacionCancelacion | null>(null);
+  previa = signal<EstimacionDevolucion | null>(null);
   procesando = signal(false);
   error = signal('');
 
@@ -36,14 +36,14 @@ export class CancelarReservaComponent {
     if (!this.motivoValido || this.procesando()) return;
     this.procesando.set(true);
     this.error.set('');
-    this.api.previsualizarCancelacion(this.reserva().id).subscribe({
+    this.api.estimarDevolucion(this.reserva().id).subscribe({
       next: (p) => {
         this.previa.set(p);
         this.paso.set('revision');
         this.procesando.set(false);
       },
-      error: () => {
-        this.error.set('No pudimos calcular la devolución. Intenta de nuevo.');
+      error: (e) => {
+        this.error.set(e.status === 409 && e.error?.detail ? e.error.detail : 'No pudimos calcular la devolución. Intenta de nuevo.');
         this.procesando.set(false);
       },
     });
@@ -54,15 +54,15 @@ export class CancelarReservaComponent {
     this.procesando.set(true);
     this.error.set('');
     this.api.cancelar(this.reserva().id, this.motivo.trim()).subscribe({
-      next: (r) => {
+      next: (c) => {
         this.procesando.set(false);
-        this.cancelada.emit(r);
+        this.cancelada.emit(c);
       },
       error: (e) => {
         this.procesando.set(false);
         this.error.set(
           e.status === 409
-            ? 'Esta reserva ya no se puede cancelar (ya fue cancelada o la estadía comenzó).'
+            ? (e.error?.detail ?? 'Esta reserva ya no se puede cancelar (ya fue cancelada o la estadía comenzó).')
             : 'No pudimos cancelar la reserva. Tu reserva sigue confirmada; intenta de nuevo.',
         );
       },
