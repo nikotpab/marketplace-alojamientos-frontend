@@ -61,3 +61,19 @@ router-outlet + :not(footer) { flex: 1; }
   .datos { display: none; }
   .pie { padding: 20px 16px; }
 }
+
+.mas {
+  position: relative;
+  summary {
+    list-style: none; padding: 8px 14px; border-radius: 999px; font-weight: 600; color: var(--verde); cursor: pointer;
+    &::-webkit-details-marker { display: none; }
+    &::after { content: ' ▾'; font-size: .75rem; }
+    &:hover { background: rgba(45, 80, 22, .08); }
+  }
+  .menu {
+    position: absolute; top: calc(100% + 6px); right: 0; min-width: 190px; z-index: 20;
+    display: grid; padding: 6px; background: #fff; border: 1px solid var(--gris-borde); border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .12);
+    a { padding: 9px 12px; border-radius: 10px; }
+  }
+}

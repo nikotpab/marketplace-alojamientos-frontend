@@ -26,6 +26,13 @@ const ENLACES: Record<RolUsuario, Enlace[]> = {
     { texto: 'Revisión', ruta: '/admin/revision' },
     { texto: 'Usuarios', ruta: '/admin/usuarios' },
     { texto: 'Moderación', ruta: '/admin/moderacion' },
+  ],
+};
+
+/** Enlaces secundarios agrupados en el menú "Más" para no saturar la barra. */
+const ENLACES_MAS: Partial<Record<RolUsuario, Enlace[]>> = {
+  ADMINISTRADOR: [
+    { texto: 'Auditoría', ruta: '/admin/auditoria' },
     { texto: 'Configuración', ruta: '/admin/configuracion' },
     { texto: 'Mi perfil', ruta: '/perfil' },
   ],
@@ -61,6 +68,11 @@ export class LayoutComponent {
   enlaces = computed(() => {
     const u = this.auth.usuario();
     return u ? ENLACES[u.rol] : ENLACES_VISITANTE;
+  });
+
+  enlacesMas = computed(() => {
+    const u = this.auth.usuario();
+    return u ? (ENLACES_MAS[u.rol] ?? []) : [];
   });
 
   etiquetaRol = computed(() => {

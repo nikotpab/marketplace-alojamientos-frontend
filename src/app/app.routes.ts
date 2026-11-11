@@ -17,6 +17,7 @@ import { ReservasAnfitrionComponent } from './pages/anfitrion/reservas/reservas-
 import { NotificacionesComponent } from './pages/notificaciones/notificaciones.component';
 import { UsuariosComponent } from './pages/admin/usuarios/usuarios.component';
 import { ModeracionComponent } from './pages/admin/moderacion/moderacion.component';
+import { AuditoriaComponent } from './pages/admin/auditoria/auditoria.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
@@ -125,6 +126,12 @@ export const routes: Routes = [
       {
         path: 'admin/moderacion',
         component: ModeracionComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] },
+      },
+      {
+        path: 'admin/auditoria',
+        component: AuditoriaComponent,
         canActivate: [rolGuard],
         data: { roles: ['ADMINISTRADOR'] },
       },
