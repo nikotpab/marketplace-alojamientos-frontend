@@ -32,8 +32,16 @@ export interface Publicacion extends DatosPublicacion {
   actualizadaEn: string;
   /** Motivo del último rechazo del administrador (la publicación vuelve a BORRADOR). */
   motivoRechazo?: string | null;
+  /** Motivo del bloqueo administrativo (solo en BLOQUEADA). */
+  motivoBloqueo?: string | null;
   /** Nombre del anfitrión propietario (visible para el administrador). */
   anfitrion?: string;
+}
+
+export interface ResultadoBloqueo {
+  publicacion: Publicacion;
+  /** Reservas futuras que se conservan y pasan a revisión manual. */
+  reservasEnRevision: number;
 }
 
 export interface TipoConfigurado {
@@ -103,6 +111,19 @@ export class PublicacionesService {
   /** Vuelve a BORRADOR con motivo obligatorio y notifica al anfitrión. */
   rechazar(id: string, motivo: string): Observable<Publicacion> {
     return this.http.post<Publicacion>(`/api/admin/publicaciones/${encodeURIComponent(id)}/rechazar`, { motivo });
+  }
+
+  /**
+   * Bloquea por información engañosa: pasa a BLOQUEADA, sale de las búsquedas, sus reservas
+   * futuras quedan en revisión manual, se registra en auditoría y se notifica al anfitrión.
+   */
+  bloquear(id: string, motivo: string): Observable<ResultadoBloqueo> {
+    return this.http.post<ResultadoBloqueo>(`/api/admin/publicaciones/${encodeURIComponent(id)}/bloquear`, { motivo });
+  }
+
+  /** Solo un administrador reactiva una publicación BLOQUEADA. */
+  reactivarBloqueada(id: string): Observable<Publicacion> {
+    return this.http.post<Publicacion>(`/api/admin/publicaciones/${encodeURIComponent(id)}/reactivar`, {});
   }
 
   /** Solo los tipos de alojamiento activos en la configuración. */

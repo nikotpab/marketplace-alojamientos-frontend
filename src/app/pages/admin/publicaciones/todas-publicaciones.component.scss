@@ -13,7 +13,7 @@ h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
 
 .tabla { background: #fff; border: 1px solid var(--gris-borde); border-radius: 16px; overflow: hidden; }
 .fila {
-  display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) 170px; gap: 12px; align-items: center;
+  display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) 250px; gap: 12px; align-items: center;
   padding: 14px 20px; border-top: 1px solid var(--gris-borde); font-size: .9rem;
   strong { display: block; color: var(--verde); }
   small { color: #55574a; }
@@ -45,3 +45,11 @@ h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
   .fila.cabecera { display: none; }
   .acciones { grid-column: 1 / -1; justify-content: flex-start; }
 }
+
+.bloquear, .reactivar {
+  padding: 6px 14px; border-radius: 999px; font: inherit; font-weight: 600; font-size: .8rem; cursor: pointer; background: #fff;
+}
+.bloquear { border: 1px solid var(--rojo); color: var(--rojo); &:hover { background: var(--rojo); color: #fff; } }
+.reactivar { border: 1px solid var(--verde); color: var(--verde); &:hover { background: var(--verde); color: #fff; } }
+.motivo { color: var(--rojo) !important; }
+.aviso-ok { padding: 12px 16px; border-radius: 12px; background: var(--verde-suave); color: var(--verde); font-weight: 600; }
