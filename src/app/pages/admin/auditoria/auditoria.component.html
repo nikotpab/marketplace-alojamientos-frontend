@@ -2,13 +2,22 @@
   <h1>Auditoría</h1>
   <p class="admin-subtitulo">Quién hizo qué, cuándo y con qué resultado. El registro es de solo consulta: nadie puede modificarlo ni borrarlo.</p>
 
-  <form class="admin-filtros" (ngSubmit)="consultar(0)">
-    <label>Usuario <input type="search" name="usuario" [(ngModel)]="filtros.usuario" placeholder="Nombre o correo" /></label>
+  <form class="admin-filtros" (ngSubmit)="consultar()">
+    <label>Usuario <input type="search" name="usuario" [ngModel]="usuario()" (ngModelChange)="usuario.set($event); pagina.set(0)" placeholder="Nombre" /></label>
     <label>
-      Tipo de evento
-      <select name="tipo" [(ngModel)]="filtros.tipo">
+      Acción
+      <select name="accion" [(ngModel)]="filtros.accion">
+        <option value="">Todas</option>
+        @for (a of acciones; track a) { <option [value]="a">{{ a }}</option> }
+      </select>
+    </label>
+    <label>
+      Resultado
+      <select name="resultado" [(ngModel)]="filtros.resultado">
         <option value="">Todos</option>
-        @for (t of tipos; track t[0]) { <option [value]="t[0]">{{ t[1] }}</option> }
+        <option value="EXITO">Éxito</option>
+        <option value="FALLIDO">Fallido</option>
+        <option value="DENEGADO">Denegado</option>
       </select>
     </label>
     <label>Desde <input type="date" name="desde" [(ngModel)]="filtros.desde" /></label>
@@ -20,9 +29,8 @@
 
   @if (error()) {
     <p class="aviso-mal" role="alert">{{ error() }}</p>
-  } @else if (resultado()) {
-    @if (resultado(); as r) {
-    <p class="total">{{ r.total }} {{ r.total === 1 ? 'evento' : 'eventos' }}</p>
+  } @else if (cargado()) {
+    <p class="total">{{ filtrados().length }} {{ filtrados().length === 1 ? 'evento' : 'eventos' }}</p>
     <div class="admin-scroll" [class.actualizando]="cargando()">
       <table class="admin-tabla">
         <thead>
@@ -32,21 +40,18 @@
           </tr>
         </thead>
         <tbody>
-          @for (e of r.contenido; track e.id) {
+          @for (e of visibles(); track e.id) {
             <tr>
               <td class="fecha">{{ e.fecha | date: 'd MMM y, HH:mm:ss' }}</td>
-              <td>{{ e.usuario }}</td>
-              <td>{{ e.rol }}</td>
-              <td>
-                {{ e.accion }}
-                <small>{{ tipoTexto[e.tipo] }}@if (e.detalle) { · {{ e.detalle }} }</small>
-              </td>
+              <td>{{ e.actor ?? 'Sistema' }}</td>
+              <td>{{ e.rol ?? '—' }}</td>
+              <td>{{ e.accion }}@if (e.detalle) { <small>{{ textoDetalle(e.detalle) }}</small> }</td>
               <td>{{ e.entidad }}@if (e.entidadId) { <small>#{{ e.entidadId }}</small> }</td>
               <td>
-                <span class="chip-estado" [class.ok]="e.resultado === 'EXITO'" [class.mal]="e.resultado === 'FALLO'">
-                  {{ e.resultado === 'EXITO' ? 'Éxito' : 'Fallo' }}
+                <span class="chip-estado" [class.ok]="e.resultado === 'EXITO'" [class.mal]="e.resultado !== 'EXITO'">
+                  {{ e.resultado === 'EXITO' ? 'Éxito' : e.resultado === 'DENEGADO' ? 'Denegado' : 'Fallido' }}
                 </span>
-                <small class="hash" [attr.title]="e.hash">Hash {{ e.hash.slice(0, 10) }}…</small>
+                <small class="hash" [attr.title]="e.hashRegistro">Hash {{ e.hashRegistro.slice(0, 10) }}…</small>
               </td>
             </tr>
           } @empty {
@@ -55,13 +60,12 @@
         </tbody>
       </table>
     </div>
-    @if (r.totalPaginas > 1) {
+    @if (totalPaginas() > 1) {
       <nav class="paginacion" aria-label="Paginación">
-        <button type="button" class="btn-mini" [disabled]="r.pagina === 0 || cargando()" (click)="consultar(r.pagina - 1)">Anterior</button>
-        <span>Página {{ r.pagina + 1 }} de {{ r.totalPaginas }}</span>
-        <button type="button" class="btn-mini" [disabled]="r.pagina + 1 >= r.totalPaginas || cargando()" (click)="consultar(r.pagina + 1)">Siguiente</button>
+        <button type="button" class="btn-mini" [disabled]="pagina() === 0" (click)="pagina.set(pagina() - 1)">Anterior</button>
+        <span>Página {{ pagina() + 1 }} de {{ totalPaginas() }}</span>
+        <button type="button" class="btn-mini" [disabled]="pagina() + 1 >= totalPaginas()" (click)="pagina.set(pagina() + 1)">Siguiente</button>
       </nav>
-    }
     }
   } @else {
     <p>Cargando eventos…</p>

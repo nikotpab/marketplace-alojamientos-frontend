@@ -21,8 +21,8 @@
     @for (r of grupos()[grupo()]; track r.id) {
       <article class="reserva">
         <div class="datos">
-          <h2>{{ r.alojamiento?.titulo ?? 'Alojamiento' }}</h2>
-          <p>{{ r.alojamiento?.ciudad }} · {{ r.llegada | date: 'd MMM' }} → {{ r.salida | date: 'd MMM y' }} ·
+          <h2>{{ r.alojamiento ?? 'Alojamiento' }}</h2>
+          <p>{{ r.llegada | date: 'd MMM' }} → {{ r.salida | date: 'd MMM y' }} ·
             {{ r.huespedes }} {{ r.huespedes === 1 ? 'huésped' : 'huéspedes' }}</p>
           <p class="codigo">Código {{ r.codigo }} · {{ r.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
           @if (r.cancelacion; as c) { <app-detalle-cancelacion [c]="c" /> }
@@ -49,7 +49,7 @@
 </main>
 
 @if (aCancelar(); as r) {
-  <app-cancelar-reserva [reserva]="r" (cerrar)="aCancelar.set(null)" (cancelada)="alCancelar($event)" />
+  <app-cancelar-reserva [reserva]="r" (cerrar)="aCancelar.set(null)" (cancelada)="alCancelar(r, $event)" />
 }
 
 @if (aResenar(); as r) {

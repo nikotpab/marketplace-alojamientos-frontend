@@ -38,10 +38,12 @@ export interface Publicacion extends DatosPublicacion {
   anfitrion?: string;
 }
 
-export interface ResultadoBloqueo {
-  publicacion: Publicacion;
-  /** Reservas futuras que se conservan y pasan a revisión manual. */
-  reservasEnRevision: number;
+/** Catálogos del backend (GET /catalogos) para los formularios. */
+export interface Catalogos {
+  tipos: { id: string; nombre: string; activo: boolean }[];
+  servicios: { id: string; nombre: string }[];
+  /** Políticas de cancelación ofrecidas. La devolución se calcula según la elegida. */
+  politicas: { id: string; nombre: string }[];
 }
 
 export interface TipoConfigurado {
@@ -114,16 +116,12 @@ export class PublicacionesService {
   }
 
   /**
-   * Bloquea por información engañosa: pasa a BLOQUEADA, sale de las búsquedas, sus reservas
-   * futuras quedan en revisión manual, se registra en auditoría y se notifica al anfitrión.
+   * Bloquea por información engañosa (204): pasa a BLOQUEADA, sale de las búsquedas, sus reservas
+   * futuras quedan EN_REVISION, se registra en auditoría y se notifica al anfitrión.
+   * El backend todavía no permite reactivar una publicación bloqueada (pendiente 10 de su README).
    */
-  bloquear(id: string, motivo: string): Observable<ResultadoBloqueo> {
-    return this.http.post<ResultadoBloqueo>(`/api/admin/publicaciones/${encodeURIComponent(id)}/bloquear`, { motivo });
-  }
-
-  /** Solo un administrador reactiva una publicación BLOQUEADA. */
-  reactivarBloqueada(id: string): Observable<Publicacion> {
-    return this.http.post<Publicacion>(`/api/admin/publicaciones/${encodeURIComponent(id)}/reactivar`, {});
+  bloquear(id: string, motivo: string): Observable<void> {
+    return this.http.post<void>(`/api/admin/publicaciones/${encodeURIComponent(id)}/bloqueo`, { motivo });
   }
 
   /** Solo los tipos de alojamiento activos en la configuración. */
@@ -131,5 +129,9 @@ export class PublicacionesService {
     return this.http.get<TipoConfigurado[]>('/api/configuracion/tipos-alojamiento', {
       params: { activos: true },
     });
+  }
+
+  catalogos(): Observable<Catalogos> {
+    return this.http.get<Catalogos>('/api/catalogos');
   }
 }

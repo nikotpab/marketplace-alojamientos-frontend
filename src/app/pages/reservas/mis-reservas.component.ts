@@ -1,7 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ESTADO_RESERVA_TEXTO, Reserva, ReservasService } from '../../core/reservas.service';
+import { Cancelacion, ESTADO_RESERVA_TEXTO, Reserva, ReservasService } from '../../core/reservas.service';
 import { CancelarReservaComponent } from './cancelar/cancelar-reserva.component';
 import { ResenaFormComponent } from './resena/resena-form.component';
 
@@ -65,13 +65,13 @@ export class MisReservasComponent {
     this.aviso.set('¡Gracias! Tu reseña quedó publicada.');
   }
 
-  alCancelar(r: Reserva) {
-    this.reservas.update((l) => l.map((x) => (x.id === r.id ? { ...x, ...r } : x)));
+  alCancelar(r: Reserva, c: Cancelacion) {
+    this.reservas.update((l) => l.map((x) => (x.id === r.id ? { ...x, estado: 'CANCELADA' as const, cancelacion: c } : x)));
     this.aCancelar.set(null);
     this.aviso.set(
-      r.cancelacion?.estadoDevolucion === 'NO_PROCESADA'
+      c.estadoFinal === 'DEVOLUCION_NO_PROCESADA'
         ? `La reserva ${r.codigo} fue cancelada, pero la devolución no se pudo procesar. Ya notificamos al equipo para resolverlo.`
-        : `La reserva ${r.codigo} fue cancelada. Las fechas quedaron libres y la devolución quedó registrada.`,
+        : `La reserva ${r.codigo} fue cancelada. Las fechas quedaron libres y la cancelación quedó registrada.`,
     );
     this.grupo.set('canceladas');
   }

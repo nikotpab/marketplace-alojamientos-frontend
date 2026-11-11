@@ -54,7 +54,7 @@ export class TiposComponent {
   }
 
   editar(t: TipoAlojamientoConfig) {
-    this.editando.set(t.codigo);
+    this.editando.set(t.id);
     this.nombreEditado = t.nombre;
   }
 
@@ -76,9 +76,9 @@ export class TiposComponent {
 
   private actualizar(t: TipoAlojamientoConfig, cambios: Partial<TipoAlojamientoConfig>, mensaje: string) {
     this.aviso.set('');
-    this.api.actualizar(t.codigo, cambios).subscribe({
+    this.api.actualizar(t, cambios).subscribe({
       next: (r) => {
-        this.tipos.update((l) => l.map((x) => (x.codigo === r.codigo ? r : x)));
+        this.tipos.update((l) => l.map((x) => (x.id === r.id ? r : x)));
         this.editando.set(null);
         this.aviso.set(mensaje);
       },

@@ -1,28 +1,31 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 
-/** Eventos que generan una notificación al usuario afectado (RF-24). */
-export type TipoNotificacion =
-  | 'RESERVA_CONFIRMADA'
-  | 'PAGO_APROBADO'
-  | 'CANCELACION'
-  | 'DEVOLUCION'
-  | 'DECISION_PUBLICACION';
-
-export const TIPO_NOTIFICACION_TEXTO: Record<TipoNotificacion, string> = {
-  RESERVA_CONFIRMADA: 'Reserva confirmada',
-  PAGO_APROBADO: 'Pago aprobado',
-  CANCELACION: 'Cancelación',
-  DEVOLUCION: 'Devolución',
-  DECISION_PUBLICACION: 'Publicación',
+/** Tipo del evento que originó la notificación (nombre del evento de dominio en el backend). */
+export const TIPO_NOTIFICACION_TEXTO: Record<string, string> = {
+  ReservaConfirmada: 'Reserva confirmada',
+  ReservaCancelada: 'Cancelación',
+  ReservaCompletada: 'Estadía completada',
+  ReservaEnRevision: 'Reserva en revisión',
+  DevolucionProcesada: 'Devolución',
+  DevolucionFallida: 'Devolución no procesada',
+  PublicacionAprobada: 'Publicación aprobada',
+  PublicacionRechazada: 'Publicación rechazada',
+  PublicacionBloqueada: 'Publicación bloqueada',
 };
 
 export interface Notificacion {
   id: string;
-  tipo: TipoNotificacion;
+  tipo: string;
   mensaje: string;
-  fecha: string;
   leida: boolean;
+  creadoEn: string;
+}
+
+/** Respuesta de GET /notificaciones. */
+interface Bandeja {
+  noLeidas: number;
+  notificaciones: Notificacion[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -38,9 +41,9 @@ export class NotificacionesService {
   /** Las más recientes primero. El backend las entrega de forma asíncrona (outbox). */
   cargar() {
     this.cargando.set(true);
-    this.http.get<Notificacion[]>('/api/notificaciones').subscribe({
-      next: (lista) => {
-        this.notificaciones.set([...lista].sort((a, b) => b.fecha.localeCompare(a.fecha)));
+    this.http.get<Bandeja>('/api/notificaciones').subscribe({
+      next: (b) => {
+        this.notificaciones.set([...b.notificaciones].sort((a, c) => c.creadoEn.localeCompare(a.creadoEn)));
         this.error.set(false);
         this.cargando.set(false);
       },
@@ -53,12 +56,12 @@ export class NotificacionesService {
 
   marcarLeida(id: string) {
     this.actualizarLocal((n) => (n.id === id ? { ...n, leida: true } : n));
-    this.http.patch(`/api/notificaciones/${id}/leida`, {}).subscribe({ error: () => this.cargar() });
+    this.http.post(`/api/notificaciones/${id}/lectura`, {}).subscribe({ error: () => this.cargar() });
   }
 
   marcarTodas() {
     this.actualizarLocal((n) => ({ ...n, leida: true }));
-    this.http.post('/api/notificaciones/marcar-leidas', {}).subscribe({ error: () => this.cargar() });
+    this.http.post('/api/notificaciones/lectura', {}).subscribe({ error: () => this.cargar() });
   }
 
   limpiar() {

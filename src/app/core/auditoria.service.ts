@@ -1,72 +1,52 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RolUsuario } from './auth.service';
 
-export type TipoEvento =
-  | 'AUTENTICACION'
-  | 'PUBLICACION'
-  | 'RESERVA'
-  | 'CANCELACION'
-  | 'PAGO'
-  | 'RESENA'
-  | 'ADMINISTRACION'
-  | 'CONFIGURACION'
-  | 'EXPORTACION';
+/** Acciones más consultadas (nombre del evento de dominio que registra el backend). */
+export const ACCIONES_AUDITORIA: string[] = [
+  'InicioSesionExitoso', 'InicioSesionFallido', 'AccesoDenegado', 'UsuarioRegistrado', 'UsuarioRestringido',
+  'PublicacionCreada', 'PublicacionEditada', 'PublicacionEnviadaARevision', 'PublicacionAprobada', 'PublicacionRechazada',
+  'PublicacionPausada', 'PublicacionReactivada', 'PublicacionBloqueada', 'DisponibilidadModificada',
+  'ReservaConfirmada', 'ReservaCancelada', 'ReservaCompletada', 'ReservaEnRevision', 'PagoFallido',
+  'DevolucionProcesada', 'DevolucionFallida', 'ResenaPublicada', 'ResenaOcultada',
+  'TarifasActualizadas', 'TipoAlojamientoAgregado', 'TipoAlojamientoEditado', 'ReporteExportado',
+];
 
-export const TIPO_EVENTO_TEXTO: Record<TipoEvento, string> = {
-  AUTENTICACION: 'Autenticación',
-  PUBLICACION: 'Publicación',
-  RESERVA: 'Reserva',
-  CANCELACION: 'Cancelación',
-  PAGO: 'Pago',
-  RESENA: 'Reseña',
-  ADMINISTRACION: 'Acción administrativa',
-  CONFIGURACION: 'Configuración',
-  EXPORTACION: 'Exportación',
-};
+export type ResultadoAuditoria = 'EXITO' | 'FALLIDO' | 'DENEGADO';
 
 /** Registro inmutable (solo inserción): el front únicamente lo consulta. */
 export interface EventoAuditoria {
   id: string;
-  fecha: string;
-  usuario: string;
-  rol: RolUsuario | 'SISTEMA';
-  tipo: TipoEvento;
+  actorId: string | null;
+  actor: string | null;
+  rol: string | null;
   accion: string;
   entidad: string;
   entidadId: string | null;
-  resultado: 'EXITO' | 'FALLO';
-  detalle?: string | null;
+  resultado: ResultadoAuditoria | string;
+  detalle: Record<string, unknown> | null;
   /** Hash de integridad del registro. */
-  hash: string;
+  hashRegistro: string;
+  fecha: string;
 }
 
+/** Filtros del backend; todos opcionales. Las fechas se interpretan en hora de Colombia. */
 export interface FiltrosAuditoria {
-  usuario?: string;
-  tipo?: TipoEvento | '';
+  actorId?: string;
+  accion?: string;
+  entidad?: string;
   desde?: string;
   hasta?: string;
-  pagina?: number;
-}
-
-export interface PaginaAuditoria {
-  contenido: EventoAuditoria[];
-  total: number;
-  pagina: number;
-  totalPaginas: number;
+  resultado?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuditoriaService {
   private http = inject(HttpClient);
 
-  consultar(f: FiltrosAuditoria): Observable<PaginaAuditoria> {
-    let p = new HttpParams().set('pagina', f.pagina ?? 0).set('tamano', 25);
-    if (f.usuario?.trim()) p = p.set('usuario', f.usuario.trim());
-    if (f.tipo) p = p.set('tipo', f.tipo);
-    if (f.desde) p = p.set('desde', f.desde);
-    if (f.hasta) p = p.set('hasta', f.hasta);
-    return this.http.get<PaginaAuditoria>('/api/admin/auditoria', { params: p });
+  consultar(f: FiltrosAuditoria): Observable<EventoAuditoria[]> {
+    let p = new HttpParams();
+    for (const [k, v] of Object.entries(f)) if (v) p = p.set(k, v);
+    return this.http.get<EventoAuditoria[]>('/api/admin/auditoria', { params: p });
   }
 }

@@ -1,13 +1,13 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { Component, OnInit, inject, input, signal } from '@angular/core';
-import { AuthService } from '../../../core/auth.service';
-import { ResenaPublicada, ResenasService, ResumenResenas } from '../../../core/resenas.service';
-import { DialogoMotivoComponent } from '../../../shared/dialogo-motivo/dialogo-motivo.component';
+import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
+import { ResenaVisible, ResenasService } from '../../../core/resenas.service';
+
+const POR_PAGINA = 10;
 
 @Component({
   selector: 'app-resenas-publicacion',
   standalone: true,
-  imports: [DatePipe, DecimalPipe, DialogoMotivoComponent],
+  imports: [DatePipe, DecimalPipe],
   templateUrl: './resenas-publicacion.component.html',
   styleUrl: './resenas-publicacion.component.scss',
 })
@@ -16,62 +16,43 @@ export class ResenasPublicacionComponent implements OnInit {
 
   publicacionId = input.required<string>();
 
-  resumen = signal<ResumenResenas | null>(null);
-  resenas = signal<ResenaPublicada[]>([]);
+  resenas = signal<ResenaVisible[]>([]);
   cargando = signal(true);
-  cargandoMas = signal(false);
   error = signal(false);
+  visibles = signal(POR_PAGINA);
   readonly niveles = [5, 4, 3, 2, 1];
 
-  auth = inject(AuthService);
-  aReportar = signal<ResenaPublicada | null>(null);
-  reportadas = signal<string[]>([]);
-  reportando = signal(false);
-  errorReporte = signal('');
-
-  reportar(motivo: string) {
-    const r = this.aReportar();
-    if (!r) return;
-    this.reportando.set(true);
-    this.errorReporte.set('');
-    this.api.reportar(r.id, motivo).subscribe({
-      next: () => {
-        this.reportadas.update((l) => [...l, r.id]);
-        this.reportando.set(false);
-        this.aReportar.set(null);
-      },
-      error: (e) => {
-        this.reportando.set(false);
-        if (e.status === 409) {
-          // Ya la había reportado: se considera hecho
-          this.reportadas.update((l) => [...l, r.id]);
-          this.aReportar.set(null);
-        } else this.errorReporte.set('No pudimos enviar el reporte. Intenta de nuevo.');
-      },
-    });
-  }
+  /** Promedio y distribución calculados solo con las reseñas visibles. */
+  total = computed(() => this.resenas().length);
+  promedio = computed(() => (this.total() ? this.resenas().reduce((a, r) => a + r.calificacion, 0) / this.total() : null));
+  distribucion = computed(() => {
+    const d: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    for (const r of this.resenas()) d[r.calificacion] = (d[r.calificacion] ?? 0) + 1;
+    return d;
+  });
+  mostradas = computed(() => this.resenas().slice(0, this.visibles()));
 
   ngOnInit() {
-    this.cargar(0);
+    this.cargar();
   }
 
-  cargar(pagina: number) {
-    if (pagina === 0) this.cargando.set(true);
-    else this.cargandoMas.set(true);
-    this.api.dePublicacion(this.publicacionId(), pagina).subscribe({
+  cargar() {
+    this.cargando.set(true);
+    this.api.dePublicacion(this.publicacionId()).subscribe({
       next: (r) => {
-        this.resumen.set(r);
-        this.resenas.update((l) => (pagina === 0 ? r.resenas : [...l, ...r.resenas]));
+        this.resenas.set([...r].sort((a, b) => b.fecha.localeCompare(a.fecha)));
         this.cargando.set(false);
-        this.cargandoMas.set(false);
         this.error.set(false);
       },
       error: () => {
         this.error.set(true);
         this.cargando.set(false);
-        this.cargandoMas.set(false);
       },
     });
+  }
+
+  verMas() {
+    this.visibles.update((n) => n + POR_PAGINA);
   }
 
   estrellas(n: number) {
@@ -79,7 +60,6 @@ export class ResenasPublicacionComponent implements OnInit {
   }
 
   porcentaje(nivel: number) {
-    const r = this.resumen();
-    return r && r.total ? Math.round(((r.distribucion[nivel] ?? 0) / r.total) * 100) : 0;
+    return this.total() ? Math.round((this.distribucion()[nivel] / this.total()) * 100) : 0;
   }
 }

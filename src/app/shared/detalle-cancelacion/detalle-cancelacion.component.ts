@@ -9,14 +9,20 @@ import { Cancelacion } from '../../core/reservas.service';
   imports: [CurrencyPipe, DatePipe],
   template: `
     <div class="cancelacion">
-      <p>Cancelada el {{ c().fecha | date: "d MMM y, h:mm a" }} por {{ c().canceladaPor }} · Motivo: {{ c().motivo }}</p>
-      @if (c().estadoDevolucion === 'PROCESADA') {
-        <p class="ok">Devolución registrada: {{ c().valorDevolucion | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
-      } @else {
-        <p class="falla" role="status">
-          Devolución no procesada ({{ c().valorDevolucion | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}).
-          La reserva sigue cancelada; el equipo de soporte fue notificado.
-        </p>
+      <p>Cancelada el {{ c().fecha | date: "d MMM y, h:mm a" }} · Motivo: {{ c().motivo }}</p>
+      @switch (c().estadoFinal) {
+        @case ('DEVOLUCION_PROCESADA') {
+          <p class="ok">Devolución registrada: {{ c().valorDevolucion | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
+        }
+        @case ('SIN_DEVOLUCION') {
+          <p>Según la política de cancelación, esta reserva no tiene devolución.</p>
+        }
+        @default {
+          <p class="falla" role="status">
+            Devolución no procesada ({{ c().valorDevolucion | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}).
+            La reserva sigue cancelada; el equipo fue notificado.
+          </p>
+        }
       }
     </div>
   `,

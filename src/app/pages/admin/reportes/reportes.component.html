@@ -1,6 +1,6 @@
 <main class="admin-contenido">
   <h1>Reportes</h1>
-  <p class="admin-subtitulo">Exporta reportes de gestión en PDF o Excel (hasta 10.000 registros). Cada exportación queda registrada.</p>
+  <p class="admin-subtitulo">Exporta reportes de gestión en PDF o Excel. Cada exportación queda registrada en la auditoría.</p>
 
   <form class="tarjeta formulario" (ngSubmit)="exportar()">
     <label>
@@ -36,9 +36,9 @@
           <tr>
             <td>{{ e.fecha | date: "d MMM y, h:mm a" }}</td>
             <td>{{ e.usuario }}</td>
-            <td>{{ tipoTexto[e.tipo] }} <small>{{ e.formato === 'PDF' ? 'PDF' : 'Excel' }}</small></td>
-            <td>{{ e.desde | date: 'd MMM y' }} → {{ e.hasta | date: 'd MMM y' }}<small>{{ e.ciudad || 'Todas las ciudades' }}</small></td>
-            <td>{{ e.registros | number }}</td>
+            <td>{{ textoTipo(e.tipo) }} <small>{{ e.formato === 'PDF' ? 'PDF' : 'Excel' }}</small></td>
+            <td>@if (e.desde) { {{ e.desde | date: 'd MMM y' }} → {{ e.hasta | date: 'd MMM y' }} } @else { Todo el periodo }<small>{{ e.ciudad || 'Todas las ciudades' }}</small></td>
+            <td>{{ e.filas ?? '—' }}</td>
           </tr>
         } @empty {
           <tr><td colspan="5" class="vacio-tabla">Aún no hay exportaciones.</td></tr>

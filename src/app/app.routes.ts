@@ -22,12 +22,14 @@ import { ConfiguracionComponent } from './pages/admin/configuracion/configuracio
 import { TiposComponent } from './pages/admin/tipos/tipos.component';
 import { DashboardComponent } from './pages/admin/dashboard/dashboard.component';
 import { ReportesComponent } from './pages/admin/reportes/reportes.component';
+import { VerificarCorreoComponent } from './pages/verificar-correo/verificar-correo.component';
 import { LayoutComponent } from './layout/layout.component';
 import { rolGuard } from './core/auth.guard';
 
 export const routes: Routes = [
   { path: 'auth', component: AuthComponent },
   { path: 'recuperar', component: RecuperarComponent },
+  { path: 'verificar-correo', component: VerificarCorreoComponent },
   { path: 'acceso-denegado', component: AccesoDenegadoComponent },
 
   // Rutas protegidas dentro del layout: cada una declara los roles permitidos (sin roles = denegada)

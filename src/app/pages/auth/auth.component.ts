@@ -70,9 +70,22 @@ export class AuthComponent {
     this.exito.set(false);
   }
 
+  /** true cuando el inicio de sesión falló por correo sin verificar (403 CORREO_NO_VERIFICADO). */
+  sinVerificar = signal(false);
+  reenviado = signal(false);
+
+  reenviarVerificacion() {
+    this.auth.reenviarVerificacion(this.login.getRawValue().correo).subscribe({
+      next: () => this.reenviado.set(true),
+      error: () => this.reenviado.set(true),
+    });
+  }
+
   iniciarSesion() {
     this.loginEnviado.set(true);
     this.errorLogin.set('');
+    this.sinVerificar.set(false);
+    this.reenviado.set(false);
     if (this.login.invalid) return;
 
     this.cargandoLogin.set(true);
@@ -83,14 +96,18 @@ export class AuthComponent {
       },
       error: (e) => {
         this.cargandoLogin.set(false);
-        if (e.status === 423 || e.status === 429)
+        const codigo = e.error?.codigo;
+        this.sinVerificar.set(codigo === 'CORREO_NO_VERIFICADO');
+        if (e.status === 423 || e.status === 429 || codigo === 'CUENTA_BLOQUEADA')
           this.errorLogin.set('Cuenta bloqueada por 30 minutos por intentos fallidos.');
-        else if (e.status === 403 && e.error?.codigo === 'CUENTA_DESACTIVADA')
+        else if (codigo === 'CORREO_NO_VERIFICADO')
+          this.errorLogin.set('Aún no verificas tu correo. Abre el enlace que te enviamos al registrarte.');
+        else if (codigo === 'CUENTA_DESACTIVADA')
           this.errorLogin.set('Tu cuenta está desactivada. No puedes iniciar sesión hasta reactivarla.');
-        else if (e.status === 403)
+        else if (codigo === 'CUENTA_RESTRINGIDA' || e.status === 403)
           this.errorLogin.set(
             'Tu cuenta fue restringida por un administrador y no puede iniciar sesión.' +
-              (e.error?.motivo ? ` Motivo: ${e.error.motivo}` : ''),
+              (e.error?.detail ? ` ${e.error.detail}` : ''),
           );
         else if (e.status === 401)
           this.errorLogin.set('Correo o contraseña incorrectos.');

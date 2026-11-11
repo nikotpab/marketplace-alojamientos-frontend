@@ -38,6 +38,7 @@
       <div class="fila">
         <label>Ubicación
           <input formControlName="ubicacion" [class.con-error]="errorActivacion('ubicacion')" type="text" maxlength="200" placeholder="Ej.: Vereda Sabana km 3, Villa de Leyva" />
+          <small class="ayuda">Termina con la ciudad, después de la última coma: la búsqueda filtra por ella.</small>
         @if (errorActivacion('ubicacion'); as m) { <small class="error">{{ m }}</small> }
         </label>
         <label>Tipo de alojamiento
@@ -93,8 +94,18 @@
         @if (errorActivacion('imagenes'); as m) { <small class="error">{{ m }}</small> }
       </label>
       <label>Política de cancelación
-        <textarea formControlName="politicaCancelacion" [class.con-error]="errorActivacion('politicaCancelacion')" rows="2"
-                  placeholder="Ej.: Cancelación gratuita hasta 48 horas antes de la llegada."></textarea>
+        @if (politicas().length) {
+          <select formControlName="politicaCancelacion" [class.con-error]="errorActivacion('politicaCancelacion')">
+            <option value="">Selecciona una política</option>
+            @for (p of politicas(); track p) { <option [value]="p">{{ p }}</option> }
+            @if (form.controls.politicaCancelacion.value && !politicas().includes(form.controls.politicaCancelacion.value)) {
+              <option [value]="form.controls.politicaCancelacion.value">{{ form.controls.politicaCancelacion.value }}</option>
+            }
+          </select>
+        } @else {
+          <textarea formControlName="politicaCancelacion" [class.con-error]="errorActivacion('politicaCancelacion')" rows="2"
+                    placeholder="Ej.: Flexible"></textarea>
+        }
         @if (errorActivacion('politicaCancelacion'); as m) { <small class="error">{{ m }}</small> }
       </label>
     </section>

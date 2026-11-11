@@ -40,7 +40,6 @@ export class DashboardComponent {
   totalReservas = computed(() =>
     Object.values(this.datos()?.reservasPorEstado ?? {}).reduce((a, b) => a + (b ?? 0), 0),
   );
-  maxCiudad = computed(() => Math.max(1, ...(this.datos()?.ciudadesDemanda ?? []).map((c) => c.reservas)));
 
   constructor() {
     this.consultar();

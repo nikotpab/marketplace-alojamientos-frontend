@@ -21,9 +21,9 @@
       @for (n of api.notificaciones(); track n.id) {
         <li [class.nueva]="!n.leida">
           <div class="texto">
-            <span class="chip">{{ tipoTexto[n.tipo] }}</span>
+            <span class="chip">{{ textoTipo(n.tipo) }}</span>
             <p>{{ n.mensaje }}</p>
-            <time [attr.datetime]="n.fecha">{{ n.fecha | date: "d MMM y, h:mm a" }}</time>
+            <time [attr.datetime]="n.creadoEn">{{ n.creadoEn | date: "d MMM y, h:mm a" }}</time>
           </div>
           @if (!n.leida) {
             <button type="button" class="leer" (click)="api.marcarLeida(n.id)">Marcar como leída</button>

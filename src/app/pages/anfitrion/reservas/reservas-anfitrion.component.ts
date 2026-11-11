@@ -45,6 +45,6 @@ export class ReservasAnfitrionComponent {
 
   /** El contacto solo se muestra en reservas confirmadas (y solo si el backend lo envía). */
   verContacto(r: Reserva) {
-    return r.estado === 'CONFIRMADA' && !!(r.huesped?.telefono || r.huesped?.correo);
+    return r.estado === 'CONFIRMADA' && !!(r.contactoHuesped?.telefono || r.contactoHuesped?.correo);
   }
 }

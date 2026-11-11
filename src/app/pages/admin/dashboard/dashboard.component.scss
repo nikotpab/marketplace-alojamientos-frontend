@@ -26,11 +26,18 @@
     > span { display: block; height: 100%; border-radius: 999px; background: var(--verde); }
     [data-estado='COMPLETADA'] { background: #3b4a63; }
     [data-estado='CANCELADA'] { background: #9a9a9a; }
-    [data-estado='REVISION_MANUAL'] { background: #d49b00; } }
+    [data-estado='EN_REVISION'] { background: #d49b00; } }
   .valor { text-align: right; font-weight: 700; }
   .vacio { display: block; color: #55574a; }
 }
 @media (max-width: 900px) {
   .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .graficos { grid-template-columns: 1fr; }
+}
+
+.ranking {
+  list-style: none; margin: 0; padding: 0; display: grid; gap: 8px;
+  li { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+  .puesto { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--verde-suave); color: var(--verde); font-size: .8rem; }
+  .vacio { color: #55574a; font-weight: 400; }
 }

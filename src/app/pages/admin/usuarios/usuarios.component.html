@@ -2,13 +2,12 @@
   <h1>Usuarios</h1>
   <p class="admin-subtitulo">Consulta las cuentas y restringe a quienes hagan uso indebido de la plataforma.</p>
 
-  <form class="admin-filtros" (ngSubmit)="buscar()">
+  <div class="admin-filtros">
     <label>
       Buscar por nombre o correo
-      <input type="search" name="busqueda" [(ngModel)]="busqueda" placeholder="Ej. laura@correo.co" />
+      <input type="search" [ngModel]="busqueda()" (ngModelChange)="busqueda.set($event)" placeholder="Ej. laura@correo.co" />
     </label>
-    <button type="submit" class="btn-mini">Buscar</button>
-  </form>
+  </div>
 
   @if (aviso()) { <p class="aviso-ok" role="status">{{ aviso() }}</p> }
 
@@ -20,28 +19,27 @@
     <div class="admin-scroll">
       <table class="admin-tabla">
         <thead>
-          <tr><th scope="col">Usuario</th><th scope="col">Rol</th><th scope="col">Registro</th><th scope="col">Estado</th><th scope="col"><span class="oculto">Acciones</span></th></tr>
+          <tr><th scope="col">Usuario</th><th scope="col">Rol</th><th scope="col">Teléfono</th><th scope="col">Estado</th><th scope="col"><span class="oculto">Acciones</span></th></tr>
         </thead>
         <tbody>
-          @for (u of usuarios(); track u.id) {
+          @for (u of filtrados(); track u.id) {
             <tr>
               <td><strong>{{ u.nombre }} {{ u.apellido }}</strong><small>{{ u.correo }}</small></td>
               <td>{{ rolTexto[u.rol] }}</td>
-              <td>{{ u.registradoEn | date: 'd MMM y' }}</td>
+              <td>{{ u.telefono }}</td>
               <td>
                 @if (u.restringido) {
                   <span class="chip-estado mal">Restringido</span>
-                  @if (u.motivoRestriccion) { <small>{{ u.motivoRestriccion }}</small> }
-                } @else if (!u.activo) {
+                } @else if (!u.cuentaActiva) {
                   <span class="chip-estado">Desactivado</span>
+                } @else if (!u.correoVerificado) {
+                  <span class="chip-estado alerta">Correo sin verificar</span>
                 } @else {
                   <span class="chip-estado ok">Activo</span>
                 }
               </td>
               <td>
-                @if (u.restringido) {
-                  <button type="button" class="btn-mini" (click)="levantar(u)">Levantar restricción</button>
-                } @else if (!esYo(u)) {
+                @if (!u.restringido && !esYo(u)) {
                   <button type="button" class="btn-mini peligro" (click)="aviso.set(''); errorAccion.set(''); aRestringir.set(u)">Restringir</button>
                 }
               </td>
@@ -58,7 +56,7 @@
 @if (aRestringir(); as u) {
   <app-dialogo-motivo titulo="Restringir usuario" [descripcion]="u.nombre + ' ' + u.apellido + ' · ' + u.correo"
     etiquetaMotivo="Motivo de la restricción"
-    confirmacion="El usuario no podrá iniciar sesión hasta que se levante la restricción. ¿Confirmas?"
+    confirmacion="El usuario no podrá iniciar sesión. Por ahora la restricción no se puede levantar desde la plataforma. ¿Confirmas?"
     textoAccion="Restringir usuario" [procesando]="procesando()" [error]="errorAccion()"
     (confirmar)="restringir($event)" (cerrar)="aRestringir.set(null)" />
 }

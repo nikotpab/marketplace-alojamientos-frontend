@@ -1,6 +1,6 @@
 <app-dialogo titulo="Cancelar reserva" [bloqueado]="procesando()" (cerrar)="cerrar.emit()">
   <p>
-    <strong>{{ reserva().alojamiento?.titulo ?? 'Alojamiento' }}</strong> ·
+    <strong>{{ reserva().alojamiento ?? 'Alojamiento' }}</strong> ·
     {{ reserva().llegada | date: 'd MMM' }} → {{ reserva().salida | date: 'd MMM y' }} · Código {{ reserva().codigo }}
   </p>
 
@@ -26,12 +26,10 @@
   @if (previa(); as p) {
     <dl class="devolucion">
       <div><dt>Política</dt><dd>{{ p.politica }}</dd></div>
-      <div><dt>Regla aplicada</dt><dd>{{ p.reglaAplicada }}</dd></div>
-      <div><dt>Total pagado</dt><dd>{{ p.totalPagado | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</dd></div>
-      <div><dt>No reembolsable (tarifa de servicio)</dt><dd>− {{ p.noReembolsable | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</dd></div>
-      <div class="total"><dt>Te devolvemos ({{ p.porcentajeDevolucion }} %)</dt><dd>{{ p.valorDevolucion | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</dd></div>
+      <div><dt>Total pagado</dt><dd>{{ reserva().total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</dd></div>
+      <div class="total"><dt>Te devolvemos</dt><dd>{{ p.valorDevolucion | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</dd></div>
     </dl>
-    <p class="nota">Si cancelas, la reserva pasa a cancelada y las fechas quedan libres. Te notificaremos a ti y al anfitrión.</p>
+    <p class="nota">La tarifa de servicio no es reembolsable. Si cancelas, la reserva pasa a cancelada y las fechas quedan libres. Te notificaremos a ti y al anfitrión.</p>
     @if (error()) { <p class="texto-error" role="alert">{{ error() }}</p> }
     <div class="acciones-dialogo">
       <button type="button" class="btn-secundario" [disabled]="procesando()" (click)="cerrar.emit()">Mantener mi reserva</button>

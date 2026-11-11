@@ -1,5 +1,5 @@
 <app-dialogo titulo="Calificar estadía" [bloqueado]="enviando()" (cerrar)="cerrar.emit()">
-  <p><strong>{{ reserva().alojamiento?.titulo ?? 'Alojamiento' }}</strong> · Código {{ reserva().codigo }}</p>
+  <p><strong>{{ reserva().alojamiento ?? 'Alojamiento' }}</strong> · Código {{ reserva().codigo }}</p>
 
   <fieldset class="estrellas">
     <legend>Calificación</legend>

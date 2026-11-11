@@ -11,7 +11,9 @@ import { NotificacionesService, TIPO_NOTIFICACION_TEXTO } from '../../core/notif
 })
 export class NotificacionesComponent {
   api = inject(NotificacionesService);
-  tipoTexto = TIPO_NOTIFICACION_TEXTO;
+  textoTipo(tipo: string) {
+    return TIPO_NOTIFICACION_TEXTO[tipo] ?? 'Aviso';
+  }
 
   constructor() {
     this.api.cargar();

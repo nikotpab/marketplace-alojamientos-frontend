@@ -36,7 +36,7 @@ export class ResenaFormComponent {
     if (!this.calificacion() || !this.comentarioValido || this.enviando()) return;
     this.enviando.set(true);
     this.error.set('');
-    this.api.crear(this.reserva().id, { calificacion: this.calificacion(), comentario: this.comentario.trim() }).subscribe({
+    this.api.crear(this.reserva().id, { calificacion: this.calificacion(), contenido: this.comentario.trim() }).subscribe({
       next: () => {
         this.enviando.set(false);
         this.publicada.emit();

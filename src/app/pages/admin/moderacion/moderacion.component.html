@@ -1,44 +1,46 @@
 <main class="admin-contenido">
   <h1>Moderación</h1>
-  <p class="admin-subtitulo">Reseñas reportadas por los usuarios. Decide si se mantienen o se ocultan.</p>
+  <p class="admin-subtitulo">Revisa las reseñas de una publicación y oculta las ofensivas o sin relación con la estadía.</p>
+
+  <form class="admin-filtros" (ngSubmit)="cargarResenas()">
+    <label>
+      Publicación
+      <select name="publicacion" [(ngModel)]="publicacionId" (ngModelChange)="cargarResenas()">
+        <option value="">Elige una publicación</option>
+        @for (p of publicaciones(); track p.id) { <option [value]="p.id">{{ p.titulo || 'Sin título' }} · {{ p.anfitrion || '—' }}</option> }
+      </select>
+    </label>
+  </form>
 
   @if (aviso()) { <p class="aviso-ok" role="status">{{ aviso() }}</p> }
+  @if (error()) { <p class="aviso-mal" role="alert">{{ error() }}</p> }
 
   @if (cargando()) {
-    <p>Cargando reseñas reportadas…</p>
-  } @else if (error()) {
-    <p class="aviso-mal" role="alert">{{ error() }}</p>
-  } @else {
+    <p>Cargando reseñas…</p>
+  } @else if (publicacionId) {
     @for (r of resenas(); track r.id) {
       <article class="tarjeta">
         <header>
           <div>
-            <strong>{{ r.alojamiento }}</strong>
-            <small>{{ r.autor }} · {{ r.fecha | date: 'd MMM y' }} · <span class="nota">{{ estrellas(r.calificacion) }}</span></small>
+            <strong>{{ r.autor }}</strong>
+            <small>{{ r.fecha | date: 'd MMM y' }} · <span class="nota">{{ estrellas(r.calificacion) }}</span></small>
           </div>
-          <span class="chip-estado mal">{{ r.reportes }} {{ r.reportes === 1 ? 'reporte' : 'reportes' }}</span>
+          <button type="button" class="btn-mini peligro" (click)="aviso.set(''); aOcultar.set(r)">Ocultar</button>
         </header>
         <p class="texto">{{ r.comentario }}</p>
-        @if (r.motivosReporte.length) {
-          <ul class="motivos" aria-label="Motivos de los reportes">
-            @for (m of r.motivosReporte; track $index) { <li>{{ m }}</li> }
-          </ul>
-        }
-        <div class="acciones">
-          <button type="button" class="btn-mini" (click)="mantener(r)">Mantener</button>
-          <button type="button" class="btn-mini peligro" (click)="aviso.set(''); errorAccion.set(''); aOcultar.set(r)">Ocultar</button>
-        </div>
       </article>
     } @empty {
-      <p class="vacio-tabla">No hay reseñas reportadas pendientes.</p>
+      <p class="vacio-tabla">Esta publicación no tiene reseñas visibles.</p>
     }
   }
 </main>
 
 @if (aOcultar(); as r) {
-  <app-dialogo-motivo titulo="Ocultar reseña" [descripcion]="'Reseña de ' + r.autor + ' sobre ' + r.alojamiento + '.'"
-    etiquetaMotivo="Motivo (ofensiva, sin relación con la estadía…)"
-    confirmacion="La reseña dejará de mostrarse públicamente y no contará en el promedio. ¿Confirmas?"
-    textoAccion="Ocultar reseña" [procesando]="procesando()" [error]="errorAccion()"
-    (confirmar)="ocultar($event)" (cerrar)="aOcultar.set(null)" />
+  <app-dialogo titulo="Ocultar reseña" [bloqueado]="procesando()" (cerrar)="aOcultar.set(null)">
+    <p>Reseña de <strong>{{ r.autor }}</strong>: dejará de mostrarse públicamente y no contará en el promedio. ¿Confirmas?</p>
+    <div class="acciones-dialogo">
+      <button type="button" class="btn-secundario" [disabled]="procesando()" (click)="aOcultar.set(null)">Cancelar</button>
+      <button type="button" class="btn-peligro" [disabled]="procesando()" (click)="ocultar()">{{ procesando() ? 'Ocultando…' : 'Ocultar reseña' }}</button>
+    </div>
+  </app-dialogo>
 }
