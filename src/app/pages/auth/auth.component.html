@@ -61,7 +61,7 @@
           </label>
 
           @if (errorGeneral()) { <p class="error">{{ errorGeneral() }}</p> }
-          @if (exito()) { <p class="exito">Cuenta creada. Ya puedes iniciar sesión.</p> }
+          @if (exito()) { <p class="exito">Cuenta creada. Te enviamos un enlace a tu correo para verificarla; ábrelo antes de iniciar sesión (vence en 24 horas).</p> }
           <button type="submit" class="principal" [disabled]="cargando()">
             {{ cargando() ? 'Creando cuenta...' : 'Crear cuenta' }}
           </button>
@@ -82,6 +82,13 @@
 
 
           @if (errorLogin()) { <p class="error">{{ errorLogin() }}</p> }
+          @if (sinVerificar()) {
+            @if (reenviado()) {
+              <p class="exito">Si la cuenta existe y no está verificada, te enviamos un enlace nuevo.</p>
+            } @else {
+              <button type="button" class="olvido" (click)="reenviarVerificacion()">Reenviar correo de verificación</button>
+            }
+          }
           <button type="submit" class="principal" [disabled]="cargandoLogin()">
             {{ cargandoLogin() ? 'Ingresando...' : 'Iniciar sesión' }}
           </button>

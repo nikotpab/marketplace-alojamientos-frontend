@@ -30,10 +30,6 @@ export interface Perfil {
 
 export type PerfilEditable = Pick<Perfil, 'nombre' | 'apellido' | 'telefono'>;
 
-export interface RecuperacionResponse {
-  token: string;
-}
-
 export interface Usuario {
   id: string;
   nombre: string;
@@ -83,14 +79,24 @@ export class AuthService {
     return this.http.patch<Perfil>(`${this.api}/usuarios/me/estado`, { activo });
   }
 
-  /** Paso 1: solicita el procedimiento de recuperación (simulado, sin correo real). */
-  solicitarRecuperacion(correo: string): Observable<RecuperacionResponse> {
-    return this.http.post<RecuperacionResponse>(`${this.api}/auth/password/recover`, { correo });
+  /** Paso 1: envía al correo un enlace de recuperación (vence en 15 min). Responde 202 exista o no la cuenta. */
+  solicitarRecuperacion(correo: string): Observable<void> {
+    return this.http.post<void>(`${this.api}/auth/password/recover`, { correo });
   }
 
-  /** Paso 2: define la nueva contraseña con el token del procedimiento. */
+  /** Paso 2: define la nueva contraseña con el token que llega en el enlace (?token=…). 400 si venció. */
   restablecerContrasena(token: string, contrasenaNueva: string): Observable<unknown> {
     return this.http.post(`${this.api}/auth/password/reset`, { token, contrasenaNueva });
+  }
+
+  /** Verifica el correo con el token del enlace enviado al registrarse (vence en 24 h). 400 si no sirve. */
+  verificarCorreo(token: string): Observable<void> {
+    return this.http.post<void>(`${this.api}/auth/email/verify`, { token });
+  }
+
+  /** Reenvía el enlace de verificación. Responde 202 siempre. */
+  reenviarVerificacion(correo: string): Observable<void> {
+    return this.http.post<void>(`${this.api}/auth/email/resend`, { correo });
   }
 
   cerrarSesion() {
