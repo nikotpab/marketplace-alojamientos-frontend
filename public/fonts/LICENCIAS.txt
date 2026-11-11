@@ -1,0 +1,6 @@
+Fuentes autoalojadas (subconjunto latino, formato WOFF)
+
+- Inter (400, 500, 600, 700) · Copyright (c) 2016 The Inter Project Authors (https://github.com/rsms/inter)
+- Lora (700) · Copyright (c) 2011 The Lora Project Authors (https://github.com/cyrealtype/Lora-Cyrillic)
+
+Ambas se distribuyen bajo la SIL Open Font License, versión 1.1: https://openfontlicense.org
