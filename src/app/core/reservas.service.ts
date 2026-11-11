@@ -20,6 +20,19 @@ export const ESTADO_RESERVA_TEXTO: Record<EstadoReserva, string> = {
   REVISION_MANUAL: 'En revisión manual',
 };
 
+/** PROCESADA: devolución simulada registrada. NO_PROCESADA: falló; la reserva igual queda cancelada. */
+export type EstadoDevolucion = 'PROCESADA' | 'NO_PROCESADA';
+
+/** Registro de la cancelación y su devolución (trazabilidad, RF-23). */
+export interface Cancelacion {
+  motivo: string;
+  fecha: string;
+  /** Nombre de quien canceló. */
+  canceladaPor: string;
+  valorDevolucion: number;
+  estadoDevolucion: EstadoDevolucion;
+}
+
 export interface Reserva {
   id: string;
   codigo: string;
@@ -36,6 +49,8 @@ export interface Reserva {
    * si la reserva está CONFIRMADA con ese anfitrión; en otro caso llegan nulos.
    */
   huesped?: { nombre: string; telefono: string | null; correo: string | null };
+  /** Solo en reservas CANCELADAS. */
+  cancelacion?: Cancelacion | null;
 }
 
 /** Valor que se devolvería si el huésped cancela hoy, según la política de la publicación. */

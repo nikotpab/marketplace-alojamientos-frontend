@@ -25,6 +25,7 @@
           <p>{{ r.alojamiento?.ciudad }} · {{ r.llegada | date: 'd MMM' }} → {{ r.salida | date: 'd MMM y' }} ·
             {{ r.huespedes }} {{ r.huespedes === 1 ? 'huésped' : 'huéspedes' }}</p>
           <p class="codigo">Código {{ r.codigo }} · {{ r.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
+          @if (r.cancelacion; as c) { <app-detalle-cancelacion [c]="c" /> }
         </div>
         <div class="lado">
           <span class="estado" [attr.data-estado]="r.estado">{{ estados[r.estado] }}</span>

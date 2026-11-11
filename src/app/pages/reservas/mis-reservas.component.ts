@@ -6,10 +6,12 @@ import { CancelarReservaComponent } from './cancelar/cancelar-reserva.component'
 
 type Grupo = 'proximas' | 'completadas' | 'canceladas';
 
+import { DetalleCancelacionComponent } from '../../shared/detalle-cancelacion/detalle-cancelacion.component';
+
 @Component({
   selector: 'app-mis-reservas',
   standalone: true,
-  imports: [RouterLink, CurrencyPipe, DatePipe, CancelarReservaComponent],
+  imports: [RouterLink, CurrencyPipe, DatePipe, CancelarReservaComponent, DetalleCancelacionComponent],
   templateUrl: './mis-reservas.component.html',
   styleUrl: './mis-reservas.component.scss',
 })
@@ -52,7 +54,11 @@ export class MisReservasComponent {
   alCancelar(r: Reserva) {
     this.reservas.update((l) => l.map((x) => (x.id === r.id ? { ...x, ...r } : x)));
     this.aCancelar.set(null);
-    this.aviso.set(`La reserva ${r.codigo} fue cancelada. Las fechas quedaron libres.`);
+    this.aviso.set(
+      r.cancelacion?.estadoDevolucion === 'NO_PROCESADA'
+        ? `La reserva ${r.codigo} fue cancelada, pero la devolución no se pudo procesar. Ya notificamos al equipo para resolverlo.`
+        : `La reserva ${r.codigo} fue cancelada. Las fechas quedaron libres y la devolución quedó registrada.`,
+    );
     this.grupo.set('canceladas');
   }
 
