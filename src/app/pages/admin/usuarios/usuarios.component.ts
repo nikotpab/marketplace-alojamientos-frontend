@@ -1,5 +1,4 @@
-import { DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService, RolUsuario } from '../../../core/auth.service';
 import { UsuarioAdmin, UsuariosAdminService } from '../../../core/usuarios-admin.service';
@@ -14,7 +13,7 @@ const ROL_TEXTO: Record<RolUsuario, string> = {
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-  imports: [DatePipe, FormsModule, DialogoMotivoComponent],
+  imports: [FormsModule, DialogoMotivoComponent],
   templateUrl: './usuarios.component.html',
 })
 export class UsuariosComponent {
@@ -22,7 +21,7 @@ export class UsuariosComponent {
   private auth = inject(AuthService);
 
   rolTexto = ROL_TEXTO;
-  busqueda = '';
+  busqueda = signal('');
   usuarios = signal<UsuarioAdmin[]>([]);
   cargando = signal(true);
   error = signal('');
@@ -32,14 +31,14 @@ export class UsuariosComponent {
   procesando = signal(false);
   errorAccion = signal('');
 
-  constructor() {
-    this.buscar();
-  }
+  filtrados = computed(() => {
+    const q = this.busqueda().trim().toLowerCase();
+    if (!q) return this.usuarios();
+    return this.usuarios().filter((u) => `${u.nombre} ${u.apellido} ${u.correo}`.toLowerCase().includes(q));
+  });
 
-  buscar() {
-    this.cargando.set(true);
-    this.error.set('');
-    this.api.listar(this.busqueda).subscribe({
+  constructor() {
+    this.api.listar().subscribe({
       next: (u) => {
         this.usuarios.set(u);
         this.cargando.set(false);
@@ -62,8 +61,8 @@ export class UsuariosComponent {
     this.procesando.set(true);
     this.errorAccion.set('');
     this.api.restringir(u.id, motivo).subscribe({
-      next: (r) => {
-        this.reemplazar(r);
+      next: () => {
+        this.usuarios.update((l) => l.map((x) => (x.id === u.id ? { ...x, restringido: true } : x)));
         this.procesando.set(false);
         this.aRestringir.set(null);
         this.aviso.set(`${u.nombre} ${u.apellido} quedó restringido y no podrá iniciar sesión.`);
@@ -73,20 +72,5 @@ export class UsuariosComponent {
         this.errorAccion.set('No pudimos restringir al usuario. Intenta de nuevo.');
       },
     });
-  }
-
-  levantar(u: UsuarioAdmin) {
-    this.aviso.set('');
-    this.api.levantarRestriccion(u.id).subscribe({
-      next: (r) => {
-        this.reemplazar(r);
-        this.aviso.set(`Se levantó la restricción de ${u.nombre} ${u.apellido}.`);
-      },
-      error: () => this.aviso.set('No pudimos levantar la restricción. Intenta de nuevo.'),
-    });
-  }
-
-  private reemplazar(u: UsuarioAdmin) {
-    this.usuarios.update((l) => l.map((x) => (x.id === u.id ? u : x)));
   }
 }
