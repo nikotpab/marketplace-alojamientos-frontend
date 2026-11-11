@@ -11,6 +11,8 @@
     }
   </div>
 
+  @if (aviso()) { <p class="aviso-ok" role="status">{{ aviso() }}</p> }
+
   @if (cargando()) {
     <p>Cargando publicaciones…</p>
   } @else if (error()) {
@@ -29,6 +31,7 @@
           <span role="cell">
             <strong>{{ p.titulo || 'Sin título' }}</strong>
             <small>{{ p.ubicacion || '—' }} · {{ nombreTipo(p.tipo) || '—' }}</small>
+            @if (p.estado === 'BLOQUEADA' && p.motivoBloqueo) { <small class="motivo">Motivo del bloqueo: {{ p.motivoBloqueo }}</small> }
           </span>
           <span role="cell">{{ p.anfitrion || '—' }}</span>
           <span role="cell">
@@ -39,6 +42,11 @@
             @if (p.estado === 'PENDIENTE_REVISION') {
               <a class="revisar" routerLink="/admin/revision">Revisar</a>
             }
+            @if (bloqueable(p)) {
+              <button type="button" class="bloquear" (click)="aviso.set(''); errorAccion.set(''); aBloquear.set(p)">Bloquear</button>
+            } @else {
+              <button type="button" class="reactivar" (click)="reactivar(p)">Reactivar</button>
+            }
             <a class="editar" [routerLink]="['/anfitrion/publicaciones', p.id, 'editar']">Editar</a>
           </span>
         </div>
@@ -48,3 +56,12 @@
     </div>
   }
 </main>
+
+@if (aBloquear(); as p) {
+  <app-dialogo-motivo titulo="Bloquear publicación"
+    [descripcion]="'“' + (p.titulo || 'Sin título') + '” de ' + (p.anfitrion || 'anfitrión') + '.'"
+    etiquetaMotivo="Motivo del bloqueo (información engañosa)"
+    confirmacion="La publicación dejará de aparecer en búsquedas y sus reservas futuras pasarán a revisión manual. Solo un administrador podrá reactivarla. ¿Confirmas el bloqueo?"
+    textoAccion="Bloquear publicación" [procesando]="procesando()" [error]="errorAccion()"
+    (confirmar)="bloquear($event)" (cerrar)="aBloquear.set(null)" />
+}
