@@ -1,0 +1,31 @@
+<main class="contenedor">
+  <section class="tarjeta">
+    <img class="logo" src="logo-lr.png" alt="Inversiones LR · Marketplace de alojamientos" />
+
+    @switch (estado()) {
+      @case ('verificando') {
+        <h1>Verificando tu correo…</h1>
+      }
+      @case ('verificado') {
+        <h1>Correo verificado</h1>
+        <p class="texto">Tu cuenta está lista. Ya puedes iniciar sesión.</p>
+        <a class="principal" routerLink="/auth">Ir a iniciar sesión</a>
+      }
+      @case ('invalido') {
+        <h1>El enlace no es válido</h1>
+        <p class="texto">Puede que ya lo hayas usado o que haya vencido (dura 24 horas). Pide uno nuevo:</p>
+        @if (reenviado()) {
+          <p class="texto">Si la cuenta existe y no está verificada, te enviamos un enlace nuevo.</p>
+        } @else {
+          <form (ngSubmit)="reenviar()">
+            <label>Correo electrónico
+              <input type="email" name="correo" autocomplete="email" [(ngModel)]="correo" required />
+            </label>
+            <button type="submit" class="principal">Reenviar enlace</button>
+          </form>
+        }
+        <a class="volver" routerLink="/auth">Volver a iniciar sesión</a>
+      }
+    }
+  </section>
+</main>
