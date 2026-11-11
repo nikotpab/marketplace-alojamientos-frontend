@@ -21,7 +21,7 @@
       @for (n of api.notificaciones(); track n.id) {
         <li [class.nueva]="!n.leida">
           <div class="texto">
-            <span class="chip">{{ tipoTexto[n.tipo] ?? 'Aviso' }}</span>
+            <span class="chip">{{ textoTipo(n.tipo) }}</span>
             <p>{{ n.mensaje }}</p>
             <time [attr.datetime]="n.creadoEn">{{ n.creadoEn | date: "d MMM y, h:mm a" }}</time>
           </div>
