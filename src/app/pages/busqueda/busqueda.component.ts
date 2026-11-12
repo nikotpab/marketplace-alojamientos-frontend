@@ -9,6 +9,7 @@ import {
   FiltrosBusqueda,
   SERVICIOS,
 } from '../../core/alojamientos.service';
+import { PublicacionesService } from '../../core/publicaciones.service';
 import { TiposAlojamientoService } from '../../core/tipos-alojamiento.service';
 
 function salidaPosterior(control: AbstractControl): ValidationErrors | null {
@@ -31,7 +32,8 @@ export class BusquedaComponent {
   private api = inject(AlojamientosService);
 
   tiposApi = inject(TiposAlojamientoService);
-  servicios = SERVICIOS;
+  /** Servicios del catálogo del backend; la lista fija solo se usa si el catálogo no responde. */
+  servicios = signal<string[]>(SERVICIOS);
 
   form = this.fb.nonNullable.group({
     ciudad: '',
@@ -69,6 +71,12 @@ export class BusquedaComponent {
 
   constructor() {
     this.tiposApi.cargarActivos();
+    inject(PublicacionesService).catalogos().subscribe({
+      next: (c) => {
+        if (c.servicios.length) this.servicios.set(c.servicios.map((s) => s.nombre));
+      },
+      error: () => undefined,
+    });
     this.form.controls.llegada.valueChanges.subscribe(() =>
       this.form.controls.salida.updateValueAndValidity(),
     );

@@ -77,7 +77,7 @@
     <section class="tarjeta">
       <h2>Servicios y reglas</h2>
       <div class="chips" role="group" aria-label="Servicios">
-        @for (s of servicios; track s) {
+        @for (s of servicios(); track s) {
           <button type="button" class="chip" [class.on]="seleccionados().includes(s)"
                   [attr.aria-pressed]="seleccionados().includes(s)" (click)="alternarServicio(s)">{{ s }}</button>
         }

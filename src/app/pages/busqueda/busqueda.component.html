@@ -70,7 +70,7 @@
       </div>
       <fieldset class="servicios">
         <legend>Servicios</legend>
-        @for (s of servicios; track s) {
+        @for (s of servicios(); track s) {
           <button type="button" class="chip" [class.on]="seleccionados().includes(s)"
                   [attr.aria-pressed]="seleccionados().includes(s)" (click)="alternarServicio(s)">{{ s }}</button>
         }

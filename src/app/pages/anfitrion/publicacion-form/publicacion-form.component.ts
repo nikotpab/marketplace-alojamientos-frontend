@@ -60,7 +60,8 @@ export class PublicacionFormComponent {
   /** Solo se puede pedir activación desde BORRADOR (incluye las rechazadas, que vuelven a borrador). */
   puedeSolicitar = computed(() => !!this.id && this.publicacion()?.estado === 'BORRADOR');
 
-  servicios = SERVICIOS;
+  /** Servicios del catálogo del backend; la lista fija solo se usa si el catálogo no responde. */
+  servicios = signal<string[]>(SERVICIOS);
   tipos = signal<TipoConfigurado[]>([]);
   errorTipos = signal('');
   /** Políticas de cancelación del backend; se envía su nombre (ajuste 8 del README del backend). */
@@ -87,7 +88,10 @@ export class PublicacionFormComponent {
       error: () => this.errorTipos.set('No pudimos cargar los tipos de alojamiento. Recarga la página.'),
     });
     this.api.catalogos().subscribe({
-      next: (c) => this.politicas.set(c.politicas.map((p) => p.nombre)),
+      next: (c) => {
+        this.politicas.set(c.politicas.map((p) => p.nombre));
+        if (c.servicios.length) this.servicios.set(c.servicios.map((s) => s.nombre));
+      },
       error: () => this.politicas.set([]),
     });
     if (this.id) this.cargar(this.id);
