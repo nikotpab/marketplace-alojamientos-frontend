@@ -1,8 +1,6 @@
 import { CurrencyPipe, DatePipe, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { NOMBRE_SITIO } from '../../core/titulo.strategy';
 import { AlojamientoDetalle, DetalleService } from '../../core/detalle.service';
 import { Disponibilidad, DisponibilidadService } from '../../core/disponibilidad.service';
 import { CalendarioComponent, RangoFechas } from '../../shared/calendario/calendario.component';
@@ -26,7 +24,6 @@ const NOMBRES_TIPO: Record<string, string> = {
 export class DetalleComponent {
   private ruta = inject(ActivatedRoute);
   private api = inject(DetalleService);
-  private titulo = inject(Title);
 
   alojamiento = signal<AlojamientoDetalle | null>(null);
   cargando = signal(true);
@@ -63,7 +60,6 @@ export class DetalleComponent {
     this.api.obtener(id).subscribe({
       next: (a) => {
         this.alojamiento.set(a);
-        this.titulo.setTitle(`${a.titulo} · ${NOMBRE_SITIO}`);
         this.cargando.set(false);
       },
       error: (e) => {
