@@ -17,3 +17,11 @@ input {
   background: none; border: 0; color: var(--verde); font: inherit; font-weight: 600; cursor: pointer; text-decoration: underline;
   &:disabled { opacity: .4; cursor: default; }
 }
+
+/* El desglose es una columna de 380 px: los campos no imponen su ancho propio. Sin esto, la fila
+   de vencimiento y CVC ensancha la grilla del formulario y todo se sale de la tarjeta. */
+.pago { grid-template-columns: minmax(0, 1fr); }
+.fila { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+input { width: 100%; min-width: 0; }
+/* Los números de prueba no se parten a la mitad */
+.ayuda code { white-space: nowrap; }
