@@ -6,26 +6,26 @@
 }
 
 .lado-marca {
-  position: relative; overflow: hidden; background: var(--marca-suave); color: var(--marca);
+  position: relative; overflow: hidden; background: var(--marca-clara); color: var(--marca-oscuro);
   padding: 48px; display: flex; flex-direction: column;
 }
 .lado-marca::before {
   content: ''; position: absolute; width: 280px; height: 280px; border-radius: 50%;
-  right: -90px; top: -90px; background: rgba(45, 80, 22, .08);
+  right: -90px; top: -90px; background: rgba(50, 96, 128, .08);
 }
 .lado-marca > * { position: relative; }
 .beneficios {
-  list-style: none; margin: auto 0 0; padding: 24px 0 0; border-top: 1px solid rgba(45, 80, 22, .2);
+  list-style: none; margin: auto 0 0; padding: 24px 0 0; border-top: 1px solid rgba(50, 96, 128, .2);
   display: flex; flex-direction: column; gap: 18px;
   li { display: flex; gap: 14px; align-items: flex-start; }
-  strong { display: block; color: var(--verde); }
+  strong { display: block; color: var(--marca-oscuro); }
   span { font-size: .85rem; color: var(--texto); }
   .icono {
     flex: none; width: 40px; height: 40px; border-radius: 50%; background: #fff;
     display: grid; place-items: center; color: var(--verde); box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
   }
 }
-.logo-img { display: block; width: min(360px, 100%); height: auto; margin-bottom: 32px; }
+.logo-img { display: block; width: 180px; height: auto; margin-bottom: 32px; }
 .logo { margin: 0; font-size: 2rem; color: var(--verde); span { color: var(--rojo); } }
 .subtitulo { margin: 4px 0 32px; font-size: .75rem; letter-spacing: .08em; }
 .lado-marca h2 { font-size: 2rem; margin: 0 0 16px; }
@@ -43,7 +43,7 @@
 .rol {
   text-align: left; background: #fff; border: 1px solid var(--gris-borde);
   border-radius: var(--radio); padding: 14px; cursor: pointer; display: flex; flex-direction: column; gap: 4px;
-  span { font-size: .8rem; color: #666; }
+  span { font-size: .8rem; color: var(--texto-suave); }
   &.activo { border: 2px solid var(--verde); }
 }
 
@@ -51,7 +51,7 @@ form { display: flex; flex-direction: column; gap: 14px; }
 .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .9rem; }
 input {
-  padding: 12px; border: 1px solid var(--gris-borde); border-radius: var(--radio);
+  padding: 12px; border: 1px solid var(--borde-campo); border-radius: var(--radio);
   font: inherit; font-weight: 400;
 }
 input:focus { outline: 2px solid var(--verde); }
@@ -71,7 +71,7 @@ input:focus { outline: 2px solid var(--verde); }
 }
 .aviso {
   margin: 4px 0 0; display: flex; align-items: center; gap: 8px; justify-content: center;
-  font-size: .8rem; color: #7a7a68;
+  font-size: .8rem; color: var(--texto-suave);
 }
 .cambio { margin-top: 24px; font-size: .9rem; }
 .enlace {

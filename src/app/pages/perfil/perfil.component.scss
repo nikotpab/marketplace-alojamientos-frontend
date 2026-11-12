@@ -1,13 +1,13 @@
 .contenido { width: min(1240px, 100%); margin: 0 auto; padding: 48px 32px; }
-h1 { margin: 0; font-size: 2.2rem; color: #1f2a1a; }
-.subtitulo { margin: 4px 0 28px; color: #55574a; }
+h1 { margin: 0; font-size: 2.2rem; color: var(--texto); }
+.subtitulo { margin: 4px 0 28px; color: var(--texto-suave); }
 
 .columnas { display: grid; grid-template-columns: 1fr 430px; gap: 32px; align-items: start; }
 
 .tarjeta {
   background: #fff; border: 1px solid var(--gris-borde); border-radius: 16px; padding: 24px;
   h2 { margin: 0 0 8px; font-size: 1.15rem; }
-  p { margin: 0 0 16px; color: #55574a; }
+  p { margin: 0 0 16px; color: var(--texto-suave); }
 }
 .lateral { display: flex; flex-direction: column; gap: 20px; }
 
@@ -26,10 +26,10 @@ form { display: flex; flex-direction: column; gap: 16px; }
 .fila { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .85rem; }
 input {
-  padding: 12px; border: 1px solid var(--gris-borde); border-radius: var(--radio);
+  padding: 12px; border: 1px solid var(--borde-campo); border-radius: var(--radio);
   font: inherit; font-weight: 400;
   &:focus { outline: 2px solid var(--verde); }
-  &[readonly] { background: var(--crema-claro); color: #55574a; }
+  &[readonly] { background: var(--crema-claro); color: var(--texto-suave); }
 }
 .error { color: var(--rojo); font-weight: 500; margin: 0; }
 .exito { color: var(--verde); font-weight: 600; margin: 0; }
@@ -44,20 +44,20 @@ input {
 .estado {
   display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font-weight: 700; color: var(--verde);
   .punto { width: 10px; height: 10px; border-radius: 50%; background: var(--verde); }
-  &.inactiva { color: #7a7a68; .punto { background: #b0b0a0; } }
+  &.inactiva { color: var(--texto-suave); .punto { background: var(--borde-campo); } }
 }
 
 .peligro {
   background: #fff; color: var(--rojo); border: 1.5px solid var(--rojo); padding: 11px 20px;
   border-radius: var(--radio); font-weight: 700; font-size: .95rem; cursor: pointer;
-  &:hover { background: #fdecef; }
+  &:hover { background: var(--peligro-suave); }
 }
 .peligro-lleno {
   background: var(--rojo); color: #fff; border: 0; padding: 12px 22px;
   border-radius: var(--radio); font-weight: 700; font-size: .95rem; cursor: pointer;
   &:disabled { opacity: .6; cursor: wait; }
 }
-.confirmar-texto { font-weight: 600; color: #1f2a1a !important; margin-bottom: 12px !important; }
+.confirmar-texto { font-weight: 600; color: var(--texto) !important; margin-bottom: 12px !important; }
 .acciones { display: flex; align-items: center; gap: 16px; }
 .texto {
   background: none; border: 0; padding: 0; font: inherit; font-weight: 600; color: var(--verde); cursor: pointer;

@@ -1,11 +1,11 @@
 .detalle { max-width: 1100px; margin: 0 auto; padding: 24px 24px 56px; width: 100%; }
 .volver { color: var(--verde); font-weight: 600; text-decoration: none; &:hover { text-decoration: underline; } }
-.estado { opacity: .8; &.error { color: var(--rojo); opacity: 1; } }
+.estado { color: var(--texto-suave); &.error { color: var(--rojo); } }
 
 .cabecera {
   margin: 16px 0;
   h1 { margin: 0 0 4px; color: var(--verde); font-size: 1.8rem; }
-  .meta { margin: 0; opacity: .75; }
+  .meta { margin: 0; color: var(--texto-suave); }
 }
 .nota { font-weight: 600; }
 
@@ -26,7 +26,7 @@
 }
 
 .visor {
-  position: fixed; inset: 0; z-index: 60; background: rgba(10, 12, 8, .92);
+  position: fixed; inset: 0; z-index: 60; background: rgba(12, 20, 28, .92);
   display: grid; place-items: center; padding: 48px 64px;
   img { max-width: 100%; max-height: calc(100vh - 120px); object-fit: contain; border-radius: var(--radio-sm); }
   button { position: absolute; border: 0; background: rgba(255, 255, 255, .14); color: #fff; cursor: pointer; border-radius: 50%;
@@ -52,7 +52,7 @@ p { margin: 0 0 8px; line-height: 1.5; }
 
 .resena {
   border-bottom: 1px solid var(--gris-borde); padding: 10px 0;
-  .cab { display: flex; gap: 10px; align-items: baseline; margin: 0 0 4px; small { margin-left: auto; opacity: .6; } }
+  .cab { display: flex; gap: 10px; align-items: baseline; margin: 0 0 4px; small { margin-left: auto; color: var(--texto-suave); } }
 }
 
 .reserva {
@@ -72,7 +72,7 @@ p { margin: 0 0 8px; line-height: 1.5; }
   dd { margin: 0; }
 }
 .noches { font-weight: 700; margin: 0; }
-.ayuda { color: #55574a; font-size: .9rem; }
+.ayuda { color: var(--texto-suave); font-size: .9rem; }
 .aviso-error { color: var(--rojo); font-size: .9rem; }
 
 .cotizar { margin-top: 16px; padding: 12px; &.inactivo { opacity: .45; pointer-events: none; } }
@@ -90,7 +90,7 @@ p { margin: 0 0 8px; line-height: 1.5; }
     display: flex; justify-content: space-between; align-items: center; gap: 12px;
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
     padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: var(--superficie);
-    border-top: 1px solid var(--borde); box-shadow: 0 -4px 16px rgba(20, 28, 14, .08);
+    border-top: 1px solid var(--borde); box-shadow: 0 -4px 16px rgba(29, 43, 54, .08);
     p { margin: 0; display: grid; strong { font-size: 1.1rem; } small { color: var(--texto-suave); } }
     .no-disponible { color: var(--peligro); font-weight: 600; }
   }

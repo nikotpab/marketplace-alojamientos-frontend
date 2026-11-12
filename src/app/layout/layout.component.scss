@@ -7,7 +7,13 @@
   box-shadow: var(--sombra-sm);
 }
 
-.marca img { display: block; height: 52px; width: auto; }
+.marca {
+  display: inline-flex; align-items: center; gap: 10px; justify-self: start; color: var(--texto); text-decoration: none;
+  .simbolo { flex: none; display: block; }
+  .nombre { font-weight: 700; font-size: 1rem; line-height: 1.05; letter-spacing: -.02em; }
+  &:hover .nombre { color: var(--marca); }
+  &:focus-visible { outline: 2px solid var(--marca); outline-offset: 4px; border-radius: var(--radio-sm); }
+}
 
 .enlaces {
   display: flex; gap: 8px;
@@ -24,7 +30,7 @@
 .usuario { display: flex; align-items: center; gap: 12px; justify-self: end; }
 .campana {
   position: relative; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; color: var(--verde);
-  &:hover, &.activa { background: rgba(45, 80, 22, .12); }
+  &:hover, &.activa { background: rgba(50, 96, 128, .12); }
 }
 .contador {
   position: absolute; top: -2px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px;
@@ -36,11 +42,11 @@
 }
 .datos {
   display: flex; flex-direction: column; line-height: 1.2; color: var(--verde);
-  span { font-size: .75rem; opacity: .75; }
+  span { font-size: .75rem; color: var(--texto-suave); }
 }
 
 .salir {
-  background: none; border: 1px solid rgba(45, 80, 22, .35); border-radius: var(--radio-sm);
+  background: none; border: 1px solid rgba(50, 96, 128, .35); border-radius: var(--radio-sm);
   padding: 7px 14px; font: inherit; font-size: .85rem; font-weight: 600; color: var(--verde); cursor: pointer;
   &:hover { border-color: var(--verde); }
 }
@@ -66,7 +72,7 @@ router-outlet + :not(footer) { flex: 1; }
     list-style: none; padding: 8px 14px; border-radius: var(--radio-sm); font-weight: 600; color: var(--verde); cursor: pointer;
     &::-webkit-details-marker { display: none; }
     &::after { content: ' ▾'; font-size: .75rem; }
-    &:hover { background: rgba(45, 80, 22, .08); }
+    &:hover { background: rgba(50, 96, 128, .08); }
   }
   .menu {
     position: absolute; top: calc(100% + 6px); right: 0; min-width: 190px; z-index: 20;

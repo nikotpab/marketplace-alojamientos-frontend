@@ -1,9 +1,9 @@
 .estrellas {
   border: 0; padding: 0; margin: 12px 0 0; display: flex; gap: 4px;
-  legend { font-size: .85rem; font-weight: 700; color: #55574a; margin-bottom: 6px; padding: 0; }
-  label { cursor: pointer; font-size: 2rem; line-height: 1; color: #d8d3bd; &.on { color: #e3a008; } }
+  legend { font-size: .85rem; font-weight: 700; color: var(--texto-suave); margin-bottom: 6px; padding: 0; }
+  label { cursor: pointer; font-size: 2rem; line-height: 1; color: var(--borde-campo); &.on { color: var(--acento); } }
   input { position: absolute; opacity: 0; width: 1px; height: 1px; }
   label:has(input:focus-visible) { outline: 2px solid var(--verde); border-radius: 4px; }
 }
 .oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-.contador { justify-self: end; color: #55574a; }
+.contador { justify-self: end; color: var(--texto-suave); }

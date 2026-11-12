@@ -21,7 +21,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, afterNextRender, inject
   `,
   styles: `
     :host { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; }
-    .fondo { position: absolute; inset: 0; background: rgba(20, 28, 14, .45); }
+    .fondo { position: absolute; inset: 0; background: rgba(29, 43, 54, .45); }
     .dialogo {
       position: relative; width: min(520px, 100%); max-height: calc(100vh - 32px); overflow: auto;
       background: #fff; border-radius: 18px; padding: 22px 24px; box-shadow: 0 20px 50px rgba(0, 0, 0, .2);
@@ -29,7 +29,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, afterNextRender, inject
     }
     header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
     h2 { margin: 0; font-size: 1.2rem; color: var(--verde); }
-    .x { border: 0; background: none; font-size: 1.6rem; line-height: 1; cursor: pointer; color: #55574a; }
+    .x { border: 0; background: none; font-size: 1.6rem; line-height: 1; cursor: pointer; color: var(--texto-suave); }
   `,
 })
 export class DialogoComponent {
