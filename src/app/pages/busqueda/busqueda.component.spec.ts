@@ -27,6 +27,9 @@ describe('BusquedaComponent', () => {
 
   function responderTipos() {
     backend.match('/api/configuracion/tipos-alojamiento').forEach((r) => r.flush([{ codigo: 'CABANA', nombre: 'Cabaña' }]));
+    backend.match('/api/catalogos').forEach((r) =>
+      r.flush({ tipos: [], politicas: [], servicios: [{ id: 's1', nombre: 'WiFi' }, { id: 's2', nombre: 'Chimenea' }] }),
+    );
   }
 
   beforeEach(async () => {
@@ -55,6 +58,14 @@ describe('BusquedaComponent', () => {
 
     expect(pagina.form.controls.ciudad.value).toBe('Guatavita');
     expect(harness.routeNativeElement?.textContent).toContain('1 alojamiento');
+  });
+
+  it('ofrece en los filtros los servicios del catálogo del backend', async () => {
+    const pagina = await harness.navigateByUrl('/buscar', BusquedaComponent);
+    responderTipos();
+    backend.expectOne((r) => r.url === '/api/alojamientos').flush(PAGINA);
+
+    expect(pagina.servicios()).toEqual(['WiFi', 'Chimenea']);
   });
 
   it('muestra el nombre del tipo y no el código', async () => {
