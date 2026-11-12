@@ -22,7 +22,7 @@
           <button type="button" class="foto" [class.principal]="i === 0" (click)="visor.set(i)"
                   [attr.aria-label]="'Ampliar imagen ' + (i + 1) + ' de ' + a.imagenes.length">
             <img [ngSrc]="img" [alt]="a.titulo + ', imagen ' + (i + 1)" fill [priority]="i === 0"
-                 [sizes]="i === 0 ? '(max-width: 800px) 100vw, 560px' : '280px'" />
+                 [sizes]="i === 0 ? '(max-width: 800px) 100vw, 50vw' : '(max-width: 800px) 50vw, 25vw'" />
           </button>
         }
         @if (a.imagenes.length > 5) {
