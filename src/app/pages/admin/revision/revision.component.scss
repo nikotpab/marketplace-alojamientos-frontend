@@ -1,11 +1,11 @@
 .contenido { width: min(1000px, 100%); margin: 0 auto; padding: 32px 24px 56px; }
-h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
-.subtitulo { margin: 4px 0 24px; color: #55574a; }
+h1 { margin: 0; font-size: 2rem; color: var(--texto); }
+.subtitulo { margin: 4px 0 24px; color: var(--texto-suave); }
 
 .aviso {
   padding: 12px 16px; border-radius: 12px; margin: 0 0 16px; font-weight: 500;
   &.ok { background: var(--verde-suave); color: var(--verde); }
-  &.mal { background: #fbe4e4; color: var(--rojo); }
+  &.mal { background: var(--peligro-suave); color: var(--rojo); }
 }
 
 .tarjeta {
@@ -16,11 +16,11 @@ h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
   display: flex; justify-content: space-between; gap: 16px; align-items: flex-start;
   h2 { margin: 0; font-size: 1.15rem; color: var(--verde); }
 }
-.meta { margin: 2px 0 0; font-size: .85rem; color: #55574a; }
+.meta { margin: 2px 0 0; font-size: .85rem; color: var(--texto-suave); }
 .descripcion { margin: 0; line-height: 1.5; }
 .estado {
   padding: 4px 12px; border-radius: 999px; font-size: .8rem; font-weight: 700; white-space: nowrap;
-  background: #fff1c2; color: #7a5a00;
+  background: var(--aviso-suave); color: var(--aviso);
 }
 
 .imagenes { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -48,7 +48,7 @@ button { font: inherit; font-weight: 700; border-radius: var(--radio-md); paddin
   border-top: 1px solid var(--gris-borde); padding-top: 12px; display: flex; flex-direction: column; gap: 8px;
   label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .85rem; }
   textarea {
-    padding: 10px; border: 1px solid var(--gris-borde); border-radius: var(--radio); font: inherit; font-weight: 400; resize: vertical;
+    padding: 10px; border: 1px solid var(--borde-campo); border-radius: var(--radio); font: inherit; font-weight: 400; resize: vertical;
     &.con-error { border-color: var(--rojo); }
   }
 }

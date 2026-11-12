@@ -41,8 +41,8 @@ import { DialogoComponent } from '../dialogo/dialogo.component';
     </app-dialogo>
   `,
   styles: `
-    .confirmar { padding: 12px 14px; border-radius: 12px; background: #fbe4e4; color: var(--rojo); font-weight: 600; }
-    .motivo { font-size: .85rem; color: #55574a; overflow-wrap: anywhere; }
+    .confirmar { padding: 12px 14px; border-radius: 12px; background: var(--peligro-suave); color: var(--rojo); font-weight: 600; }
+    .motivo { font-size: .85rem; color: var(--texto-suave); overflow-wrap: anywhere; }
   `,
 })
 export class DialogoMotivoComponent {

@@ -10,13 +10,13 @@
 .meses { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
 .mes h3 { margin: 0 0 10px; text-align: center; font-size: .95rem; color: var(--verde); }
 .semana, .dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; text-align: center; }
-.semana { font-size: .72rem; opacity: .6; margin-bottom: 4px; }
+.semana { font-size: .72rem; color: var(--texto-suave); margin-bottom: 4px; }
 
 .dia {
   font: inherit; font-size: .85rem; padding: 7px 0; border-radius: 6px; border: 1px solid transparent; cursor: pointer;
   background: var(--verde-suave); color: var(--verde);
-  &.bloqueado { background: #e6e6e6; color: #777; }
-  &.reservado { background: #f3d6d6; color: var(--rojo); text-decoration: line-through; }
+  &.bloqueado { background: var(--neutro-suave); color: var(--texto-suave); }
+  &.reservado { background: var(--peligro-suave); color: var(--rojo); text-decoration: line-through; }
   &.pasado { background: transparent; color: #c2c2c2; }
   &.sel { background: var(--verde); color: #fff; }
   &:disabled { cursor: default; }
@@ -28,7 +28,7 @@
   li { display: flex; align-items: center; gap: 6px; }
   i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
   .libre { background: var(--verde-suave); border: 1px solid var(--verde); }
-  .reservado { background: #f3d6d6; border: 1px solid var(--rojo); }
-  .bloqueado { background: #e6e6e6; border: 1px solid #999; }
+  .reservado { background: var(--peligro-suave); border: 1px solid var(--rojo); }
+  .bloqueado { background: var(--neutro-suave); border: 1px solid var(--borde-campo); }
   .sel { background: var(--verde); }
 }

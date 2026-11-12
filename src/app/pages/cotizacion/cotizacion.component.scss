@@ -1,8 +1,8 @@
 .contenido { width: min(1000px, 100%); margin: 0 auto; padding: 24px 24px 56px; }
 .volver { color: var(--verde); font-weight: 600; text-decoration: none; &:hover { text-decoration: underline; } }
-h1 { margin: 12px 0 20px; font-size: 2rem; color: #1f2a1a; }
+h1 { margin: 12px 0 20px; font-size: 2rem; color: var(--texto); }
 
-.aviso { padding: 12px 16px; border-radius: 12px; font-weight: 500; &.mal { background: #fbe4e4; color: var(--rojo); } }
+.aviso { padding: 12px 16px; border-radius: 12px; font-weight: 500; &.mal { background: var(--peligro-suave); color: var(--rojo); } }
 
 .columnas { display: grid; grid-template-columns: 1fr 380px; gap: 24px; align-items: start; }
 .tarjeta {
@@ -10,12 +10,12 @@ h1 { margin: 12px 0 20px; font-size: 2rem; color: #1f2a1a; }
   h2 { margin: 0; font-size: 1.15rem; color: var(--verde); }
   h3 { margin: 20px 0 8px; font-size: 1rem; color: var(--verde); }
 }
-.meta { margin: 4px 0 16px; color: #55574a; }
+.meta { margin: 4px 0 16px; color: var(--texto-suave); }
 
 .fechas {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0;
   div { border: 1px solid var(--gris-borde); border-radius: 12px; padding: 10px 12px; }
-  dt { font-size: .75rem; font-weight: 700; color: #55574a; text-transform: uppercase; }
+  dt { font-size: .75rem; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; }
   dd { margin: 4px 0 0; font-weight: 600; text-transform: capitalize; }
 }
 .contador {
@@ -40,9 +40,9 @@ table {
   th { text-align: left; font-weight: 400; padding: 7px 0; }
   td { text-align: right; padding: 7px 0; white-space: nowrap; }
   .descuento td, .descuento th { color: var(--verde); }
-  tfoot th, tfoot td { border-top: 2px solid #1f2a1a; padding-top: 12px; font-weight: 800; font-size: 1.15rem; }
+  tfoot th, tfoot td { border-top: 2px solid var(--texto); padding-top: 12px; font-weight: 800; font-size: 1.15rem; }
 }
-.nota { font-size: .8rem; color: #55574a; margin: 12px 0 0; }
+.nota { font-size: .8rem; color: var(--texto-suave); margin: 12px 0 0; }
 
 @media (max-width: 860px) {
   .columnas { grid-template-columns: 1fr; }

@@ -2,7 +2,7 @@
   background: #fff; border: 1px solid var(--gris-borde); border-radius: 16px; padding: 16px 20px; margin-bottom: 12px;
   header { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
   strong { color: var(--verde); }
-  small { display: block; color: #55574a; font-size: .8rem; margin-top: 2px; }
+  small { display: block; color: var(--texto-suave); font-size: .8rem; margin-top: 2px; }
 }
-.nota { color: #e3a008; }
+.nota { color: var(--acento); }
 .texto { margin: 12px 0 0; white-space: pre-line; overflow-wrap: anywhere; }

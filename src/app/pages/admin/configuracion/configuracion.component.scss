@@ -10,16 +10,16 @@
 }
 .entrada {
   display: flex; align-items: center; gap: 6px;
-  input { width: 100%; font: inherit; padding: 8px 10px; border: 1px solid var(--gris-borde); border-radius: 10px; text-align: right;
+  input { width: 100%; font: inherit; padding: 8px 10px; border: 1px solid var(--borde-campo); border-radius: 10px; text-align: right;
     &[aria-invalid='true'] { border-color: var(--rojo); } }
-  .unidad { font-size: .8rem; color: #55574a; min-width: 44px; }
+  .unidad { font-size: .8rem; color: var(--texto-suave); min-width: 44px; }
 }
-.modificado { font-size: .8rem; color: #55574a; margin: 14px 0 0; }
+.modificado { font-size: .8rem; color: var(--texto-suave); margin: 14px 0 0; }
 .historial {
   list-style: none; margin: 0; padding: 0; max-height: 420px; overflow: auto;
   li { padding: 10px 0; border-bottom: 1px solid var(--gris-borde); display: grid; gap: 2px; }
   strong { font-size: .9rem; }
-  small, .vacio { font-size: .8rem; color: #55574a; }
+  small, .vacio { font-size: .8rem; color: var(--texto-suave); }
 }
 .cambios { padding-left: 18px; }
 @media (max-width: 860px) { .columnas { grid-template-columns: 1fr; } }

@@ -29,9 +29,9 @@ import { Cancelacion } from '../../core/reservas.service';
   `,
   styles: `
     .cancelacion { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--gris-borde); }
-    p { margin: 2px 0 0; font-size: .8rem; color: #55574a; }
+    p { margin: 2px 0 0; font-size: .8rem; color: var(--texto-suave); }
     .ok { color: var(--verde); font-weight: 600; }
-    .falla { color: #7a5a00; font-weight: 600; }
+    .falla { color: var(--aviso); font-weight: 600; }
   `,
 })
 export class DetalleCancelacionComponent {

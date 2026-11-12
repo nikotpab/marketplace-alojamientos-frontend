@@ -5,15 +5,15 @@
   border-radius: 20px; padding: 40px; display: flex; flex-direction: column; gap: 16px;
 }
 
-.logo { width: 220px; height: auto; margin-bottom: 8px; }
+.logo { width: 120px; height: auto; margin-bottom: 8px; }
 h1 { margin: 0; font-size: 1.6rem; color: var(--verde); }
-.texto { margin: 0; color: #55574a; }
-.nota { margin: 0; font-size: .85rem; color: #7a7a68; }
+.texto { margin: 0; color: var(--texto-suave); }
+.nota { margin: 0; font-size: .85rem; color: var(--texto-suave); }
 
 form { display: flex; flex-direction: column; gap: 14px; }
 label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .9rem; }
 input {
-  padding: 12px; border: 1px solid var(--gris-borde); border-radius: var(--radio);
+  padding: 12px; border: 1px solid var(--borde-campo); border-radius: var(--radio);
   font: inherit; font-weight: 400;
 }
 input:focus { outline: 2px solid var(--verde); }

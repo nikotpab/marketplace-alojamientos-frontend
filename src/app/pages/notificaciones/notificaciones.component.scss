@@ -1,7 +1,7 @@
 .contenido { width: min(760px, 100%); margin: 0 auto; padding: 32px 24px 56px; }
 .cabecera { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
-h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
-.sub { margin: 4px 0 0; color: #55574a; }
+h1 { margin: 0; font-size: 2rem; color: var(--texto); }
+.sub { margin: 4px 0 0; color: var(--texto-suave); }
 
 .todas {
   padding: 9px 18px; border-radius: var(--radio-md); border: 2px solid var(--verde); background: #fff;
@@ -9,18 +9,18 @@ h1 { margin: 0; font-size: 2rem; color: #1f2a1a; }
   &:disabled { opacity: .4; cursor: default; }
 }
 
-.aviso.mal { padding: 12px 16px; border-radius: 12px; background: #fbe4e4; color: var(--rojo); font-weight: 500; }
+.aviso.mal { padding: 12px 16px; border-radius: 12px; background: var(--peligro-suave); color: var(--rojo); font-weight: 500; }
 .reintentar { margin-left: 8px; background: none; border: 0; color: var(--rojo); font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
-.vacio { color: #55574a; }
+.vacio { color: var(--texto-suave); }
 
 .lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 li {
   display: flex; justify-content: space-between; align-items: center; gap: 16px;
   background: #fff; border: 1px solid var(--gris-borde); border-radius: 14px; padding: 14px 18px;
-  &.nueva { border-left: 5px solid var(--verde); background: #f6fbef; }
+  &.nueva { border-left: 5px solid var(--verde); background: var(--marca-suave); }
 }
-.texto { display: grid; gap: 4px; p { margin: 0; font-weight: 500; color: #1f2a1a; } time { font-size: .8rem; color: #55574a; } }
-.chip { justify-self: start; padding: 2px 10px; border-radius: 999px; background: #e3efd6; color: var(--verde); font-size: .72rem; font-weight: 700; }
+.texto { display: grid; gap: 4px; p { margin: 0; font-weight: 500; color: var(--texto); } time { font-size: .8rem; color: var(--texto-suave); } }
+.chip { justify-self: start; padding: 2px 10px; border-radius: 999px; background: var(--marca-suave); color: var(--verde); font-size: .72rem; font-weight: 700; }
 .leer {
   flex-shrink: 0; background: none; border: 0; color: var(--verde); font: inherit; font-size: .85rem;
   font-weight: 600; text-decoration: underline; cursor: pointer;
