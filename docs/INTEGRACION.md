@@ -33,9 +33,9 @@ Cada petición lleva `Authorization: Bearer <token>` (si hay sesión) y `X-Corre
 | Verificar correo (`/verificar-correo?token=`) | `POST /auth/email/verify`, `POST /auth/email/resend` | SCRUM-109 |
 | Recuperar contraseña (`/recuperar?token=`) | `POST /auth/password/recover`, `POST /auth/password/reset` | SCRUM-18, SCRUM-110 |
 | Mi perfil / estado de la cuenta | `GET/PUT /usuarios/me`, `PATCH /usuarios/me/estado` | SCRUM-19, 20 |
-| Búsqueda | `GET /alojamientos?ciudad&llegada&salida&huespedes&tipo&precioMin&precioMax&servicios&pagina&tamano` | SCRUM-29 |
-| Detalle | `GET /alojamientos/{id}` | SCRUM-30 |
-| Calendario | `GET /publicaciones/{id}/disponibilidad?desde&hasta` | SCRUM-31 |
+| Búsqueda | `GET /alojamientos?ciudad&llegada&salida&huespedes&tipo&precioMin&precioMax&servicios&pagina&tamano` | SCRUM-30 |
+| Detalle | `GET /alojamientos/{id}` | SCRUM-31 |
+| Calendario | `GET /publicaciones/{id}/disponibilidad?desde&hasta` | SCRUM-29 |
 | Cotización | `POST /cotizaciones` | SCRUM-32 |
 | Confirmar y pagar | `POST /reservas` con `Idempotency-Key` (402 rechazado, 409 sin cupo, 503 pasarela) | SCRUM-33, 34, 36 |
 | Mis reservas / Reservas del anfitrión | `GET /reservas` (el backend filtra por el rol del token) | SCRUM-35 |
