@@ -10,7 +10,7 @@
         <form [formGroup]="correo" (ngSubmit)="solicitar()" novalidate>
           <label>Correo electrónico
             <input formControlName="correo" type="email" autocomplete="email" />
-            @if (invalido('correo', 'correo')) { <small class="error" role="alert">Ingresa un correo válido</small> }
+            @if (invalido('correo', 'correo')) { <small class="error" role="alert">{{ mensajeCorreo }}</small> }
           </label>
 
           @if (error()) { <p class="error" role="alert">{{ error() }}</p> }

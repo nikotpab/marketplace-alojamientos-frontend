@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { CampoContrasenaComponent } from '../../shared/campo-contrasena/campo-contrasena.component';
 import { contrasenasCoinciden } from '../../shared/contrasenas-coinciden';
+import { MENSAJE_CORREO, validarCorreo } from '../../shared/validadores-contacto';
 
 @Component({
   selector: 'app-recuperar',
@@ -15,6 +16,7 @@ import { contrasenasCoinciden } from '../../shared/contrasenas-coinciden';
   styleUrl: './recuperar.component.scss',
 })
 export class RecuperarComponent {
+  readonly mensajeCorreo = MENSAJE_CORREO;
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private router = inject(Router);
@@ -27,7 +29,7 @@ export class RecuperarComponent {
   private token = inject(ActivatedRoute).snapshot.queryParamMap.get('token') ?? '';
 
   correo = this.fb.nonNullable.group({
-    correo: ['', [Validators.required, Validators.email]],
+    correo: ['', validarCorreo],
   });
 
   nueva = this.fb.nonNullable.group(

@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CampoContrasenaComponent } from '../../shared/campo-contrasena/campo-contrasena.component';
 import { contrasenasCoinciden } from '../../shared/contrasenas-coinciden';
 import { SoloNumerosDirective } from '../../shared/solo-numeros.directive';
+import { MENSAJE_CORREO, MENSAJE_TELEFONO, validarCorreo, validarTelefono } from '../../shared/validadores-contacto';
 import { AuthService, Rol, RolUsuario } from '../../core/auth.service';
 import { VentanaCodigoComponent } from './ventana-codigo/ventana-codigo.component';
 
@@ -23,6 +24,9 @@ const INICIO_POR_ROL: Record<RolUsuario, string> = {
   styleUrl: './auth.component.scss',
 })
 export class AuthComponent {
+  readonly mensajeCorreo = MENSAJE_CORREO;
+  readonly mensajeTelefono = MENSAJE_TELEFONO;
+
   pestana = signal<'login' | 'registro'>('login');
   rol = signal<Rol>('HUESPED');
   enviado = signal(false);
@@ -53,8 +57,8 @@ export class AuthComponent {
     {
       nombre: ['', [Validators.required, Validators.minLength(2)]],
       apellido: ['', [Validators.required, Validators.minLength(2)]],
-      correo: ['', [Validators.required, Validators.email]],
-      telefono: ['', [Validators.required, Validators.pattern(/^[0-9]{7,15}$/)]],
+      correo: ['', validarCorreo],
+      telefono: ['', validarTelefono],
       contrasena: ['', [Validators.required, Validators.minLength(8)]],
       confirmar: ['', [Validators.required]],
     },
@@ -62,7 +66,7 @@ export class AuthComponent {
   );
 
   login = this.fb.nonNullable.group({
-    correo: ['', [Validators.required, Validators.email]],
+    correo: ['', validarCorreo],
     contrasena: ['', [Validators.required]],
   });
 

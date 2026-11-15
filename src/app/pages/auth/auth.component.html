@@ -46,13 +46,13 @@
 
           <label>Correo electrónico
             <input formControlName="correo" type="email" autocomplete="email" [attr.aria-invalid]="invalido('correo')" [attr.aria-describedby]="invalido('correo') ? 'registro-correo-error' : null" />
-            @if (invalido('correo')) { <small class="error" id="registro-correo-error" role="alert">Ingresa un correo válido</small> }
+            @if (invalido('correo')) { <small class="error" id="registro-correo-error" role="alert">{{ mensajeCorreo }}</small> }
             @if (correoDuplicado()) { <small class="error" role="alert">Este correo ya está registrado</small> }
           </label>
 
           <label>Teléfono
-            <input formControlName="telefono" type="tel" inputmode="numeric" maxlength="15" soloNumeros autocomplete="tel" [attr.aria-invalid]="invalido('telefono')" [attr.aria-describedby]="invalido('telefono') ? 'registro-telefono-error' : null" />
-            @if (invalido('telefono')) { <small class="error" id="registro-telefono-error" role="alert">Solo números, entre 7 y 15 dígitos</small> }
+            <input formControlName="telefono" type="tel" inputmode="numeric" maxlength="10" soloNumeros autocomplete="tel-national" [attr.aria-invalid]="invalido('telefono')" [attr.aria-describedby]="invalido('telefono') ? 'registro-telefono-error' : null" />
+            @if (invalido('telefono')) { <small class="error" id="registro-telefono-error" role="alert">{{ mensajeTelefono }}</small> }
           </label>
 
           <div class="campo">
@@ -91,7 +91,7 @@
         <form [formGroup]="login" (ngSubmit)="iniciarSesion()" novalidate>
           <label>Correo electrónico
             <input formControlName="correo" type="email" autocomplete="email" [attr.aria-invalid]="invalidoLogin('correo')" [attr.aria-describedby]="invalidoLogin('correo') ? 'login-correo-error' : null" />
-            @if (invalidoLogin('correo')) { <small class="error" id="login-correo-error" role="alert">Ingresa un correo válido</small> }
+            @if (invalidoLogin('correo')) { <small class="error" id="login-correo-error" role="alert">{{ mensajeCorreo }}</small> }
           </label>
 
           <div class="campo">
