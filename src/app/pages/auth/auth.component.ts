@@ -2,6 +2,8 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ElementRef, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CampoContrasenaComponent } from '../../shared/campo-contrasena/campo-contrasena.component';
+import { contrasenasCoinciden } from '../../shared/contrasenas-coinciden';
 import { SoloNumerosDirective } from '../../shared/solo-numeros.directive';
 import { AuthService, Rol, RolUsuario } from '../../core/auth.service';
 import { VentanaCodigoComponent } from './ventana-codigo/ventana-codigo.component';
@@ -16,7 +18,7 @@ const INICIO_POR_ROL: Record<RolUsuario, string> = {
   selector: 'app-auth',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgOptimizedImage, ReactiveFormsModule, SoloNumerosDirective, VentanaCodigoComponent],
+  imports: [NgOptimizedImage, ReactiveFormsModule, SoloNumerosDirective, VentanaCodigoComponent, CampoContrasenaComponent],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss',
 })
@@ -46,13 +48,18 @@ export class AuthComponent {
   errorLogin = signal('');
   loginEnviado = signal(false);
 
-  registro = this.fb.nonNullable.group({
-    nombre: ['', [Validators.required, Validators.minLength(2)]],
-    apellido: ['', [Validators.required, Validators.minLength(2)]],
-    correo: ['', [Validators.required, Validators.email]],
-    telefono: ['', [Validators.required, Validators.pattern(/^[0-9]{7,15}$/)]],
-    contrasena: ['', [Validators.required, Validators.minLength(8)]],
-  });
+  /** SCRUM-153: la contraseña se escribe dos veces; la confirmación no se envía a la API. */
+  registro = this.fb.nonNullable.group(
+    {
+      nombre: ['', [Validators.required, Validators.minLength(2)]],
+      apellido: ['', [Validators.required, Validators.minLength(2)]],
+      correo: ['', [Validators.required, Validators.email]],
+      telefono: ['', [Validators.required, Validators.pattern(/^[0-9]{7,15}$/)]],
+      contrasena: ['', [Validators.required, Validators.minLength(8)]],
+      confirmar: ['', [Validators.required]],
+    },
+    { validators: contrasenasCoinciden },
+  );
 
   login = this.fb.nonNullable.group({
     correo: ['', [Validators.required, Validators.email]],
@@ -127,6 +134,12 @@ export class AuthComponent {
     return !!c && c.invalid && (c.touched || this.enviado());
   }
 
+  /** Vacía o distinta de la contraseña, una vez que se tocó o se intentó enviar. */
+  confirmacionInvalida() {
+    const c = this.registro.controls.confirmar;
+    return (c.touched || this.enviado()) && (c.invalid || this.registro.hasError('noCoinciden'));
+  }
+
   /** SCRUM-152, paso 1: valida el formulario, pide el código al correo y abre la ventana. */
   registrar() {
     this.enviado.set(true);
@@ -152,7 +165,8 @@ export class AuthComponent {
 
   /** Paso 2: crea la cuenta con el código y entra con el correo y la contraseña que se acaban de escribir. */
   confirmarCodigo(codigo: string) {
-    const datos = { ...this.registro.getRawValue(), rol: this.rol(), codigo };
+    const { nombre, apellido, correo, telefono, contrasena } = this.registro.getRawValue();
+    const datos = { nombre, apellido, correo, telefono, contrasena, rol: this.rol(), codigo };
     this.creandoCuenta.set(true);
     this.errorCodigo.set('');
     this.avisoCodigo.set('');

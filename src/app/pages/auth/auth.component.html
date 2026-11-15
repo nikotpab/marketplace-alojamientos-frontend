@@ -55,10 +55,23 @@
             @if (invalido('telefono')) { <small class="error" id="registro-telefono-error" role="alert">Solo números, entre 7 y 15 dígitos</small> }
           </label>
 
-          <label>Contraseña
-            <input formControlName="contrasena" type="password" autocomplete="new-password" [attr.aria-invalid]="invalido('contrasena')" [attr.aria-describedby]="invalido('contrasena') ? 'registro-contrasena-error' : null" />
+          <div class="campo">
+            <label for="registro-contrasena">Contraseña</label>
+            <app-campo-contrasena>
+              <input id="registro-contrasena" formControlName="contrasena" type="password" autocomplete="new-password" [attr.aria-invalid]="invalido('contrasena')" [attr.aria-describedby]="invalido('contrasena') ? 'registro-contrasena-error' : null" />
+            </app-campo-contrasena>
             @if (invalido('contrasena')) { <small class="error" id="registro-contrasena-error" role="alert">Mínimo 8 caracteres</small> }
-          </label>
+          </div>
+
+          <div class="campo">
+            <label for="registro-confirmar">Confirmar contraseña</label>
+            <app-campo-contrasena>
+              <input id="registro-confirmar" formControlName="confirmar" type="password" autocomplete="new-password" [attr.aria-invalid]="confirmacionInvalida()" [attr.aria-describedby]="confirmacionInvalida() ? 'registro-confirmar-error' : null" />
+            </app-campo-contrasena>
+            @if (confirmacionInvalida()) {
+              <small class="error" id="registro-confirmar-error" role="alert">{{ registro.controls.confirmar.value ? 'Las contraseñas no coinciden' : 'Confirma tu contraseña' }}</small>
+            }
+          </div>
 
           @if (errorGeneral()) { <p class="error" role="alert">{{ errorGeneral() }}</p> }
           <p class="aviso">Te enviaremos un código a tu correo para confirmarlo antes de crear la cuenta.</p>
@@ -81,10 +94,13 @@
             @if (invalidoLogin('correo')) { <small class="error" id="login-correo-error" role="alert">Ingresa un correo válido</small> }
           </label>
 
-          <label>Contraseña
-            <input formControlName="contrasena" type="password" autocomplete="current-password" [attr.aria-invalid]="invalidoLogin('contrasena')" [attr.aria-describedby]="invalidoLogin('contrasena') ? 'login-contrasena-error' : null" />
+          <div class="campo">
+            <label for="login-contrasena">Contraseña</label>
+            <app-campo-contrasena>
+              <input id="login-contrasena" formControlName="contrasena" type="password" autocomplete="current-password" [attr.aria-invalid]="invalidoLogin('contrasena')" [attr.aria-describedby]="invalidoLogin('contrasena') ? 'login-contrasena-error' : null" />
+            </app-campo-contrasena>
             @if (invalidoLogin('contrasena')) { <small class="error" id="login-contrasena-error" role="alert">Ingresa tu contraseña</small> }
-          </label>
+          </div>
 
 
           @if (avisoLogin()) { <p class="exito" role="status">{{ avisoLogin() }}</p> }

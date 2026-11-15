@@ -3,18 +3,14 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
-
-function coinciden(g: AbstractControl) {
-  const nueva = g.get('contrasena')?.value;
-  const confirmar = g.get('confirmar')?.value;
-  return nueva === confirmar ? null : { noCoinciden: true };
-}
+import { CampoContrasenaComponent } from '../../shared/campo-contrasena/campo-contrasena.component';
+import { contrasenasCoinciden } from '../../shared/contrasenas-coinciden';
 
 @Component({
   selector: 'app-recuperar',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgOptimizedImage, ReactiveFormsModule],
+  imports: [NgOptimizedImage, ReactiveFormsModule, CampoContrasenaComponent],
   templateUrl: './recuperar.component.html',
   styleUrl: './recuperar.component.scss',
 })
@@ -39,7 +35,7 @@ export class RecuperarComponent {
       contrasena: ['', [Validators.required, Validators.minLength(8)]],
       confirmar: ['', [Validators.required]],
     },
-    { validators: coinciden },
+    { validators: contrasenasCoinciden },
   );
 
   constructor() {

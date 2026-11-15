@@ -17,10 +17,10 @@ describe('AuthComponent · registro con código', () => {
     [...raiz.querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent!.trim().startsWith(texto))!;
   const ventana = () => raiz.querySelector('app-ventana-codigo');
 
-  function llenarYCrear(correo = 'laura@correo.co') {
+  function llenarYCrear(correo = 'laura@correo.co', confirmar = CONTRASENA) {
     boton('Crear cuenta').click();
     fixture.detectChanges();
-    pantalla.registro.setValue({ nombre: 'Laura', apellido: 'Gómez', correo, telefono: '3001234567', contrasena: CONTRASENA });
+    pantalla.registro.setValue({ nombre: 'Laura', apellido: 'Gómez', correo, telefono: '3001234567', contrasena: CONTRASENA, confirmar });
     raiz.querySelector<HTMLFormElement>('form')!.dispatchEvent(new Event('submit'));
     fixture.detectChanges();
   }
@@ -64,6 +64,8 @@ describe('AuthComponent · registro con código', () => {
     escribirCodigo('048213');
     const registro = http.expectOne('/api/auth/register');
     expect(registro.request.body).toEqual(jasmine.objectContaining({ correo: 'laura@correo.co', rol: 'HUESPED', codigo: '048213' }));
+    // SCRUM-153: la confirmación no viaja a la API.
+    expect(Object.keys(registro.request.body)).not.toContain('confirmar');
     registro.flush({}, { status: 201, statusText: 'Created' });
 
     const login = http.expectOne('/api/auth/login');
@@ -94,6 +96,22 @@ describe('AuthComponent · registro con código', () => {
     expect(ventana()).not.toBeNull();
     expect(ventana()!.textContent).toContain('El código no es correcto o venció');
     expect(navegar).not.toHaveBeenCalled();
+  });
+
+  it('con contraseñas distintas no pide el código y lo explica junto a la confirmación', () => {
+    llenarYCrear('laura@correo.co', 'Otra-contrasena-2');
+
+    http.expectNone('/api/auth/register/code');
+    expect(ventana()).toBeNull();
+    expect(raiz.querySelector('#registro-confirmar-error')?.textContent).toContain('Las contraseñas no coinciden');
+    expect(raiz.querySelector('#registro-confirmar')!.getAttribute('aria-invalid')).toBe('true');
+  });
+
+  it('sin confirmar la contraseña no pide el código', () => {
+    llenarYCrear('laura@correo.co', '');
+
+    http.expectNone('/api/auth/register/code');
+    expect(raiz.querySelector('#registro-confirmar-error')?.textContent).toContain('Confirma tu contraseña');
   });
 
   it('si el correo ya tiene cuenta no abre la ventana y marca el correo', () => {
