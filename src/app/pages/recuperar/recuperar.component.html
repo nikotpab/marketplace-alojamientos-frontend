@@ -24,17 +24,23 @@
         <h1>Crea tu nueva contraseña</h1>
 
         <form [formGroup]="nueva" (ngSubmit)="guardar()" novalidate>
-          <label>Contraseña nueva
-            <input formControlName="contrasena" type="password" autocomplete="new-password" />
+          <div class="campo">
+            <label for="recuperar-contrasena">Contraseña nueva</label>
+            <app-campo-contrasena>
+              <input id="recuperar-contrasena" formControlName="contrasena" type="password" autocomplete="new-password" />
+            </app-campo-contrasena>
             @if (invalido('nueva', 'contrasena')) { <small class="error" role="alert">Mínimo 8 caracteres</small> }
-          </label>
+          </div>
 
-          <label>Confirmar contraseña
-            <input formControlName="confirmar" type="password" autocomplete="new-password" />
+          <div class="campo">
+            <label for="recuperar-confirmar">Confirmar contraseña</label>
+            <app-campo-contrasena>
+              <input id="recuperar-confirmar" formControlName="confirmar" type="password" autocomplete="new-password" />
+            </app-campo-contrasena>
             @if ((nueva.touched || enviado()) && nueva.hasError('noCoinciden')) {
               <small class="error" role="alert">Las contraseñas no coinciden</small>
             }
-          </label>
+          </div>
 
           @if (error()) {
             <p class="error" role="alert">{{ error() }}</p>

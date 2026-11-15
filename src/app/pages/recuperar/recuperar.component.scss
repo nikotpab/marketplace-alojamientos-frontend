@@ -12,6 +12,7 @@ h1 { margin: 0; font-size: 1.6rem; color: var(--verde); }
 
 form { display: flex; flex-direction: column; gap: 14px; }
 label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .9rem; }
+.campo { display: flex; flex-direction: column; gap: 6px; }
 input {
   padding: 12px; border: 1px solid var(--borde-campo); border-radius: var(--radio);
   font: inherit; font-weight: 400;

@@ -39,7 +39,8 @@
 }
 
 .etiqueta { font-weight: 600; margin: 8px 0; }
-.roles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+/* minmax(0, 1fr): las columnas pueden encoger por debajo del ancho propio de su contenido (como en SCRUM-139) */
+.roles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
 .rol {
   text-align: left; background: #fff; border: 1px solid var(--gris-borde);
   border-radius: var(--radio); padding: 14px; cursor: pointer; display: flex; flex-direction: column; gap: 4px;
@@ -48,10 +49,12 @@
 }
 
 form { display: flex; flex-direction: column; gap: 14px; }
-.fila { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fila { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .9rem; }
+/* Campos con la etiqueta fuera (contraseñas, SCRUM-153): mismo espaciado que las etiquetas que envuelven el input */
+.campo { display: flex; flex-direction: column; gap: 6px; }
 input {
-  padding: 12px; border: 1px solid var(--borde-campo); border-radius: var(--radio);
+  width: 100%; min-width: 0; padding: 12px; border: 1px solid var(--borde-campo); border-radius: var(--radio);
   font: inherit; font-weight: 400;
 }
 input:focus { outline: 2px solid var(--verde); }
@@ -61,8 +64,14 @@ input:focus { outline: 2px solid var(--verde); }
 .principal { padding: 13px; font-size: 1rem; }
 
 @media (max-width: 800px) {
-  .tarjeta { grid-template-columns: 1fr; }
+  .tarjeta { grid-template-columns: minmax(0, 1fr); }
   .lado-marca { padding: 24px; }
+}
+/* En móvil el formulario no cabía y se recortaba: menos margen y una columna */
+@media (max-width: 480px) {
+  .contenedor { padding: 16px; }
+  .lado-form { padding: 24px 20px; }
+  .fila, .roles { grid-template-columns: minmax(0, 1fr); }
 }
 .olvido {
   align-self: center; background: none; border: 0; padding: 0; font: inherit;
