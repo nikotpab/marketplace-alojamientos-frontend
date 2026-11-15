@@ -12,6 +12,8 @@ export interface RegistroRequest {
   telefono: string;
   contrasena: string;
   rol: Rol;
+  /** SCRUM-151: el código de 6 dígitos que llegó al correo. */
+  codigo: string;
 }
 
 export interface LoginRequest {
@@ -55,6 +57,12 @@ export class AuthService {
   token = computed(() => this.sesion()?.token ?? null);
   autenticado = computed(() => this.sesion() !== null);
 
+  /** SCRUM-151: envía al correo el código para crear la cuenta (vence en 15 min). 409 si el correo ya tiene cuenta. */
+  solicitarCodigoRegistro(correo: string): Observable<void> {
+    return this.http.post<void>(`${this.api}/auth/register/code`, { correo });
+  }
+
+  /** Crea la cuenta ya verificada; 400 con `campos.codigo` si el código no sirve. */
   registrar(datos: RegistroRequest): Observable<unknown> {
     return this.http.post(`${this.api}/auth/register`, datos);
   }
@@ -87,16 +95,6 @@ export class AuthService {
   /** Paso 2: define la nueva contraseña con el token que llega en el enlace (?token=…). 400 si venció. */
   restablecerContrasena(token: string, contrasenaNueva: string): Observable<unknown> {
     return this.http.post(`${this.api}/auth/password/reset`, { token, contrasenaNueva });
-  }
-
-  /** Verifica el correo con el token del enlace enviado al registrarse (vence en 24 h). 400 si no sirve. */
-  verificarCorreo(token: string): Observable<void> {
-    return this.http.post<void>(`${this.api}/auth/email/verify`, { token });
-  }
-
-  /** Reenvía el enlace de verificación. Responde 202 siempre. */
-  reenviarVerificacion(correo: string): Observable<void> {
-    return this.http.post<void>(`${this.api}/auth/email/resend`, { correo });
   }
 
   cerrarSesion() {

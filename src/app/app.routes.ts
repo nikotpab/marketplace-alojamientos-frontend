@@ -10,7 +10,6 @@ import { rolGuard } from './core/auth.guard';
 export const routes: Routes = [
   { path: 'auth', loadComponent: () => import('./pages/auth/auth.component').then((m) => m.AuthComponent) },
   { path: 'recuperar', loadComponent: () => import('./pages/recuperar/recuperar.component').then((m) => m.RecuperarComponent) },
-  { path: 'verificar-correo', loadComponent: () => import('./pages/verificar-correo/verificar-correo.component').then((m) => m.VerificarCorreoComponent) },
   { path: 'acceso-denegado', loadComponent: () => import('./pages/acceso-denegado/acceso-denegado.component').then((m) => m.AccesoDenegadoComponent) },
 
   // Rutas protegidas dentro del layout: cada una declara los roles permitidos (sin roles = denegada)

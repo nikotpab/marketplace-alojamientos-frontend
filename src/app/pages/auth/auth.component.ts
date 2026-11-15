@@ -1,9 +1,10 @@
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SoloNumerosDirective } from '../../shared/solo-numeros.directive';
 import { AuthService, Rol, RolUsuario } from '../../core/auth.service';
+import { VentanaCodigoComponent } from './ventana-codigo/ventana-codigo.component';
 
 const INICIO_POR_ROL: Record<RolUsuario, string> = {
   HUESPED: '/buscar',
@@ -15,7 +16,7 @@ const INICIO_POR_ROL: Record<RolUsuario, string> = {
   selector: 'app-auth',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgOptimizedImage, ReactiveFormsModule, SoloNumerosDirective],
+  imports: [NgOptimizedImage, ReactiveFormsModule, SoloNumerosDirective, VentanaCodigoComponent],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss',
 })
@@ -26,12 +27,20 @@ export class AuthComponent {
   cargando = signal(false);
   correoDuplicado = signal(false);
   errorGeneral = signal('');
-  exito = signal(false);
+
+  /** SCRUM-152: ventana del código que llega al correo antes de crear la cuenta. */
+  ventanaCodigo = signal(false);
+  creandoCuenta = signal(false);
+  errorCodigo = signal('');
+  avisoCodigo = signal('');
+  /** Se muestra en "Iniciar sesión" si la cuenta se creó pero el inicio automático falló. */
+  avisoLogin = signal('');
 
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private el = inject<ElementRef<HTMLElement>>(ElementRef);
 
   cargandoLogin = signal(false);
   errorLogin = signal('');
@@ -69,25 +78,20 @@ export class AuthComponent {
     this.pestana.set(p);
     this.errorLogin.set('');
     this.errorGeneral.set('');
-    this.exito.set(false);
+    this.avisoLogin.set('');
   }
 
-  /** true cuando el inicio de sesión falló por correo sin verificar (403 CORREO_NO_VERIFICADO). */
+  /**
+   * true cuando el inicio de sesión falló por correo sin verificar (403 CORREO_NO_VERIFICADO). Solo les pasa a cuentas
+   * creadas antes del código (SCRUM-151): recuperar la contraseña también verifica el correo.
+   */
   sinVerificar = signal(false);
-  reenviado = signal(false);
-
-  reenviarVerificacion() {
-    this.auth.reenviarVerificacion(this.login.getRawValue().correo).subscribe({
-      next: () => this.reenviado.set(true),
-      error: () => this.reenviado.set(true),
-    });
-  }
 
   iniciarSesion() {
     this.loginEnviado.set(true);
     this.errorLogin.set('');
     this.sinVerificar.set(false);
-    this.reenviado.set(false);
+    this.avisoLogin.set('');
     if (this.login.invalid) return;
 
     this.cargandoLogin.set(true);
@@ -103,7 +107,7 @@ export class AuthComponent {
         if (e.status === 423 || e.status === 429 || codigo === 'CUENTA_BLOQUEADA')
           this.errorLogin.set('Cuenta bloqueada por 30 minutos por intentos fallidos.');
         else if (codigo === 'CORREO_NO_VERIFICADO')
-          this.errorLogin.set('Aún no verificas tu correo. Abre el enlace que te enviamos al registrarte.');
+          this.errorLogin.set('Aún no verificas tu correo. Recupera tu contraseña: el enlace que te llegue también lo confirma.');
         else if (codigo === 'CUENTA_DESACTIVADA')
           this.errorLogin.set('Tu cuenta está desactivada. No puedes iniciar sesión hasta reactivarla.');
         else if (codigo === 'CUENTA_RESTRINGIDA' || e.status === 403)
@@ -123,6 +127,7 @@ export class AuthComponent {
     return !!c && c.invalid && (c.touched || this.enviado());
   }
 
+  /** SCRUM-152, paso 1: valida el formulario, pide el código al correo y abre la ventana. */
   registrar() {
     this.enviado.set(true);
     this.correoDuplicado.set(false);
@@ -130,18 +135,85 @@ export class AuthComponent {
     if (this.registro.invalid) return;
 
     this.cargando.set(true);
-    this.auth.registrar({ ...this.registro.getRawValue(), rol: this.rol() }).subscribe({
+    this.auth.solicitarCodigoRegistro(this.registro.getRawValue().correo).subscribe({
       next: () => {
         this.cargando.set(false);
-        this.exito.set(true);
-        this.registro.reset();
-        this.enviado.set(false);
+        this.errorCodigo.set('');
+        this.avisoCodigo.set('');
+        this.ventanaCodigo.set(true);
       },
       error: (e) => {
         this.cargando.set(false);
         if (e.status === 409) this.correoDuplicado.set(true);
-        else this.errorGeneral.set('No se pudo completar el registro. Intenta de nuevo.');
+        else this.errorGeneral.set('No pudimos enviarte el código. Revisa el correo e intenta de nuevo.');
       },
     });
+  }
+
+  /** Paso 2: crea la cuenta con el código y entra con el correo y la contraseña que se acaban de escribir. */
+  confirmarCodigo(codigo: string) {
+    const datos = { ...this.registro.getRawValue(), rol: this.rol(), codigo };
+    this.creandoCuenta.set(true);
+    this.errorCodigo.set('');
+    this.avisoCodigo.set('');
+    this.auth.registrar(datos).subscribe({
+      next: () => this.entrar(datos.correo, datos.contrasena),
+      error: (e) => {
+        this.creandoCuenta.set(false);
+        if (e.status === 409) {
+          this.cerrarVentanaCodigo();
+          this.correoDuplicado.set(true);
+        } else {
+          this.errorCodigo.set(e.error?.campos?.codigo ?? 'No se pudo crear la cuenta. Intenta de nuevo.');
+        }
+      },
+    });
+  }
+
+  reenviarCodigo() {
+    this.errorCodigo.set('');
+    this.avisoCodigo.set('');
+    this.auth.solicitarCodigoRegistro(this.registro.getRawValue().correo).subscribe({
+      next: () => this.avisoCodigo.set('Te enviamos un código nuevo. El anterior ya no sirve.'),
+      error: (e) => {
+        if (e.status === 409) {
+          this.cerrarVentanaCodigo();
+          this.correoDuplicado.set(true);
+        } else {
+          this.errorCodigo.set('No pudimos enviar otro código. Intenta de nuevo en un momento.');
+        }
+      },
+    });
+  }
+
+  /** "Cambiar correo": vuelve al formulario sin perder los datos, con el foco en el correo. */
+  cerrarVentanaCodigo() {
+    this.ventanaCodigo.set(false);
+    this.errorCodigo.set('');
+    this.avisoCodigo.set('');
+    setTimeout(() => this.el.nativeElement.querySelector<HTMLInputElement>('input[formcontrolname="correo"]')?.focus());
+  }
+
+  private entrar(correo: string, contrasena: string) {
+    this.auth.login({ correo, contrasena }).subscribe({
+      next: (s) => {
+        this.terminarRegistro();
+        this.router.navigateByUrl(INICIO_POR_ROL[s.usuario.rol]);
+      },
+      error: () => {
+        this.terminarRegistro();
+        this.cambiarPestana('login');
+        this.login.patchValue({ correo });
+        this.avisoLogin.set('Tu cuenta quedó creada. Inicia sesión para continuar.');
+      },
+    });
+  }
+
+  /** La contraseña solo vive en el formulario: se borra al terminar. */
+  private terminarRegistro() {
+    this.creandoCuenta.set(false);
+    this.ventanaCodigo.set(false);
+    this.registro.reset();
+    this.enviado.set(false);
   }
 }

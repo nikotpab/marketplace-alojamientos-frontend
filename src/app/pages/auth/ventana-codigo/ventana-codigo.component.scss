@@ -1,0 +1,28 @@
+.explicacion { margin: 0 0 18px; color: var(--texto); line-height: 1.5; overflow-wrap: anywhere; }
+
+form { display: flex; flex-direction: column; gap: 8px; }
+label { font-weight: 600; font-size: .9rem; color: var(--texto); }
+
+/* Los 6 dígitos grandes y separados, fáciles de comparar con el correo */
+.codigo {
+  width: 100%; padding: 12px; font: inherit; font-size: 1.6rem; font-weight: 600;
+  letter-spacing: .5em; text-align: center; font-variant-numeric: tabular-nums;
+  color: var(--texto); background: var(--superficie);
+  border: 1px solid var(--borde-campo); border-radius: var(--radio);
+  &:focus-visible { outline: 2px solid var(--marca); outline-offset: 1px; border-color: var(--marca); }
+  &[aria-invalid='true'] { border-color: var(--peligro); }
+}
+
+.mensajes { min-height: 1.4em; display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; }
+.error { color: var(--peligro); font-weight: 500; }
+.exito { color: var(--marca); font-weight: 600; }
+
+.secundarias { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+.enlace {
+  background: none; border: 0; padding: 4px 0; font: inherit; font-size: .9rem; font-weight: 700;
+  color: var(--marca); cursor: pointer; text-decoration: underline;
+  &:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; border-radius: 4px; }
+  &:disabled { color: var(--texto-suave); text-decoration: none; cursor: default; }
+}
+
+.nota { margin: 12px 0 0; font-size: .82rem; color: var(--texto-suave); }

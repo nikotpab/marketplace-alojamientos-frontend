@@ -61,11 +61,17 @@
           </label>
 
           @if (errorGeneral()) { <p class="error" role="alert">{{ errorGeneral() }}</p> }
-          @if (exito()) { <p class="exito" role="status">Cuenta creada. Te enviamos un enlace a tu correo para verificarla; ábrelo antes de iniciar sesión (vence en 24 horas).</p> }
+          <p class="aviso">Te enviaremos un código a tu correo para confirmarlo antes de crear la cuenta.</p>
           <button type="submit" class="btn btn-primario principal" [disabled]="cargando()">
-            {{ cargando() ? 'Creando cuenta...' : 'Crear cuenta' }}
+            {{ cargando() ? 'Enviando código...' : 'Crear cuenta' }}
           </button>
         </form>
+
+        @if (ventanaCodigo()) {
+          <app-ventana-codigo [correo]="registro.getRawValue().correo" [procesando]="creandoCuenta()"
+                              [error]="errorCodigo()" [aviso]="avisoCodigo()"
+                              (confirmar)="confirmarCodigo($event)" (reenviar)="reenviarCodigo()" (cerrar)="cerrarVentanaCodigo()" />
+        }
       } @else {
         <h2>Bienvenido de nuevo</h2>
 
@@ -81,13 +87,10 @@
           </label>
 
 
+          @if (avisoLogin()) { <p class="exito" role="status">{{ avisoLogin() }}</p> }
           @if (errorLogin()) { <p class="error" role="alert">{{ errorLogin() }}</p> }
           @if (sinVerificar()) {
-            @if (reenviado()) {
-              <p class="exito" role="status">Si la cuenta existe y no está verificada, te enviamos un enlace nuevo.</p>
-            } @else {
-              <button type="button" class="olvido" (click)="reenviarVerificacion()">Reenviar correo de verificación</button>
-            }
+            <button type="button" class="olvido" (click)="irARecuperar()">Recuperar contraseña y confirmar mi correo</button>
           }
           <button type="submit" class="btn btn-primario principal" [disabled]="cargandoLogin()">
             {{ cargandoLogin() ? 'Ingresando...' : 'Iniciar sesión' }}
