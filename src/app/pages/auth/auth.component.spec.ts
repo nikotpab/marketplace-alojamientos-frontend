@@ -114,6 +114,26 @@ describe('AuthComponent · registro con código', () => {
     expect(raiz.querySelector('#registro-confirmar-error')?.textContent).toContain('Confirma tu contraseña');
   });
 
+  it('con un correo sin dominio completo no pide el código y muestra un ejemplo', () => {
+    llenarYCrear('luicuadros07@gmail');
+
+    http.expectNone('/api/auth/register/code');
+    expect(raiz.querySelector('#registro-correo-error')?.textContent).toContain('nombre@gmail.com');
+  });
+
+  it('con un teléfono que no empieza por 3 o no tiene 10 dígitos no pide el código', () => {
+    boton('Crear cuenta').click();
+    fixture.detectChanges();
+    for (const telefono of ['2001234567', '300123456']) {
+      pantalla.registro.setValue({ nombre: 'Laura', apellido: 'Gómez', correo: 'laura@correo.co', telefono, contrasena: CONTRASENA, confirmar: CONTRASENA });
+      raiz.querySelector<HTMLFormElement>('form')!.dispatchEvent(new Event('submit'));
+      fixture.detectChanges();
+
+      http.expectNone('/api/auth/register/code');
+      expect(raiz.querySelector('#registro-telefono-error')?.textContent).toContain('10 dígitos, empezando por 3');
+    }
+  });
+
   it('si el correo ya tiene cuenta no abre la ventana y marca el correo', () => {
     llenarYCrear();
     http.expectOne('/api/auth/register/code').flush({}, { status: 409, statusText: 'Conflict' });

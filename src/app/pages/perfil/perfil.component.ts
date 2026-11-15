@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MENSAJE_TELEFONO, validarTelefono } from '../../shared/validadores-contacto';
 import { Router } from '@angular/router';
 import { AuthService, Perfil, RolUsuario } from '../../core/auth.service';
 import { SoloNumerosDirective } from '../../shared/solo-numeros.directive';
@@ -19,6 +20,7 @@ const ETIQUETA_ROL: Record<RolUsuario, string> = {
   styleUrl: './perfil.component.scss',
 })
 export class PerfilComponent implements OnInit {
+  readonly mensajeTelefono = MENSAJE_TELEFONO;
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private router = inject(Router);
@@ -37,7 +39,7 @@ export class PerfilComponent implements OnInit {
   form = this.fb.nonNullable.group({
     nombre: ['', [Validators.required, Validators.minLength(2)]],
     apellido: ['', [Validators.required, Validators.minLength(2)]],
-    telefono: ['', [Validators.required, Validators.pattern(/^[0-9]{7,15}$/)]],
+    telefono: ['', validarTelefono],
   });
 
   nombreCompleto = computed(() => {

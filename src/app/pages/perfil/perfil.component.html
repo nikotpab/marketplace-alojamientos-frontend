@@ -32,8 +32,8 @@
               <input type="email" [value]="perfil()?.correo ?? ''" readonly />
             </label>
             <label>Teléfono
-              <input formControlName="telefono" type="tel" inputmode="numeric" maxlength="15" soloNumeros />
-              @if (invalido('telefono')) { <small class="error">Solo números, entre 7 y 15 dígitos</small> }
+              <input formControlName="telefono" type="tel" inputmode="numeric" maxlength="10" soloNumeros autocomplete="tel-national" />
+              @if (invalido('telefono')) { <small class="error" role="alert">{{ mensajeTelefono }}</small> }
             </label>
           </div>
 
