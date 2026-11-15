@@ -11,7 +11,7 @@ Contrato verificado contra `marketplace-alojamientos-backend` (controladores de 
    SPRING_PROFILES_ACTIVE=demo mvn spring-boot:run
    ```
 2. Frontend: `npm install` y `npm start`, luego http://localhost:4200.
-3. Correos de verificación y recuperación: http://localhost:8025 (Mailpit).
+3. Correos con el código de registro y de recuperación: http://localhost:8025 (Mailpit).
 4. Primer administrador: regístrate y ejecuta en la base
    `UPDATE marketplace.usuario SET rol = 'ADMINISTRADOR' WHERE correo = '…'`; luego vuelve a iniciar sesión.
 
@@ -28,9 +28,8 @@ Cada petición lleva `Authorization: Bearer <token>` (si hay sesión) y `X-Corre
 
 | Pantalla / acción | Método y ruta (`/api/v1`) | Historia |
 |---|---|---|
-| Registro | `POST /auth/register` | SCRUM-16 |
+| Registro, con la ventana del código que llega al correo | `POST /auth/register/code`, luego `POST /auth/register` con `codigo`; al acertar inicia sesión con `POST /auth/login` | SCRUM-16, SCRUM-151, SCRUM-152 |
 | Iniciar sesión | `POST /auth/login` (403 `CORREO_NO_VERIFICADO`, `CUENTA_RESTRINGIDA`, `CUENTA_DESACTIVADA`; 423 bloqueada) | SCRUM-17 |
-| Verificar correo (`/verificar-correo?token=`) | `POST /auth/email/verify`, `POST /auth/email/resend` | SCRUM-109 |
 | Recuperar contraseña (`/recuperar?token=`) | `POST /auth/password/recover`, `POST /auth/password/reset` | SCRUM-18, SCRUM-110 |
 | Mi perfil / estado de la cuenta | `GET/PUT /usuarios/me`, `PATCH /usuarios/me/estado` | SCRUM-19, 20 |
 | Búsqueda | `GET /alojamientos?ciudad&llegada&salida&huespedes&tipo&precioMin&precioMax&servicios&pagina&tamano` | SCRUM-30 |
@@ -70,7 +69,7 @@ Vienen de las "Decisiones pendientes" del README del backend. Si el backend los 
 
 ## Prueba rápida de punta a punta
 
-1. Registrar un anfitrión y un huésped; verificar ambos correos en Mailpit.
+1. Registrar un anfitrión y un huésped con el código que llega a Mailpit.
 2. Anfitrión: crear publicación (ubicación terminada en la ciudad, política Flexible) y solicitar activación.
 3. Admin: aprobarla en Revisión.
 4. Huésped: buscar por la ciudad, abrir el detalle, elegir fechas, cotizar, pagar con `4242 4242 4242 4242`.

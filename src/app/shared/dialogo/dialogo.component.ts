@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, ElementRef, afterNextRender, inject
 
 /**
  * Ventana modal reutilizable. El contenido se proyecta; se cierra con Escape o con el fondo
- * (salvo que `bloqueado` esté activo mientras se procesa una acción).
+ * (salvo que `bloqueado` esté activo mientras se procesa una acción). Al abrir, el foco va al elemento
+ * con `autofocus` del contenido o, si no hay, a la ventana.
  */
 @Component({
   selector: 'app-dialogo',
@@ -39,6 +40,8 @@ export class DialogoComponent {
 
   constructor() {
     const el = inject<ElementRef<HTMLElement>>(ElementRef);
-    afterNextRender(() => el.nativeElement.querySelector<HTMLElement>('.dialogo')?.focus());
+    afterNextRender(() =>
+      (el.nativeElement.querySelector<HTMLElement>('[autofocus]') ?? el.nativeElement.querySelector<HTMLElement>('.dialogo'))?.focus(),
+    );
   }
 }
