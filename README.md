@@ -39,6 +39,15 @@ Ejecuta la suite con Karma en modo watch (el navegador se queda abierto y repite
 npm test -- --watch=false
 ```
 
+## Docker
+
+```bash
+docker build -t marketplace-web .
+docker run --rm -p 8081:80 marketplace-web
+```
+
+Abre `http://localhost:8081`. La imagen sirve solo los archivos estáticos; las llamadas a `/api` necesitan el backend detrás del Caddy principal (ver `deploy/compose.yaml` en el repositorio del backend).
+
 ## Despliegue
 
 ```bash
