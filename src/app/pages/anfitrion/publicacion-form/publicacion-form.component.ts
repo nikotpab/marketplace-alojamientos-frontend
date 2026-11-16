@@ -14,7 +14,7 @@ function mayorQueCero(control: AbstractControl): ValidationErrors | null {
 }
 
 type CampoActivacion =
-  | 'titulo' | 'descripcion' | 'ubicacion' | 'tipo'
+  | 'titulo' | 'descripcion' | 'ubicacion' | 'ciudad' | 'tipo'
   | 'capacidad' | 'precioNoche' | 'imagenes' | 'politicaCancelacion';
 
 /** Información mínima para pedir la activación (RF-08). */
@@ -23,6 +23,7 @@ function validarActivacion(d: DatosPublicacion): Partial<Record<CampoActivacion,
   if (!d.titulo) e.titulo = 'Agrega un título para la publicación.';
   if (!d.descripcion) e.descripcion = 'Agrega una descripción del alojamiento.';
   if (!d.ubicacion) e.ubicacion = 'Indica la ubicación del alojamiento.';
+  if (!d.ciudad) e.ciudad = 'Indica la ciudad del alojamiento.';
   if (!d.tipo) e.tipo = 'Selecciona el tipo de alojamiento.';
   if (!d.capacidad || d.capacidad <= 0) e.capacidad = 'Indica una capacidad mayor que 0 (mínimo 1 huésped).';
   if (!d.precioNoche || d.precioNoche <= 0) e.precioNoche = 'Indica un precio por noche mayor que 0.';
@@ -74,6 +75,7 @@ export class PublicacionFormComponent {
     titulo: '',
     descripcion: '',
     ubicacion: '',
+    ciudad: '',
     tipo: '',
     capacidad: ['', [mayorQueCero]],
     precioNoche: ['', [mayorQueCero]],
@@ -146,6 +148,7 @@ export class PublicacionFormComponent {
           titulo: p.titulo ?? '',
           descripcion: p.descripcion ?? '',
           ubicacion: p.ubicacion ?? '',
+          ciudad: p.ciudad ?? '',
           tipo: p.tipo ?? '',
           capacidad: p.capacidad != null ? String(p.capacidad) : '',
           precioNoche: p.precioNoche != null ? String(p.precioNoche) : '',
@@ -181,6 +184,7 @@ export class PublicacionFormComponent {
       titulo: v.titulo.trim(),
       descripcion: v.descripcion.trim(),
       ubicacion: v.ubicacion.trim(),
+      ciudad: v.ciudad.trim(),
       tipo: v.tipo,
       capacidad: v.capacidad === '' ? null : Number(v.capacidad),
       precioNoche: v.precioNoche === '' ? null : Number(v.precioNoche),
