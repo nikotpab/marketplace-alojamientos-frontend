@@ -36,10 +36,13 @@
         @if (errorActivacion('descripcion'); as m) { <small class="error">{{ m }}</small> }
       </label>
       <div class="fila">
-        <label>Ubicación
-          <input formControlName="ubicacion" [class.con-error]="errorActivacion('ubicacion')" type="text" maxlength="200" placeholder="Ej.: Vereda Sabana km 3, Villa de Leyva" />
-          <small class="ayuda">Termina con la ciudad, después de la última coma: la búsqueda filtra por ella.</small>
+        <label>Dirección o referencia
+          <input formControlName="ubicacion" [class.con-error]="errorActivacion('ubicacion')" type="text" maxlength="200" placeholder="Ej.: Vereda Sabana km 3" />
         @if (errorActivacion('ubicacion'); as m) { <small class="error">{{ m }}</small> }
+        </label>
+        <label>Ciudad
+          <input formControlName="ciudad" [class.con-error]="errorActivacion('ciudad')" type="text" maxlength="120" placeholder="Ej.: Villa de Leyva" />
+          @if (errorActivacion('ciudad'); as m) { <small class="error">{{ m }}</small> }
         </label>
         <label>Tipo de alojamiento
           <select formControlName="tipo" [class.con-error]="errorActivacion('tipo')">
