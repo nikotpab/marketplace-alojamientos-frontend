@@ -98,5 +98,6 @@ describe('BusquedaComponent', () => {
     await harness.navigateByUrl('/buscar?llegada=2026-12-10&salida=2026-12-09', BusquedaComponent);
     responderTipos();
     backend.expectNone((r) => r.url === '/api/alojamientos');
+    expect(backend.match(() => true).length).toBe(0);
   });
 });
