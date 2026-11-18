@@ -27,4 +27,14 @@ describe('validadores de contacto (SCRUM-155)', () => {
       expect(valido(validarTelefono, telefono)).withContext(telefono).toBeFalse();
     }
   });
+
+  it('rechazan correos sin parte local (@gmail.com) o sin dominio (test@)', () => {
+    for (const correo of ['@gmail.com', 'test@', 'test@@gmail.com']) {
+      expect(valido(validarCorreo, correo)).withContext(correo).toBeFalse();
+    }
+  });
+
+  it('aceptan correos con TLD de 2 letras', () => {
+    expect(valido(validarCorreo, 'a@b.co')).toBeTrue();
+  });
 });
