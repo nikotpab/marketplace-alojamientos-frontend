@@ -1,6 +1,7 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { verificarContratoInterceptor } from '../testing/contrato';
 import { AuthService, Sesion } from './auth.service';
 
 const SESION: Sesion = { token: 'tok', usuario: { id: '1', nombre: 'Ana', correo: 'ana@a.co', rol: 'HUESPED' } };
@@ -11,7 +12,7 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     sessionStorage.clear();
-    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting()] });
+    TestBed.configureTestingModule({ providers: [provideHttpClient(withInterceptors([verificarContratoInterceptor])), provideHttpClientTesting()] });
     svc = TestBed.inject(AuthService);
     backend = TestBed.inject(HttpTestingController);
   });

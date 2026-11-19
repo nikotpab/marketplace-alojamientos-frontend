@@ -1,6 +1,7 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { verificarContratoInterceptor } from '../testing/contrato';
 import { Notificacion, NotificacionesService } from './notificaciones.service';
 
 const N1: Notificacion = { id: 'n1', tipo: 'ReservaConfirmada', mensaje: 'Reserva confirmada', leida: false, creadoEn: '2026-01-02T10:00:00Z' };
@@ -11,7 +12,7 @@ describe('NotificacionesService', () => {
   let backend: HttpTestingController;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting()] });
+    TestBed.configureTestingModule({ providers: [provideHttpClient(withInterceptors([verificarContratoInterceptor])), provideHttpClientTesting()] });
     svc = TestBed.inject(NotificacionesService);
     backend = TestBed.inject(HttpTestingController);
   });

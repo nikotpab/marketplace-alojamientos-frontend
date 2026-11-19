@@ -1,6 +1,7 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { verificarContratoInterceptor } from '../testing/contrato';
 import { IndicadoresService, PLAZO_DASHBOARD_MS } from './indicadores.service';
 
 describe('IndicadoresService', () => {
@@ -8,7 +9,7 @@ describe('IndicadoresService', () => {
   let backend: HttpTestingController;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting()] });
+    TestBed.configureTestingModule({ providers: [provideHttpClient(withInterceptors([verificarContratoInterceptor])), provideHttpClientTesting()] });
     svc = TestBed.inject(IndicadoresService);
     backend = TestBed.inject(HttpTestingController);
   });
