@@ -17,6 +17,7 @@ export interface DatosPublicacion {
   titulo: string;
   descripcion: string;
   ubicacion: string;
+  ciudad: string;
   tipo: string;
   capacidad: number | null;
   precioNoche: number | null;

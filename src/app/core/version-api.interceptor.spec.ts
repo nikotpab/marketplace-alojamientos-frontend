@@ -18,14 +18,26 @@ describe('versionApiInterceptor', () => {
   afterEach(() => backend.verify());
 
   it('agrega la versión a las rutas de la API', () => {
-    http.get('/api/reservas').subscribe();
-    backend.expectOne('/api/v1/reservas').flush([]);
+    let resultado: unknown;
+    http.get('/api/reservas').subscribe(r => resultado = r);
+    const req = backend.expectOne('/api/v1/reservas');
+    expect(req.request.method).toBe('GET');
+    expect(req.request.url).toBe('/api/v1/reservas');
+    req.flush([]);
+    expect(resultado).toEqual([]);
   });
 
   it('no duplica la versión ni toca otras rutas', () => {
-    http.get('/api/v1/alojamientos').subscribe();
-    http.get('/fonts/inter-400.woff').subscribe();
-    backend.expectOne('/api/v1/alojamientos').flush({});
-    backend.expectOne('/fonts/inter-400.woff').flush('');
+    let resApi: unknown, resFont: unknown;
+    http.get('/api/v1/alojamientos').subscribe(r => resApi = r);
+    http.get('/fonts/inter-400.woff').subscribe(r => resFont = r);
+    const reqApi  = backend.expectOne('/api/v1/alojamientos');
+    const reqFont = backend.expectOne('/fonts/inter-400.woff');
+    expect(reqApi.request.url).toBe('/api/v1/alojamientos');
+    expect(reqFont.request.url).toBe('/fonts/inter-400.woff');
+    reqApi.flush({});
+    reqFont.flush('');
+    expect(resApi).toEqual({});
+    expect(resFont).toBe('');
   });
 });

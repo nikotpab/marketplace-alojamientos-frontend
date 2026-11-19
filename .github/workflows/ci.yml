@@ -1,0 +1,33 @@
+# SCRUM-124: integración continua del frontend
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  construir-y-probar:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Descarga el código del PR o del push
+      - uses: actions/checkout@v4
+
+      # Instala Node 22 y activa la caché de npm
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Instala las dependencias exactas del lockfile
+      - run: npm ci
+
+      # Verifica que la app compila sin errores
+      - run: npm run build
+
+      # Ejecuta los tests en Chrome sin interfaz gráfica
+      - run: npm test -- --watch=false --browsers=ChromeHeadless

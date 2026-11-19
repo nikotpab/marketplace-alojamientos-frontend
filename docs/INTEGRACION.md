@@ -42,7 +42,7 @@ Cada petición lleva `Authorization: Bearer <token>` (si hay sesión) y `X-Corre
 | Calificar estadía | `POST /reservas/{id}/resena` con `{ calificacion, contenido }` | SCRUM-40 |
 | Reseñas del detalle | `GET /publicaciones/{id}/resenas` | SCRUM-41 |
 | Notificaciones | `GET /notificaciones`, `POST /notificaciones/{id}/lectura`, `POST /notificaciones/lectura` | SCRUM-39 |
-| Mis alojamientos y formulario | `GET /publicaciones/mias`, `POST/PUT /publicaciones`, `GET /catalogos`, `GET /configuracion/tipos-alojamiento` | SCRUM-21 a 23 |
+| Mis alojamientos y formulario | `GET /publicaciones/mias`, `POST/PUT /publicaciones`, `GET /catalogos`, `GET /configuracion/tipos-alojamiento`; desde SCRUM-148 el payload incluye `ciudad` | SCRUM-21 a 23, SCRUM-148 |
 | Pausar / reactivar | `POST /publicaciones/{id}/pausar`, `POST /publicaciones/{id}/reactivar` | SCRUM-25 |
 | Disponibilidad del anfitrión | `PUT /publicaciones/{id}/disponibilidad` con `{ desde, hasta, estado }` | SCRUM-27 |
 | Admin: publicaciones y revisión | `GET /admin/publicaciones?estado`, `POST /admin/publicaciones/{id}/aprobar`, `…/rechazar` | SCRUM-24, 26 |
@@ -70,7 +70,7 @@ Vienen de las "Decisiones pendientes" del README del backend. Si el backend los 
 ## Prueba rápida de punta a punta
 
 1. Registrar un anfitrión y un huésped con el código que llega a Mailpit.
-2. Anfitrión: crear publicación (ubicación terminada en la ciudad, política Flexible) y solicitar activación.
+2. Anfitrión: crear publicación (dirección y ciudad en sus campos respectivos, política Flexible) y solicitar activación.
 3. Admin: aprobarla en Revisión.
 4. Huésped: buscar por la ciudad, abrir el detalle, elegir fechas, cotizar, pagar con `4242 4242 4242 4242`.
 5. Huésped: Mis reservas → cancelar (revisar la estimación). Anfitrión: Reservas.
