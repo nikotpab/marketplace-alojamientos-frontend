@@ -8,7 +8,7 @@ import { PublicacionFormComponent } from './publicacion-form.component';
 const TIPOS = [{ codigo: 'CASA', nombre: 'Casa' }];
 const CATALOGOS = { tipos: TIPOS, politicas: [{ id: 'p1', nombre: 'Flexible' }], servicios: [{ id: 's1', nombre: 'WiFi' }] };
 const PUB_BORRADOR = {
-  id: 'pub1', estado: 'BORRADOR', titulo: 'Casa de prueba', descripcion: 'Desc', ubicacion: 'Bogotá',
+  id: 'pub1', estado: 'BORRADOR', titulo: 'Casa de prueba', descripcion: 'Desc',ciudad: 'Bogotá', ubicacion: 'Calle 10 # 5-20',
   tipo: 'CASA', capacidad: 4, precioNoche: 100000, servicios: [], reglas: [], imagenes: ['https://img.com/1.jpg'],
   politicaCancelacion: 'Flexible', actualizadaEn: '2026-01-01T00:00:00Z',
 };

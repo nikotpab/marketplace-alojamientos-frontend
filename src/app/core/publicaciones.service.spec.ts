@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { DatosPublicacion, PublicacionesService } from './publicaciones.service';
 
 const DATOS: DatosPublicacion = {
-  titulo: 'Casa', descripcion: 'Bonita', ubicacion: 'Bogotá, Bogotá', tipo: 'CASA',
+  titulo: 'Casa', descripcion: 'Bonita',ciudad: 'Bogotá', ubicacion: 'Calle 10 # 5-20', tipo: 'CASA',
   capacidad: 4, precioNoche: 100000, servicios: ['WiFi'], reglas: [], imagenes: ['https://img.com/1.jpg'],
   politicaCancelacion: 'Flexible',
 };
