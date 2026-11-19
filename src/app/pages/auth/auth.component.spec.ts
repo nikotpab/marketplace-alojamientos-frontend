@@ -166,3 +166,80 @@ describe('AuthComponent · registro con código', () => {
     expect(navegar).toHaveBeenCalledWith('/recuperar');
   });
 });
+
+describe('AuthComponent · inicio de sesión', () => {
+  const PASS = 'Pass-de-prueba-1';
+  let fixture: ComponentFixture<AuthComponent>;
+  let pantalla: AuthComponent;
+  let raiz: HTMLElement;
+  let http: HttpTestingController;
+  let navegar: jasmine.Spy;
+
+  beforeEach(() => {
+    sessionStorage.clear();
+    TestBed.configureTestingModule({
+      imports: [AuthComponent],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
+    });
+    http = TestBed.inject(HttpTestingController);
+    navegar = spyOn(TestBed.inject(Router), 'navigateByUrl').and.resolveTo(true);
+    fixture = TestBed.createComponent(AuthComponent);
+    pantalla = fixture.componentInstance;
+    raiz = fixture.nativeElement;
+    fixture.detectChanges();
+  });
+
+  afterEach(() => { http.verify(); sessionStorage.clear(); });
+
+  it('con credenciales correctas navega según el rol HUESPED', () => {
+    pantalla.login.setValue({ correo: 'h@correo.co', contrasena: PASS });
+    pantalla.iniciarSesion();
+    http.expectOne('/api/auth/login').flush({ token: 't', usuario: { id: '1', nombre: 'H', correo: 'h@correo.co', rol: 'HUESPED' } });
+    expect(navegar).toHaveBeenCalledWith('/buscar');
+  });
+
+  it('con credenciales correctas navega según el rol ANFITRION', () => {
+    pantalla.login.setValue({ correo: 'a@correo.co', contrasena: PASS });
+    pantalla.iniciarSesion();
+    http.expectOne('/api/auth/login').flush({ token: 't', usuario: { id: '2', nombre: 'A', correo: 'a@correo.co', rol: 'ANFITRION' } });
+    expect(navegar).toHaveBeenCalledWith('/anfitrion');
+  });
+
+  it('con credenciales correctas navega según el rol ADMINISTRADOR', () => {
+    pantalla.login.setValue({ correo: 'ad@correo.co', contrasena: PASS });
+    pantalla.iniciarSesion();
+    http.expectOne('/api/auth/login').flush({ token: 't', usuario: { id: '3', nombre: 'Ad', correo: 'ad@correo.co', rol: 'ADMINISTRADOR' } });
+    expect(navegar).toHaveBeenCalledWith('/admin');
+  });
+
+  it('con 401 muestra correo o contraseña incorrectos', () => {
+    pantalla.login.setValue({ correo: 'h@correo.co', contrasena: 'mala' });
+    pantalla.iniciarSesion();
+    http.expectOne('/api/auth/login').flush({}, { status: 401, statusText: 'Unauthorized' });
+    fixture.detectChanges();
+    expect(raiz.textContent).toContain('Correo o contraseña incorrectos');
+    expect(navegar).not.toHaveBeenCalled();
+  });
+
+  it('con 423 muestra advertencia de cuenta bloqueada 30 minutos', () => {
+    pantalla.login.setValue({ correo: 'h@correo.co', contrasena: PASS });
+    pantalla.iniciarSesion();
+    http.expectOne('/api/auth/login').flush({}, { status: 423, statusText: 'Locked' });
+    fixture.detectChanges();
+    expect(raiz.textContent).toContain('30 minutos');
+  });
+
+  it('con CUENTA_DESACTIVADA muestra mensaje de cuenta desactivada', () => {
+    pantalla.login.setValue({ correo: 'h@correo.co', contrasena: PASS });
+    pantalla.iniciarSesion();
+    http.expectOne('/api/auth/login').flush({ codigo: 'CUENTA_DESACTIVADA' }, { status: 403, statusText: 'Forbidden' });
+    fixture.detectChanges();
+    expect(raiz.textContent).toContain('desactivada');
+  });
+
+  it('con formulario inválido (correo vacío) no llama a la API', () => {
+    pantalla.login.setValue({ correo: '', contrasena: PASS });
+    pantalla.iniciarSesion();
+    http.expectNone('/api/auth/login');
+  });
+});
