@@ -44,6 +44,8 @@
             }
             @if (bloqueable(p)) {
               <button type="button" class="bloquear" (click)="aviso.set(''); errorAccion.set(''); aBloquear.set(p)">Bloquear</button>
+            } @else {
+              <button type="button" class="desbloquear" (click)="aviso.set(''); errorAccion.set(''); aDesbloquear.set(p)">Desbloquear</button>
             }
             <a class="editar" [routerLink]="['/anfitrion/publicaciones', p.id, 'editar']">Editar</a>
           </span>
@@ -59,7 +61,19 @@
   <app-dialogo-motivo titulo="Bloquear publicación"
     [descripcion]="'“' + (p.titulo || 'Sin título') + '” de ' + (p.anfitrion || 'anfitrión') + '.'"
     etiquetaMotivo="Motivo del bloqueo (información engañosa)"
-    confirmacion="La publicación dejará de aparecer en búsquedas y sus reservas futuras pasarán a revisión manual. Por ahora la plataforma no permite reactivarla. ¿Confirmas el bloqueo?"
+    confirmacion="La publicación dejará de aparecer en búsquedas y sus reservas futuras pasarán a revisión manual. Podrás desbloquearla después desde esta lista. ¿Confirmas el bloqueo?"
     textoAccion="Bloquear publicación" [procesando]="procesando()" [error]="errorAccion()"
     (confirmar)="bloquear($event)" (cerrar)="aBloquear.set(null)" />
+}
+
+@if (aDesbloquear(); as p) {
+  <app-dialogo titulo="Desbloquear publicación" [bloqueado]="procesando()" (cerrar)="aDesbloquear.set(null)">
+    <p>“{{ p.titulo || 'Sin título' }}” de {{ p.anfitrion || 'anfitrión' }} volverá a estar activa y en las búsquedas,
+      y sus reservas en revisión volverán a quedar confirmadas. Se avisará al anfitrión y a los huéspedes. ¿Confirmas?</p>
+    @if (errorAccion()) { <p class="aviso-mal" role="alert">{{ errorAccion() }}</p> }
+    <div class="acciones-dialogo">
+      <button type="button" class="btn-secundario" [disabled]="procesando()" (click)="aDesbloquear.set(null)">Cancelar</button>
+      <button type="button" class="btn-primario" [disabled]="procesando()" (click)="desbloquear()">{{ procesando() ? 'Desbloqueando…' : 'Desbloquear publicación' }}</button>
+    </div>
+  </app-dialogo>
 }

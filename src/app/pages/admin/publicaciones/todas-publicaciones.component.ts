@@ -2,6 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TiposAlojamientoService } from '../../../core/tipos-alojamiento.service';
+import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
 import { DialogoMotivoComponent } from '../../../shared/dialogo-motivo/dialogo-motivo.component';
 import {
   ESTADO_TEXTO,
@@ -16,7 +17,7 @@ type Filtro = EstadoPublicacion | 'TODAS';
   selector: 'app-todas-publicaciones',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, CurrencyPipe, DialogoMotivoComponent],
+  imports: [RouterLink, CurrencyPipe, DialogoComponent, DialogoMotivoComponent],
   templateUrl: './todas-publicaciones.component.html',
   styleUrl: './todas-publicaciones.component.scss',
 })
@@ -36,6 +37,7 @@ export class TodasPublicacionesComponent {
   error = signal('');
 
   aBloquear = signal<Publicacion | null>(null);
+  aDesbloquear = signal<Publicacion | null>(null);
   procesando = signal(false);
   errorAccion = signal('');
   aviso = signal('');
@@ -87,6 +89,26 @@ export class TodasPublicacionesComponent {
       error: () => {
         this.procesando.set(false);
         this.errorAccion.set('No pudimos bloquear la publicación. Intenta de nuevo.');
+      },
+    });
+  }
+
+  /** SCRUM-112: vuelve a ACTIVA y sus reservas en revisión a confirmadas. */
+  desbloquear() {
+    const p = this.aDesbloquear();
+    if (!p) return;
+    this.procesando.set(true);
+    this.errorAccion.set('');
+    this.api.desbloquear(p.id).subscribe({
+      next: () => {
+        this.reemplazar({ ...p, estado: 'ACTIVA', motivoBloqueo: null });
+        this.procesando.set(false);
+        this.aDesbloquear.set(null);
+        this.aviso.set(`"${p.titulo}" volvió a estar activa. Sus reservas en revisión quedaron confirmadas y se avisó al anfitrión.`);
+      },
+      error: () => {
+        this.procesando.set(false);
+        this.errorAccion.set('No pudimos desbloquear la publicación. Intenta de nuevo.');
       },
     });
   }

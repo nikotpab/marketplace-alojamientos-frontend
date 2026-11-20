@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { AuthService, RolUsuario } from '../../../core/auth.service';
 import { UsuarioAdmin, UsuariosAdminService } from '../../../core/usuarios-admin.service';
 import { DialogoMotivoComponent } from '../../../shared/dialogo-motivo/dialogo-motivo.component';
@@ -31,6 +32,9 @@ export class UsuariosComponent {
   aRestringir = signal<UsuarioAdmin | null>(null);
   procesando = signal(false);
   errorAccion = signal('');
+  /** SCRUM-112: levantar una restricción o reactivar una cuenta se hace desde la fila, sin diálogo. */
+  procesandoId = signal<string | null>(null);
+  errorFila = signal('');
 
   filtrados = computed(() => {
     const q = this.busqueda().trim().toLowerCase();
@@ -71,6 +75,33 @@ export class UsuariosComponent {
       error: () => {
         this.procesando.set(false);
         this.errorAccion.set('No pudimos restringir al usuario. Intenta de nuevo.');
+      },
+    });
+  }
+
+  levantarRestriccion(u: UsuarioAdmin) {
+    this.revertir(u, this.api.levantarRestriccion(u.id), { restringido: false },
+      `${u.nombre} ${u.apellido} ya puede volver a iniciar sesión.`, 'No pudimos levantar la restricción. Intenta de nuevo.');
+  }
+
+  reactivar(u: UsuarioAdmin) {
+    this.revertir(u, this.api.reactivar(u.id), { cuentaActiva: true },
+      `La cuenta de ${u.nombre} ${u.apellido} quedó activa de nuevo.`, 'No pudimos reactivar la cuenta. Intenta de nuevo.');
+  }
+
+  private revertir(u: UsuarioAdmin, accion: Observable<void>, cambio: Partial<UsuarioAdmin>, exito: string, falla: string) {
+    this.procesandoId.set(u.id);
+    this.aviso.set('');
+    this.errorFila.set('');
+    accion.subscribe({
+      next: () => {
+        this.usuarios.update((l) => l.map((x) => (x.id === u.id ? { ...x, ...cambio } : x)));
+        this.procesandoId.set(null);
+        this.aviso.set(exito);
+      },
+      error: () => {
+        this.procesandoId.set(null);
+        this.errorFila.set(falla);
       },
     });
   }

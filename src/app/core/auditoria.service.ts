@@ -5,9 +5,10 @@ import { Observable } from 'rxjs';
 /** Acciones más consultadas (nombre del evento de dominio que registra el backend). */
 export const ACCIONES_AUDITORIA: string[] = [
   'InicioSesionExitoso', 'InicioSesionFallido', 'AccesoDenegado', 'UsuarioRegistrado', 'UsuarioRestringido',
+  'RestriccionLevantada', 'CuentaReactivada',
   'PublicacionCreada', 'PublicacionEditada', 'PublicacionEnviadaARevision', 'PublicacionAprobada', 'PublicacionRechazada',
-  'PublicacionPausada', 'PublicacionReactivada', 'PublicacionBloqueada', 'DisponibilidadModificada',
-  'ReservaConfirmada', 'ReservaCancelada', 'ReservaCompletada', 'ReservaEnRevision', 'PagoFallido',
+  'PublicacionPausada', 'PublicacionReactivada', 'PublicacionBloqueada', 'PublicacionDesbloqueada', 'DisponibilidadModificada',
+  'ReservaConfirmada', 'ReservaCancelada', 'ReservaCompletada', 'ReservaEnRevision', 'ReservaRestablecida', 'PagoFallido',
   'DevolucionProcesada', 'DevolucionFallida', 'ResenaPublicada', 'ResenaOcultada',
   'TarifasActualizadas', 'TipoAlojamientoAgregado', 'TipoAlojamientoEditado', 'ReporteExportado',
 ];
