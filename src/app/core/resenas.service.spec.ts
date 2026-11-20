@@ -1,6 +1,7 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { verificarContratoInterceptor } from '../testing/contrato';
 import { ResenasService } from './resenas.service';
 
 describe('ResenasService', () => {
@@ -8,7 +9,7 @@ describe('ResenasService', () => {
   let backend: HttpTestingController;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting()] });
+    TestBed.configureTestingModule({ providers: [provideHttpClient(withInterceptors([verificarContratoInterceptor])), provideHttpClientTesting()] });
     svc = TestBed.inject(ResenasService);
     backend = TestBed.inject(HttpTestingController);
   });
