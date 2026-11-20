@@ -61,8 +61,6 @@ Vienen de las "Decisiones pendientes" del README del backend. Si el backend los 
 
 - **Reportar reseñas (pendiente 17):** no hay endpoint, así que el detalle no muestra "Reportar" y Moderación trabaja por publicación.
 - **Reactivar una publicación bloqueada y levantar una restricción (pendiente 10):** no hay botón para esas acciones.
-- **Historial de reservas:** `GET /reservas` no trae el motivo ni la devolución de las canceladas, ni si la reserva ya tiene reseña. El front muestra la cancelación justo después de hacerla, y si el huésped intenta reseñar dos veces el backend responde 409 con el mensaje correspondiente.
-- **Nombre del huésped para el anfitrión:** solo llegan teléfono y correo (y solo en reservas confirmadas).
 - **Políticas de cancelación:** solo la Flexible tiene reglas; con otra, la estimación y la cancelación responden 409 y el front muestra el mensaje del backend.
 - **Tarifa de limpieza:** puede llegar en null hasta que el administrador la configure; el front la muestra como 0.
 - **Método de pago (pendiente 2):** el backend usa `STRIPE_METODO_PAGO` y no lee `metodoPagoId`. El front lo envía igual, listo para cuando se use.

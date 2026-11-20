@@ -49,6 +49,15 @@ describe('ReservasAnfitrionComponent', () => {
     expect(raiz.textContent).toContain('Casa del lago');
   });
 
+  it('SCRUM-113: muestra el nombre del huésped también en las reservas sin contacto', () => {
+    http.expectOne('/api/reservas').flush(RESERVAS.map((r) => ({ ...r, nombreHuesped: 'Laura Gómez' })));
+    fixture.detectChanges();
+    const huespedes = [...raiz.querySelectorAll('.huesped')].map((p) => p.textContent!.replace(/\s+/g, ' ').trim());
+    expect(huespedes[0]).toContain('Laura Gómez · 3001234567');
+    expect(huespedes[1]).toContain('Laura Gómez');
+    expect(huespedes[1]).toContain('Contacto visible solo en reservas confirmadas');
+  });
+
   it('error de red muestra mensaje de error', () => {
     http.expectOne('/api/reservas').flush({}, { status: 500, statusText: 'Server Error' });
     fixture.detectChanges();
