@@ -88,6 +88,29 @@ describe('PublicacionFormComponent · editar publicación', () => {
     expect(comp.publicacion()?.estado).toBe('BORRADOR');
   });
 
+  it('SCRUM-118: al editar una publicación activa avisa que vuelve a revisión y lo repite al guardar', async () => {
+    const navegar = spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+    const comp = await harness.navigateByUrl('/anfitrion/publicaciones/pub1/editar', PublicacionFormComponent);
+    http.expectOne((r) => r.url.includes('/api/configuracion/tipos-alojamiento')).flush(TIPOS);
+    http.expectOne('/api/catalogos').flush(CATALOGOS);
+    http.expectOne('/api/publicaciones/pub1').flush({ ...PUB_BORRADOR, estado: 'ACTIVA' });
+    harness.detectChanges();
+    expect(harness.routeNativeElement!.textContent).toContain('la publicación vuelve a revisión');
+
+    comp.guardarBorrador();
+    http.expectOne((r) => r.url === '/api/publicaciones/pub1' && r.method === 'PUT').flush({ ...PUB_BORRADOR, estado: 'PENDIENTE_REVISION' });
+    expect(navegar).toHaveBeenCalledWith(['/anfitrion'], { queryParams: { guardada: 'revision' } });
+  });
+
+  it('SCRUM-118: un borrador no muestra el aviso de revisión', async () => {
+    await harness.navigateByUrl('/anfitrion/publicaciones/pub1/editar', PublicacionFormComponent);
+    http.expectOne((r) => r.url.includes('/api/configuracion/tipos-alojamiento')).flush(TIPOS);
+    http.expectOne('/api/catalogos').flush(CATALOGOS);
+    http.expectOne('/api/publicaciones/pub1').flush(PUB_BORRADOR);
+    harness.detectChanges();
+    expect(harness.routeNativeElement!.textContent).not.toContain('vuelve a revisión');
+  });
+
   it('error 404 al cargar muestra mensaje apropiado', async () => {
     const comp = await harness.navigateByUrl('/anfitrion/publicaciones/noexiste/editar', PublicacionFormComponent);
     http.expectOne((r) => r.url.includes('/api/configuracion/tipos-alojamiento')).flush(TIPOS);

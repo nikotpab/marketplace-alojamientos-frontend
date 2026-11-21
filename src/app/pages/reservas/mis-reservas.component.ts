@@ -50,9 +50,12 @@ export class MisReservasComponent {
     { valor: 'canceladas', texto: 'Canceladas' },
   ];
 
-  /** Solo se cancelan reservas confirmadas cuya estadía no ha comenzado. */
+  /**
+   * Se cancelan las confirmadas cuya estadía no ha comenzado y las que están en revisión porque su
+   * alojamiento fue bloqueado; estas, con devolución total (SCRUM-118).
+   */
   cancelable(r: Reserva) {
-    return r.estado === 'CONFIRMADA' && r.llegada > this.hoy;
+    return (r.estado === 'CONFIRMADA' && r.llegada > this.hoy) || r.estado === 'EN_REVISION';
   }
 
   /** Solo reservas completadas y aún sin reseña. */

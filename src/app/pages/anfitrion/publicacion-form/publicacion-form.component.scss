@@ -53,4 +53,5 @@ textarea { resize: vertical; }
   padding: 12px 16px; border-radius: 12px; margin: 0 0 16px; font-weight: 500;
   &.ok { background: var(--verde-suave); color: var(--verde); }
   &.mal { background: var(--peligro-suave); color: var(--rojo); }
+  &.nota { background: var(--marca-suave); color: var(--marca); }
 }

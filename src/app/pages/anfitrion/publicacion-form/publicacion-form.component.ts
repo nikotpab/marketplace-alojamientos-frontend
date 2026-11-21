@@ -3,6 +3,7 @@ import { switchMap } from 'rxjs';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SERVICIOS } from '../../../core/alojamientos.service';
+import { AuthService } from '../../../core/auth.service';
 import { DatosPublicacion, ESTADO_TEXTO, Publicacion, PublicacionesService, TipoConfigurado } from '../../../core/publicaciones.service';
 import { SoloNumerosDirective } from '../../../shared/solo-numeros.directive';
 
@@ -47,6 +48,7 @@ export class PublicacionFormComponent {
   private fb = inject(FormBuilder);
   private api = inject(PublicacionesService);
   private router = inject(Router);
+  private auth = inject(AuthService);
 
   /** Si la ruta trae :id, el formulario está en modo edición. */
   id = inject(ActivatedRoute).snapshot.paramMap.get('id');
@@ -60,6 +62,11 @@ export class PublicacionFormComponent {
 
   /** Solo se puede pedir activación desde BORRADOR (incluye las rechazadas, que vuelven a borrador). */
   puedeSolicitar = computed(() => !!this.id && this.publicacion()?.estado === 'BORRADOR');
+  /** SCRUM-118: si el anfitrión edita una publicación aprobada (activa o pausada), vuelve a revisión. */
+  vuelveARevision = computed(() => {
+    const estado = this.publicacion()?.estado;
+    return (estado === 'ACTIVA' || estado === 'PAUSADA') && !this.auth.tieneRol(['ADMINISTRADOR']);
+  });
 
   /** Servicios del catálogo del backend; la lista fija solo se usa si el catálogo no responde. */
   servicios = signal<string[]>(SERVICIOS);
@@ -202,7 +209,7 @@ export class PublicacionFormComponent {
     this.error.set('');
     const peticion = this.id ? this.api.actualizar(this.id, this.datos()) : this.api.crear(this.datos());
     peticion.subscribe({
-      next: () => this.router.navigate(['/anfitrion'], { queryParams: { guardada: 1 } }),
+      next: (p) => this.router.navigate(['/anfitrion'], { queryParams: { guardada: p?.estado === 'PENDIENTE_REVISION' && this.vuelveARevision() ? 'revision' : 1 } }),
       error: (e) => {
         if (e.status === 403) return; // el interceptor lleva a /acceso-denegado
         this.error.set('No pudimos guardar los cambios. Revisa tu conexión e intenta de nuevo.');

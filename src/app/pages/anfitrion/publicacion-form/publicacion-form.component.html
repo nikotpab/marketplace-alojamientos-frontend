@@ -114,6 +114,9 @@
     </section>
 
     @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+    @if (vuelveARevision()) {
+      <p class="aviso nota" role="note">Al guardar, la publicación vuelve a revisión y deja de aparecer en las búsquedas hasta que un administrador la apruebe. Sus reservas no cambian.</p>
+    }
 
     <div class="acciones">
       <button type="submit" class="btn btn-primario principal" [disabled]="guardando()">
