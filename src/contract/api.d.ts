@@ -116,6 +116,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/resenas/reportadas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listarResenasReportadas"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/resenas/{id}/ocultamiento": {
         parameters: {
             query?: never;
@@ -548,6 +564,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/resenas/{id}/reportes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["reportar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/reservas": {
         parameters: {
             query?: never;
@@ -938,6 +970,28 @@ export interface components {
             rol: "ADMINISTRADOR" | "ANFITRION" | "HUESPED";
             telefono: string;
         };
+        ReportarResenaComando: {
+            comentario?: string;
+            /** @enum {string} */
+            motivo: "INFORMACION_FALSA" | "OFENSIVA" | "OTRO" | "SPAM";
+        };
+        ResenaConReportes: {
+            autor?: string;
+            /** Format: int32 */
+            calificacion?: number;
+            comentario?: string;
+            /** Format: date-time */
+            fecha?: string;
+            /** Format: uuid */
+            id?: string;
+            motivos?: string[];
+            /** Format: uuid */
+            publicacionId?: string;
+            /** Format: int64 */
+            reportes?: number;
+            /** Format: date-time */
+            ultimoReporte?: string;
+        };
         ResenaVisible: {
             autor?: string;
             /** Format: int32 */
@@ -1215,6 +1269,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": string;
+                };
+            };
+        };
+    };
+    listarResenasReportadas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ResenaConReportes"][];
                 };
             };
         };
@@ -1905,6 +1979,30 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["ResenaVisible"][];
                 };
+            };
+        };
+    };
+    reportar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportarResenaComando"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

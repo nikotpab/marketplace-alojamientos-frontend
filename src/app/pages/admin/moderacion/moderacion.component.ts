@@ -2,12 +2,12 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Publicacion, PublicacionesService } from '../../../core/publicaciones.service';
-import { ResenaVisible, ResenasService } from '../../../core/resenas.service';
+import { MOTIVO_REPORTE_TEXTO, ResenaReportada, ResenaVisible, ResenasService } from '../../../core/resenas.service';
 import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
 
 /**
- * Moderación de reseñas (RF-29). El backend aún no guarda reportes de usuarios (pendiente 17 de su README):
- * el administrador elige una publicación, revisa sus reseñas visibles y oculta las que incumplen.
+ * Moderación de reseñas (RF-29). Arriba, las reseñas que reportaron los usuarios, con su número de reportes
+ * (SCRUM-111). Abajo, el administrador elige una publicación, revisa sus reseñas visibles y oculta las que incumplen.
  */
 @Component({
   selector: 'app-moderacion',
@@ -28,12 +28,30 @@ export class ModeracionComponent {
   aviso = signal('');
   aOcultar = signal<ResenaVisible | null>(null);
   procesando = signal(false);
+  reportadas = signal<ResenaReportada[]>([]);
+  cargandoReportadas = signal(true);
+  motivoTexto = MOTIVO_REPORTE_TEXTO;
 
   constructor() {
     inject(PublicacionesService).todas().subscribe({
       next: (p) => this.publicaciones.set(p.filter((x) => x.estado !== 'BORRADOR')),
       error: () => this.error.set('No pudimos cargar las publicaciones.'),
     });
+    this.resenasApi.reportadas().subscribe({
+      next: (r) => {
+        this.reportadas.set(r);
+        this.cargandoReportadas.set(false);
+      },
+      error: () => {
+        this.cargandoReportadas.set(false);
+        this.error.set('No pudimos cargar las reseñas reportadas.');
+      },
+    });
+  }
+
+  /** El título sale de la lista de publicaciones que ya se cargó. */
+  tituloDe(publicacionId: string) {
+    return this.publicaciones().find((p) => p.id === publicacionId)?.titulo || 'Publicación';
   }
 
   cargarResenas() {
@@ -63,6 +81,7 @@ export class ModeracionComponent {
         this.procesando.set(false);
         this.aOcultar.set(null);
         this.resenas.update((l) => l.filter((x) => x.id !== r.id));
+        this.reportadas.update((l) => l.filter((x) => x.id !== r.id));
         this.aviso.set('La reseña quedó oculta y ya no cuenta en el promedio del alojamiento. La acción quedó en auditoría.');
       },
       error: () => {

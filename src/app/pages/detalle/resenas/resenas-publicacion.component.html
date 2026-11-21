@@ -30,6 +30,11 @@
           <strong>{{ x.autor }}</strong>
           <span class="nota" [attr.aria-label]="x.calificacion + ' de 5'">{{ estrellas(x.calificacion) }}</span>
           <small>{{ x.fecha | date: 'mediumDate' }}</small>
+          @if (reportadas().has(x.id)) {
+            <small class="reportada" role="status">Reportada. Un administrador la revisará.</small>
+          } @else if (conSesion()) {
+            <button type="button" class="enlace reportar" (click)="abrirReporte(x)">Reportar</button>
+          }
         </p>
         <!-- Interpolación: el contenido siempre se muestra escapado (sin innerHTML) -->
         <p class="texto">{{ x.comentario }}</p>
@@ -41,3 +46,23 @@
     }
   }
 </section>
+
+@if (aReportar(); as r) {
+  <app-dialogo titulo="Reportar reseña" [bloqueado]="enviando()" (cerrar)="aReportar.set(null)">
+    <p>Reseña de <strong>{{ r.autor }}</strong>. Un administrador la revisará y la ocultará si no cumple las normas.</p>
+    <label for="motivo-reporte">Motivo</label>
+    <select id="motivo-reporte" autofocus [value]="motivo()" (change)="motivo.set($any($event.target).value)"
+            [attr.aria-invalid]="!!errorReporte() && !motivo()">
+      <option value="">Elige un motivo</option>
+      @for (m of motivos; track m.valor) { <option [value]="m.valor">{{ m.texto }}</option> }
+    </select>
+    <label for="comentario-reporte">Comentario (opcional)</label>
+    <textarea id="comentario-reporte" rows="3" [maxLength]="maxComentario" [value]="comentario()"
+              (input)="comentario.set($any($event.target).value)"></textarea>
+    @if (errorReporte()) { <p class="error" role="alert">{{ errorReporte() }}</p> }
+    <div class="acciones-dialogo">
+      <button type="button" class="btn-secundario" [disabled]="enviando()" (click)="aReportar.set(null)">Cancelar</button>
+      <button type="button" class="btn-peligro" [disabled]="enviando()" (click)="reportar()">{{ enviando() ? 'Enviando…' : 'Reportar reseña' }}</button>
+    </div>
+  </app-dialogo>
+}

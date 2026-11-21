@@ -48,7 +48,8 @@ Cada petición lleva `Authorization: Bearer <token>` (si hay sesión) y `X-Corre
 | Admin: publicaciones y revisión | `GET /admin/publicaciones?estado`, `POST /admin/publicaciones/{id}/aprobar`, `…/rechazar` | SCRUM-24, 26 |
 | Admin: bloquear publicación | `POST /admin/publicaciones/{id}/bloqueo` con `{ motivo }` | SCRUM-42 |
 | Admin: usuarios | `GET /admin/usuarios`, `POST /admin/usuarios/{id}/restriccion` | SCRUM-43 |
-| Admin: moderación | `GET /publicaciones/{id}/resenas`, `POST /admin/resenas/{id}/ocultamiento` | SCRUM-44 |
+| Reportar una reseña (detalle) | `POST /resenas/{id}/reportes` con `{ motivo, comentario? }` (409 si repite o es la propia) | SCRUM-111 |
+| Admin: moderación | `GET /admin/resenas/reportadas`, `GET /publicaciones/{id}/resenas`, `POST /admin/resenas/{id}/ocultamiento` | SCRUM-44, SCRUM-111 |
 | Admin: auditoría | `GET /admin/auditoria?accion&entidad&desde&hasta&resultado&actorId` | SCRUM-45 |
 | Admin: configuración de tarifas | `GET/PUT /admin/tarifas`; historial = auditoría `TarifasActualizadas` | SCRUM-47 |
 | Admin: tipos de alojamiento | `GET/POST /admin/tipos-alojamiento`, `PUT /admin/tipos-alojamiento/{id}` | SCRUM-48 |
@@ -59,7 +60,6 @@ Cada petición lleva `Authorization: Bearer <token>` (si hay sesión) y `X-Corre
 
 Vienen de las "Decisiones pendientes" del README del backend. Si el backend los agrega, el front tiene el lugar listo:
 
-- **Reportar reseñas (pendiente 17):** no hay endpoint, así que el detalle no muestra "Reportar" y Moderación trabaja por publicación.
 - **Reactivar una publicación bloqueada y levantar una restricción (pendiente 10):** no hay botón para esas acciones.
 - **Historial de reservas:** `GET /reservas` no trae el motivo ni la devolución de las canceladas, ni si la reserva ya tiene reseña. El front muestra la cancelación justo después de hacerla, y si el huésped intenta reseñar dos veces el backend responde 409 con el mensaje correspondiente.
 - **Nombre del huésped para el anfitrión:** solo llegan teléfono y correo (y solo en reservas confirmadas).
