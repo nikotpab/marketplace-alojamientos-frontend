@@ -50,8 +50,6 @@ Abre `http://localhost:8081`. La imagen sirve solo los archivos estáticos; las 
 
 ## Despliegue
 
-```bash
-npm run build
-```
+Cada push a `main` que pasa el CI se despliega solo (SCRUM-121). El job `desplegar` de `.github/workflows/ci.yml` entra a AWS por OIDC, construye esta imagen para ARM y la publica en ECR como `marketplace-web:<commit>`. Luego pide a la EC2, por SSM, que la despliegue: `deploy/desplegar.sh web <commit>` del backend copia `/srv` de la imagen a una carpeta por versión y cambia de una vez el enlace que sirve Caddy.
 
-Genera el bundle en `dist/marketplace-alojamientos-frontend/browser/`. Copia ese contenido a la carpeta `marketplace-web/` que está junto a `deploy/compose.yaml` en el repositorio del backend; desde ahí Caddy lo sirve como archivos estáticos y reenvía `/api/*` al Spring Boot.
+La preparación de una sola vez (stack de CloudFormation y variables `AWS_ROL_DESPLIEGUE`, `AWS_DOCUMENTO_DESPLIEGUE` y `AWS_INSTANCIA` de este repositorio) y cómo volver a una versión anterior están en "Despliegue en AWS" del README del backend. Sin esas variables el job no corre. Para desplegar `main` otra vez sin un commit nuevo: `gh workflow run CI --ref main`.
