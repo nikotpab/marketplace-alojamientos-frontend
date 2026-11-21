@@ -38,11 +38,11 @@ Cada petición lleva `Authorization: Bearer <token>` (si hay sesión) y `X-Corre
 | Cotización | `POST /cotizaciones` | SCRUM-32 |
 | Confirmar y pagar | `POST /reservas` con `Idempotency-Key` (402 rechazado, 409 sin cupo, 503 pasarela) | SCRUM-33, 34, 36 |
 | Mis reservas / Reservas del anfitrión | `GET /reservas` (el backend filtra por el rol del token) | SCRUM-35 |
-| Cancelar reserva | `GET /reservas/{id}/cancelacion/estimacion`, `POST /reservas/{id}/cancelacion` | SCRUM-37, 38 |
+| Cancelar reserva | `GET /reservas/{id}/cancelacion/estimacion`, `POST /reservas/{id}/cancelacion`; también una `EN_REVISION`, con devolución total | SCRUM-37, 38, 118 |
 | Calificar estadía | `POST /reservas/{id}/resena` con `{ calificacion, contenido }` | SCRUM-40 |
 | Reseñas del detalle | `GET /publicaciones/{id}/resenas` | SCRUM-41 |
 | Notificaciones | `GET /notificaciones`, `POST /notificaciones/{id}/lectura`, `POST /notificaciones/lectura` | SCRUM-39 |
-| Mis alojamientos y formulario | `GET /publicaciones/mias`, `POST/PUT /publicaciones`, `GET /catalogos`, `GET /configuracion/tipos-alojamiento`; desde SCRUM-148 el payload incluye `ciudad` | SCRUM-21 a 23, SCRUM-148 |
+| Mis alojamientos y formulario | `GET /publicaciones/mias`, `POST/PUT /publicaciones`, `GET /catalogos`, `GET /configuracion/tipos-alojamiento`; desde SCRUM-148 el payload incluye `ciudad`; si el anfitrión edita una `ACTIVA` o `PAUSADA`, vuelve a `PENDIENTE_REVISION` | SCRUM-21 a 23, SCRUM-148, SCRUM-118 |
 | Pausar / reactivar | `POST /publicaciones/{id}/pausar`, `POST /publicaciones/{id}/reactivar` | SCRUM-25 |
 | Disponibilidad del anfitrión | `PUT /publicaciones/{id}/disponibilidad` con `{ desde, hasta, estado }` | SCRUM-27 |
 | Admin: publicaciones y revisión | `GET /admin/publicaciones?estado`, `POST /admin/publicaciones/{id}/aprobar`, `…/rechazar` | SCRUM-24, 26 |
