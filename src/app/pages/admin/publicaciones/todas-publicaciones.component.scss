@@ -46,9 +46,10 @@ h1 { margin: 0; font-size: 2rem; color: var(--texto); }
   .acciones { grid-column: 1 / -1; justify-content: flex-start; }
 }
 
-.bloquear {
+.bloquear, .desbloquear {
   padding: 6px 14px; border-radius: var(--radio-sm); font: inherit; font-weight: 600; font-size: .8rem; cursor: pointer; background: #fff;
 }
 .bloquear { border: 1px solid var(--rojo); color: var(--rojo); &:hover { background: var(--rojo); color: #fff; } }
+.desbloquear { border: 1px solid var(--marca); color: var(--marca); &:hover { background: var(--marca); color: #fff; } }
 .motivo { color: var(--rojo) !important; }
 .aviso-ok { padding: 12px 16px; border-radius: 12px; background: var(--verde-suave); color: var(--verde); font-weight: 600; }
