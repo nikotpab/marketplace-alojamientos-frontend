@@ -84,6 +84,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/publicaciones/{id}/desbloqueo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["desbloquearPublicacion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/publicaciones/{id}/rechazar": {
         parameters: {
             query?: never;
@@ -212,6 +228,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/usuarios/{id}/reactivacion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["reactivarCuenta"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/usuarios/{id}/restriccion": {
         parameters: {
             query?: never;
@@ -222,7 +254,7 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["restringirUsuario"];
-        delete?: never;
+        delete: operations["levantarRestriccion"];
         options?: never;
         head?: never;
         patch?: never;
@@ -755,6 +787,7 @@ export interface components {
             huespedes: number;
             /** Format: date */
             llegada: string;
+            metodoPagoId?: string;
             /** Format: uuid */
             publicacionId: string;
             /** Format: date */
@@ -1231,6 +1264,26 @@ export interface operations {
             };
         };
     };
+    desbloquearPublicacion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     rechazar: {
         parameters: {
             query?: never;
@@ -1455,6 +1508,26 @@ export interface operations {
             };
         };
     };
+    reactivarCuenta: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     restringirUsuario: {
         parameters: {
             query?: never;
@@ -1469,6 +1542,26 @@ export interface operations {
                 "application/json": components["schemas"]["MotivoComando"];
             };
         };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    levantarRestriccion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description No Content */
             204: {
