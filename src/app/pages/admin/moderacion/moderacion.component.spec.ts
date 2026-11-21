@@ -12,6 +12,13 @@ const RESENAS = [
   { id: 'r2', autor: 'Pedro', calificacion: 2, comentario: 'Mal servicio', fecha: '2026-01-16T10:00:00Z' },
 ];
 
+const REPORTADAS = [
+  {
+    id: 'r9', publicacionId: 'p1', autor: 'Luis', calificacion: 1, comentario: 'Pésimo, no vayan', fecha: '2026-01-10T10:00:00Z',
+    reportes: 3, motivos: ['OFENSIVA', 'SPAM'], ultimoReporte: '2026-01-12T10:00:00Z',
+  },
+];
+
 describe('ModeracionComponent', () => {
   let fixture: ComponentFixture<ModeracionComponent>;
   let comp: ModeracionComponent;
@@ -32,6 +39,7 @@ describe('ModeracionComponent', () => {
     raiz = fixture.nativeElement;
     fixture.detectChanges();
     http.expectOne('/api/admin/publicaciones').flush(PUBS);
+    http.expectOne('/api/admin/resenas/reportadas').flush(REPORTADAS);
     fixture.detectChanges();
   });
 
@@ -57,7 +65,7 @@ describe('ModeracionComponent', () => {
     http.expectOne('/api/publicaciones/p1/resenas').flush(RESENAS);
     fixture.detectChanges();
 
-    boton('Ocultar')!.click();
+    raiz.querySelector<HTMLButtonElement>('.por-publicacion .btn-mini.peligro')!.click();
     fixture.detectChanges();
     expect(comp.aOcultar()).not.toBeNull();
     expect(comp.aOcultar()!.id).toBe('r1');
@@ -86,6 +94,28 @@ describe('ModeracionComponent', () => {
     http.expectOne('/api/admin/resenas/r1/ocultamiento').flush({}, { status: 500, statusText: 'Server Error' });
     fixture.detectChanges();
     expect(comp.error()).toContain('No pudimos ocultar');
+  });
+
+  it('SCRUM-111: muestra las reseñas reportadas con su publicación, sus reportes y sus motivos', () => {
+    const tarjeta = raiz.querySelector('.reportadas .tarjeta')!;
+    expect(tarjeta.textContent).toContain('Luis');
+    expect(tarjeta.textContent).toContain('Casa');
+    expect(tarjeta.textContent).toContain('3 reportes');
+    expect(tarjeta.textContent).toContain('Ofensiva o irrespetuosa');
+    expect(tarjeta.textContent).toContain('Spam o publicidad');
+  });
+
+  it('SCRUM-111: ocultar una reportada la quita de la lista', () => {
+    raiz.querySelector<HTMLButtonElement>('.reportadas .btn-mini.peligro')!.click();
+    fixture.detectChanges();
+    expect(comp.aOcultar()!.id).toBe('r9');
+
+    comp.ocultar();
+    http.expectOne('/api/admin/resenas/r9/ocultamiento').flush(null, { status: 204, statusText: 'No Content' });
+    fixture.detectChanges();
+
+    expect(comp.reportadas().length).toBe(0);
+    expect(raiz.querySelector('.reportadas')!.textContent).toContain('No hay reseñas reportadas');
   });
 
   it('sin publicaciones visibles muestra mensaje', () => {

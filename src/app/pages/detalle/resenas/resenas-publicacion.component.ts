@@ -1,6 +1,14 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, signal } from '@angular/core';
-import { ResenaVisible, ResenasService } from '../../../core/resenas.service';
+import { AuthService } from '../../../core/auth.service';
+import {
+  MAX_COMENTARIO_REPORTE,
+  MOTIVO_REPORTE_TEXTO,
+  MotivoReporte,
+  ResenaVisible,
+  ResenasService,
+} from '../../../core/resenas.service';
+import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
 
 const POR_PAGINA = 10;
 
@@ -8,12 +16,13 @@ const POR_PAGINA = 10;
   selector: 'app-resenas-publicacion',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, DecimalPipe],
+  imports: [DatePipe, DecimalPipe, DialogoComponent],
   templateUrl: './resenas-publicacion.component.html',
   styleUrl: './resenas-publicacion.component.scss',
 })
 export class ResenasPublicacionComponent implements OnInit {
   private api = inject(ResenasService);
+  private auth = inject(AuthService);
 
   publicacionId = input.required<string>();
 
@@ -33,6 +42,17 @@ export class ResenasPublicacionComponent implements OnInit {
   });
   mostradas = computed(() => this.resenas().slice(0, this.visibles()));
 
+  /** SCRUM-111: reportar exige sesión; el backend rechaza la propia reseña y los reportes repetidos. */
+  conSesion = computed(() => !!this.auth.usuario());
+  readonly motivos = Object.entries(MOTIVO_REPORTE_TEXTO).map(([valor, texto]) => ({ valor: valor as MotivoReporte, texto }));
+  readonly maxComentario = MAX_COMENTARIO_REPORTE;
+  aReportar = signal<ResenaVisible | null>(null);
+  motivo = signal<MotivoReporte | ''>('');
+  comentario = signal('');
+  enviando = signal(false);
+  errorReporte = signal('');
+  reportadas = signal<ReadonlySet<string>>(new Set());
+
   ngOnInit() {
     this.cargar();
   }
@@ -48,6 +68,36 @@ export class ResenasPublicacionComponent implements OnInit {
       error: () => {
         this.error.set(true);
         this.cargando.set(false);
+      },
+    });
+  }
+
+  abrirReporte(r: ResenaVisible) {
+    this.motivo.set('');
+    this.comentario.set('');
+    this.errorReporte.set('');
+    this.aReportar.set(r);
+  }
+
+  reportar() {
+    const r = this.aReportar();
+    const motivo = this.motivo();
+    if (!r) return;
+    if (!motivo) {
+      this.errorReporte.set('Elige el motivo del reporte.');
+      return;
+    }
+    this.enviando.set(true);
+    this.errorReporte.set('');
+    this.api.reportar(r.id, motivo, this.comentario().trim()).subscribe({
+      next: () => {
+        this.enviando.set(false);
+        this.aReportar.set(null);
+        this.reportadas.update((s) => new Set([...s, r.id]));
+      },
+      error: (e) => {
+        this.enviando.set(false);
+        this.errorReporte.set(e.status === 409 && e.error?.detail ? e.error.detail : 'No pudimos enviar el reporte. Intenta de nuevo.');
       },
     });
   }

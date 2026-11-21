@@ -48,7 +48,8 @@ Cada petición lleva `Authorization: Bearer <token>` (si hay sesión) y `X-Corre
 | Admin: publicaciones y revisión | `GET /admin/publicaciones?estado`, `POST /admin/publicaciones/{id}/aprobar`, `…/rechazar` | SCRUM-24, 26 |
 | Admin: bloquear publicación | `POST /admin/publicaciones/{id}/bloqueo` con `{ motivo }`; desbloquear con `POST /admin/publicaciones/{id}/desbloqueo` | SCRUM-42, 112 |
 | Admin: usuarios | `GET /admin/usuarios`, `POST /admin/usuarios/{id}/restriccion`; levantarla con `DELETE` en la misma ruta; reactivar con `POST /admin/usuarios/{id}/reactivacion` | SCRUM-43, 112 |
-| Admin: moderación | `GET /publicaciones/{id}/resenas`, `POST /admin/resenas/{id}/ocultamiento` | SCRUM-44 |
+| Reportar una reseña (detalle) | `POST /resenas/{id}/reportes` con `{ motivo, comentario? }` (409 si repite o es la propia) | SCRUM-111 |
+| Admin: moderación | `GET /admin/resenas/reportadas`, `GET /publicaciones/{id}/resenas`, `POST /admin/resenas/{id}/ocultamiento` | SCRUM-44, SCRUM-111 |
 | Admin: auditoría | `GET /admin/auditoria?accion&entidad&desde&hasta&resultado&actorId` | SCRUM-45 |
 | Admin: configuración de tarifas | `GET/PUT /admin/tarifas`; historial = auditoría `TarifasActualizadas` | SCRUM-47 |
 | Admin: tipos de alojamiento | `GET/POST /admin/tipos-alojamiento`, `PUT /admin/tipos-alojamiento/{id}` | SCRUM-48 |
@@ -59,7 +60,6 @@ Cada petición lleva `Authorization: Bearer <token>` (si hay sesión) y `X-Corre
 
 Vienen de las "Decisiones pendientes" del README del backend. Si el backend los agrega, el front tiene el lugar listo:
 
-- **Reportar reseñas (pendiente 17):** no hay endpoint, así que el detalle no muestra "Reportar" y Moderación trabaja por publicación.
 - **Políticas de cancelación:** solo la Flexible tiene reglas; con otra, la estimación y la cancelación responden 409 y el front muestra el mensaje del backend.
 - **Tarifa de limpieza:** puede llegar en null hasta que el administrador la configure; el front la muestra como 0.
 - **Método de pago (pendiente 2):** el backend usa `STRIPE_METODO_PAGO` y no lee `metodoPagoId`. El front lo envía igual, listo para cuando se use.

@@ -1,6 +1,35 @@
 <main class="admin-contenido">
   <h1>Moderación</h1>
-  <p class="admin-subtitulo">Revisa las reseñas de una publicación y oculta las ofensivas o sin relación con la estadía.</p>
+  <p class="admin-subtitulo">Revisa las reseñas reportadas y las de cada publicación, y oculta las ofensivas o sin relación con la estadía.</p>
+
+  <section class="reportadas" aria-labelledby="titulo-reportadas">
+    <h2 id="titulo-reportadas">Reseñas reportadas</h2>
+    @if (cargandoReportadas()) {
+      <p>Cargando reseñas reportadas…</p>
+    } @else {
+      @for (r of reportadas(); track r.id) {
+        <article class="tarjeta">
+          <header>
+            <div>
+              <strong>{{ r.autor }}</strong> · {{ tituloDe(r.publicacionId) }}
+              <small>{{ r.fecha | date: 'd MMM y' }} · <span class="nota">{{ estrellas(r.calificacion) }}</span></small>
+            </div>
+            <button type="button" class="btn-mini peligro" (click)="aviso.set(''); aOcultar.set(r)">Ocultar</button>
+          </header>
+          <p class="texto">{{ r.comentario }}</p>
+          <p class="reportes">
+            <strong>{{ r.reportes }} {{ r.reportes === 1 ? 'reporte' : 'reportes' }}</strong>
+            @for (m of r.motivos; track m) { <span class="chip-estado alerta">{{ motivoTexto[m] }}</span> }
+          </p>
+        </article>
+      } @empty {
+        <p class="vacio-tabla">No hay reseñas reportadas.</p>
+      }
+    }
+  </section>
+
+  <section class="por-publicacion" aria-labelledby="titulo-por-publicacion">
+  <h2 id="titulo-por-publicacion">Reseñas por publicación</h2>
 
   <form class="admin-filtros" (ngSubmit)="cargarResenas()">
     <label>
@@ -33,6 +62,7 @@
       <p class="vacio-tabla">Esta publicación no tiene reseñas visibles.</p>
     }
   }
+  </section>
 </main>
 
 @if (aOcultar(); as r) {
