@@ -7,11 +7,15 @@ export const TIPO_NOTIFICACION_TEXTO: Record<string, string> = {
   ReservaCancelada: 'Cancelación',
   ReservaCompletada: 'Estadía completada',
   ReservaEnRevision: 'Reserva en revisión',
+  ReservaRestablecida: 'Reserva confirmada de nuevo',
   DevolucionProcesada: 'Devolución',
   DevolucionFallida: 'Devolución no procesada',
   PublicacionAprobada: 'Publicación aprobada',
   PublicacionRechazada: 'Publicación rechazada',
   PublicacionBloqueada: 'Publicación bloqueada',
+  PublicacionDesbloqueada: 'Publicación desbloqueada',
+  RestriccionLevantada: 'Restricción levantada',
+  CuentaReactivada: 'Cuenta reactivada',
 };
 
 export interface Notificacion {

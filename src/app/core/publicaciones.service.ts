@@ -88,7 +88,7 @@ export class PublicacionesService {
     return this.http.post<Publicacion>(`/api/publicaciones/${encodeURIComponent(id)}/pausar`, {});
   }
 
-  /** PAUSADA → ACTIVA. Una BLOQUEADA solo la reactiva un administrador (el backend responde 403/409). */
+  /** PAUSADA → ACTIVA. Una BLOQUEADA solo la desbloquea un administrador (el backend responde 409). */
   reactivar(id: string): Observable<Publicacion> {
     return this.http.post<Publicacion>(`/api/publicaciones/${encodeURIComponent(id)}/reactivar`, {});
   }
@@ -119,10 +119,17 @@ export class PublicacionesService {
   /**
    * Bloquea por información engañosa (204): pasa a BLOQUEADA, sale de las búsquedas, sus reservas
    * futuras quedan EN_REVISION, se registra en auditoría y se notifica al anfitrión.
-   * El backend todavía no permite reactivar una publicación bloqueada (pendiente 10 de su README).
    */
   bloquear(id: string, motivo: string): Observable<void> {
     return this.http.post<void>(`/api/admin/publicaciones/${encodeURIComponent(id)}/bloqueo`, { motivo });
+  }
+
+  /**
+   * SCRUM-112 (204): BLOQUEADA → ACTIVA sin pasar por revisión; sus reservas EN_REVISION vuelven a
+   * CONFIRMADA. Queda en auditoría y se avisa al anfitrión y a los huéspedes. 409 si no está bloqueada.
+   */
+  desbloquear(id: string): Observable<void> {
+    return this.http.post<void>(`/api/admin/publicaciones/${encodeURIComponent(id)}/desbloqueo`, {});
   }
 
   /** Solo los tipos de alojamiento activos en la configuración. */

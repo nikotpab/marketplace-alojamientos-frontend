@@ -1,6 +1,6 @@
 <main class="admin-contenido">
   <h1>Usuarios</h1>
-  <p class="admin-subtitulo">Consulta las cuentas y restringe a quienes hagan uso indebido de la plataforma.</p>
+  <p class="admin-subtitulo">Consulta las cuentas, restringe a quienes hagan uso indebido de la plataforma y revierte una restricción o una desactivación.</p>
 
   <div class="admin-filtros">
     <label>
@@ -10,6 +10,7 @@
   </div>
 
   @if (aviso()) { <p class="aviso-ok" role="status">{{ aviso() }}</p> }
+  @if (errorFila()) { <p class="aviso-mal" role="alert">{{ errorFila() }}</p> }
 
   @if (cargando()) {
     <p>Cargando usuarios…</p>
@@ -39,6 +40,13 @@
                 }
               </td>
               <td>
+                @if (u.restringido) {
+                  <button type="button" class="btn-mini" [disabled]="procesandoId() === u.id" (click)="levantarRestriccion(u)">
+                    {{ procesandoId() === u.id ? 'Levantando…' : 'Levantar restricción' }}</button>
+                } @else if (!u.cuentaActiva) {
+                  <button type="button" class="btn-mini" [disabled]="procesandoId() === u.id" (click)="reactivar(u)">
+                    {{ procesandoId() === u.id ? 'Reactivando…' : 'Reactivar cuenta' }}</button>
+                }
                 @if (!u.restringido && !esYo(u)) {
                   <button type="button" class="btn-mini peligro" (click)="aviso.set(''); errorAccion.set(''); aRestringir.set(u)">Restringir</button>
                 }
@@ -56,7 +64,7 @@
 @if (aRestringir(); as u) {
   <app-dialogo-motivo titulo="Restringir usuario" [descripcion]="u.nombre + ' ' + u.apellido + ' · ' + u.correo"
     etiquetaMotivo="Motivo de la restricción"
-    confirmacion="El usuario no podrá iniciar sesión. Por ahora la restricción no se puede levantar desde la plataforma. ¿Confirmas?"
+    confirmacion="El usuario no podrá iniciar sesión y perderá su sesión abierta. Podrás levantar la restricción después desde esta lista. ¿Confirmas?"
     textoAccion="Restringir usuario" [procesando]="procesando()" [error]="errorAccion()"
     (confirmar)="restringir($event)" (cerrar)="aRestringir.set(null)" />
 }

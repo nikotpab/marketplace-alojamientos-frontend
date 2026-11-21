@@ -23,11 +23,14 @@ export const ESTADO_RESERVA_TEXTO: Record<EstadoReserva, string> = {
 /** Estado final de la cancelación según la devolución simulada (RF-23). */
 export type EstadoFinalCancelacion = 'DEVOLUCION_PROCESADA' | 'DEVOLUCION_NO_PROCESADA' | 'SIN_DEVOLUCION';
 
-/** Registro de la cancelación (POST /reservas/{id}/cancelacion). */
+/**
+ * Registro de la cancelación. POST /reservas/{id}/cancelacion la devuelve completa; el historial
+ * (GET /reservas) trae solo fecha, motivo, valorDevolucion y estadoFinal (SCRUM-113).
+ */
 export interface Cancelacion {
-  id: string;
-  reservaId: string;
-  usuarioId: string;
+  id?: string;
+  reservaId?: string;
+  usuarioId?: string;
   fecha: string;
   motivo: string;
   valorDevolucion: number;
@@ -47,14 +50,16 @@ export interface Reserva {
   huespedes: number;
   noches?: number;
   total: number;
+  /** Nombre y apellido del huésped (solo en la vista del anfitrión, en todas sus reservas). */
+  nombreHuesped?: string | null;
   /**
    * Teléfono y correo del huésped (vista del anfitrión). El backend solo los envía si la reserva
-   * está CONFIRMADA; en otro caso llega null.
+   * está CONFIRMADA; en otro caso no llegan.
    */
   contactoHuesped?: { telefono: string | null; correo: string | null } | null;
-  /** Solo en el front: cancelación hecha en esta sesión (el historial no la trae). */
+  /** Motivo y devolución de una reserva cancelada (SCRUM-113). También se llena al cancelar en esta sesión. */
   cancelacion?: Cancelacion | null;
-  /** Solo en el front: reseña publicada en esta sesión. */
+  /** Si ya tiene reseña, aunque esté oculta (SCRUM-113). También se marca al reseñar en esta sesión. */
   resenada?: boolean;
 }
 

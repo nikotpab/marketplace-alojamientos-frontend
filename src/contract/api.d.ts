@@ -726,6 +726,13 @@ export interface components {
             usuarioId?: string;
             valorDevolucion?: number;
         };
+        CancelacionResumen: {
+            estadoFinal?: string;
+            /** Format: date-time */
+            fecha?: string;
+            motivo?: string;
+            valorDevolucion?: number;
+        };
         CancelarReservaComando: {
             motivo: string;
         };
@@ -1022,6 +1029,7 @@ export interface components {
         };
         ReservaVista: {
             alojamiento?: string;
+            cancelacion?: components["schemas"]["CancelacionResumen"];
             codigo?: string;
             contactoHuesped?: components["schemas"]["DatosContacto"];
             /** @enum {string} */
@@ -1034,8 +1042,10 @@ export interface components {
             llegada?: string;
             /** Format: int32 */
             noches?: number;
+            nombreHuesped?: string;
             /** Format: uuid */
             publicacionId?: string;
+            resenada?: boolean;
             /** Format: date */
             salida?: string;
             total?: number;
