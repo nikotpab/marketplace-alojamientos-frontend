@@ -3,6 +3,14 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ESTADO_TEXTO, Publicacion, PublicacionesService } from '../../../core/publicaciones.service';
 
+/** SCRUM-118: si la edición devolvió la publicación a revisión, se dice por qué ya no aparece en búsquedas. */
+function avisoAlGuardar(guardada: string | null): string {
+  if (guardada === 'revision') {
+    return 'Cambios guardados. La publicación volvió a revisión y aparecerá en las búsquedas cuando un administrador la apruebe.';
+  }
+  return guardada ? 'Cambios guardados.' : '';
+}
+
 @Component({
   selector: 'app-mis-publicaciones',
   standalone: true,
@@ -18,7 +26,7 @@ export class MisPublicacionesComponent {
   publicaciones = signal<Publicacion[]>([]);
   cargando = signal(true);
   error = signal('');
-  aviso = signal(inject(ActivatedRoute).snapshot.queryParamMap.get('guardada') ? 'Cambios guardados.' : '');
+  aviso = signal(avisoAlGuardar(inject(ActivatedRoute).snapshot.queryParamMap.get('guardada')));
 
   /** Publicación con la confirmación de pausa abierta. */
   confirmandoPausa = signal<string | null>(null);

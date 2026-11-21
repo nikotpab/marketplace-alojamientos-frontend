@@ -67,6 +67,12 @@ describe('MisReservasComponent', () => {
     expect(comp.cancelable(RESERVA_CANCELADA as any)).toBeFalse();
   });
 
+  it('SCRUM-118: una reserva en revisión se puede cancelar aunque su llegada ya pasó', () => {
+    http.expectOne('/api/reservas').flush([]);
+    expect(comp.cancelable({ ...RESERVA_PROXIMA, estado: 'EN_REVISION' } as any)).toBeTrue();
+    expect(comp.cancelable({ ...RESERVA_CANCELADA, estado: 'EN_REVISION' } as any)).toBeTrue();
+  });
+
   it('resenable: true para COMPLETADA sin reseña, false si ya fue reseñada', () => {
     http.expectOne('/api/reservas').flush([]);
     expect(comp.resenable(RESERVA_COMPLETADA as any)).toBeTrue();
