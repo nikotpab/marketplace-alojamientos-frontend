@@ -109,6 +109,26 @@ describe('MisReservasComponent', () => {
     expect(comp.aviso()).toContain('reseña quedó publicada');
   });
 
+  it('SCRUM-113: una completada que el historial trae como reseñada no ofrece calificarla', () => {
+    http.expectOne('/api/reservas').flush([{ ...RESERVA_COMPLETADA, resenada: true }]);
+    comp.grupo.set('completadas');
+    fixture.detectChanges();
+    const botones = [...raiz.querySelectorAll('button')].map((b) => b.textContent!.trim());
+    expect(botones).not.toContain('Calificar estadía');
+    expect(raiz.textContent).toContain('Ya la reseñaste');
+  });
+
+  it('SCRUM-113: una cancelada del historial muestra el motivo y la devolución no procesada', () => {
+    const cancelacion: Cancelacion = {
+      fecha: '2025-05-20T15:00:00Z', motivo: 'Me enfermé', valorDevolucion: 90000, estadoFinal: 'DEVOLUCION_NO_PROCESADA',
+    };
+    http.expectOne('/api/reservas').flush([{ ...RESERVA_CANCELADA, cancelacion }]);
+    comp.grupo.set('canceladas');
+    fixture.detectChanges();
+    expect(raiz.textContent).toContain('Motivo: Me enfermé');
+    expect(raiz.textContent).toContain('Devolución no procesada');
+  });
+
   it('las tabs muestran el conteo correcto de reservas', () => {
     http.expectOne('/api/reservas').flush([RESERVA_PROXIMA, RESERVA_COMPLETADA, RESERVA_CANCELADA]);
     fixture.detectChanges();
