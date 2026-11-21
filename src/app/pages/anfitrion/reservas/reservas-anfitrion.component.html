@@ -21,7 +21,7 @@
           <p>{{ r.llegada | date: 'd MMM' }} → {{ r.salida | date: 'd MMM y' }} · {{ r.huespedes }}
             {{ r.huespedes === 1 ? 'huésped' : 'huéspedes' }} · {{ r.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</p>
           <p class="huesped">
-            <strong>Huésped</strong>
+            <strong>{{ r.nombreHuesped ?? 'Huésped' }}</strong>
             @if (verContacto(r)) {
               · {{ r.contactoHuesped?.telefono }} · {{ r.contactoHuesped?.correo }}
             } @else {
