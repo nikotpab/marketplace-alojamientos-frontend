@@ -27,6 +27,6 @@ export class AccesoDenegadoComponent {
   private readonly router = inject(Router);
 
   volver() {
-    this.router.navigateByUrl(this.auth.autenticado() ? '/' : '/auth');
+    void this.router.navigateByUrl(this.auth.autenticado() ? '/' : '/auth');
   }
 }

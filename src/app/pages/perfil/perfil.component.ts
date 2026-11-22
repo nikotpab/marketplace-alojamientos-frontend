@@ -131,7 +131,7 @@ export class PerfilComponent implements OnInit {
         if (!actualizado.activo) {
           // Cuenta desactivada: se cierra la sesión
           this.auth.cerrarSesion();
-          this.router.navigate(['/auth'], { queryParams: { cuenta: 'desactivada' } });
+          void this.router.navigate(['/auth'], { queryParams: { cuenta: 'desactivada' } });
         }
       },
       error: () => {
@@ -142,7 +142,7 @@ export class PerfilComponent implements OnInit {
   }
 
   cambiarContrasena() {
-    this.router.navigateByUrl('/recuperar');
+    void this.router.navigateByUrl('/recuperar');
   }
 
   private cargarPerfil(p: Perfil) {

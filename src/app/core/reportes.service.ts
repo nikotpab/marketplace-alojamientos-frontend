@@ -64,8 +64,8 @@ export class ReportesService {
             const d = e.detalle ?? {};
             return {
               id: e.id,
-              tipo: String(d['tipo'] ?? ''),
-              formato: String(d['formato'] ?? ''),
+              tipo: valor(d['tipo']) ?? '',
+              formato: valor(d['formato']) ?? '',
               desde: valor(d['desde']),
               hasta: valor(d['hasta']),
               ciudad: valor(d['ciudad']),
