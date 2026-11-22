@@ -21,15 +21,11 @@ yarn-error.log
 *.sublime-workspace
 
 # Visual Studio Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history/*
+.vscode/
+.history/
 
 # Miscellaneous
-/.angular/cache
+/.angular
 .sass-cache/
 /connect.lock
 /coverage
@@ -41,5 +37,5 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# Higiene del repo
-.vscode/
+# Configuración local de Claude Code
+.claude/settings.local.json
