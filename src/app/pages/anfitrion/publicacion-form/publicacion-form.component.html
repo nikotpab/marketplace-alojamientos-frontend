@@ -118,13 +118,16 @@
       <p class="aviso nota" role="note">Al guardar, la publicación vuelve a revisión y deja de aparecer en las búsquedas hasta que un administrador la apruebe. Sus reservas no cambian.</p>
     }
 
+    @if (puedeSolicitar()) {
+      <p class="aviso nota" role="note">Un borrador no aparece en Explorar. Cuando la publicación esté completa, solicita la activación: un administrador la revisará y, al aprobarla, aparecerá en las búsquedas.</p>
+    }
     <div class="acciones">
       <button type="submit" class="btn btn-primario principal" [disabled]="guardando()">
         {{ guardando() ? 'Guardando…' : id ? 'Guardar cambios' : 'Guardar borrador' }}
       </button>
       @if (puedeSolicitar()) {
         <button type="button" class="activar" [disabled]="guardando()" (click)="solicitarActivacion()">
-          Solicitar activación
+          Guardar y solicitar activación
         </button>
       }
       <a routerLink="/anfitrion" class="secundario">Cancelar</a>

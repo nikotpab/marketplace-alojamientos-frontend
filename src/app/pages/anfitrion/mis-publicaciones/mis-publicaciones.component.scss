@@ -49,6 +49,7 @@ h1 { margin: 0; font-size: 2rem; color: var(--texto); }
 .enlace { background: none; border: 0; font: inherit; color: var(--verde); text-decoration: underline; cursor: pointer; }
 .nota, .confirmar { flex-basis: 100%; margin: 0; font-size: .85rem; }
 .nota { color: var(--rojo); }
+.nota.guia { color: var(--texto-suave); }
 .confirmar {
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
   border-top: 1px solid var(--gris-borde); padding-top: 12px;
