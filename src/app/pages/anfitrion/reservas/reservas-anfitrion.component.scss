@@ -4,7 +4,7 @@ h1 { margin: 0; font-size: 2rem; color: var(--texto); }
 .error { color: var(--rojo); }
 
 .filtros {
-  display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+  border: 0; padding: 0; min-width: 0; display: flex; gap: 8px; margin: 0 0 20px; flex-wrap: wrap;
   .chip {
     font: inherit; font-weight: 600; padding: 7px 14px; font-size: .85rem; border-radius: 999px; cursor: pointer;
     border: 1px solid var(--gris-borde); background: #fff; color: var(--texto);
@@ -31,10 +31,9 @@ h1 { margin: 0; font-size: 2rem; color: var(--texto); }
 }
 
 .vacio {
-  text-align: center; padding: 48px 16px; border: 1px dashed var(--gris-borde); border-radius: 16px; background: #fff;
+  text-align: center; padding: 32px; border: 1px dashed var(--gris-borde); border-radius: 16px; background: #fff;
   a { color: var(--verde); font-weight: 700; }
 }
 
-.huesped { color: var(--texto) !important; }
+.reserva .huesped { color: var(--texto); }
 .oculto { font-style: italic; color: var(--texto-suave); }
-.vacio { padding: 32px; }

@@ -21,7 +21,7 @@ const hoyISO = () => new Date().toISOString().slice(0, 10);
   styleUrl: './reportes.component.scss',
 })
 export class ReportesComponent {
-  private api = inject(ReportesService);
+  private readonly api = inject(ReportesService);
 
   tipos = Object.entries(TIPO_REPORTE_TEXTO) as [TipoReporte, string][];
   tipoTexto = TIPO_REPORTE_TEXTO;

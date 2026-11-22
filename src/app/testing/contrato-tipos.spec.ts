@@ -1,5 +1,5 @@
 /**
- * SCRUM-129 — Verificación de campos a nivel de tipos.
+ * Verificación de campos a nivel de tipos.
  *
  * Cada bloque de aserciones garantiza que los campos que el front lee
  * existen en el esquema del backend (src/contract/api.d.ts).

@@ -31,8 +31,8 @@ export const CAMPOS_TARIFA: { campo: keyof Tarifas; texto: string; unidad: strin
 
 @Injectable({ providedIn: 'root' })
 export class ConfiguracionService {
-  private http = inject(HttpClient);
-  private auditoria = inject(AuditoriaService);
+  private readonly http = inject(HttpClient);
+  private readonly auditoria = inject(AuditoriaService);
 
   tarifas(): Observable<Tarifas> {
     return this.http.get<Tarifas>('/api/admin/tarifas');

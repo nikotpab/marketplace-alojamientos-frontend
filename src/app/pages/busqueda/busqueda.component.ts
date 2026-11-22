@@ -1,5 +1,5 @@
 import { CurrencyPipe, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Params, Router, RouterLink } from '@angular/router';
@@ -28,8 +28,8 @@ function salidaPosterior(control: AbstractControl): ValidationErrors | null {
   styleUrl: './busqueda.component.scss',
 })
 export class BusquedaComponent {
-  private fb = inject(FormBuilder);
-  private api = inject(AlojamientosService);
+  private readonly fb = inject(FormBuilder);
+  private readonly api = inject(AlojamientosService);
 
   tiposApi = inject(TiposAlojamientoService);
   /** Servicios del catálogo del backend; la lista fija solo se usa si el catálogo no responde. */
@@ -49,6 +49,7 @@ export class BusquedaComponent {
   cargando = signal(false);
   /** Panel lateral con tipo, precio y servicios. */
   panelAbierto = signal(false);
+  private readonly panelFiltros = viewChild<ElementRef<HTMLDialogElement>>('panelFiltros');
   readonly esqueletos = [1, 2, 3, 4, 5, 6];
   /** Foto de portada: la primera foto real que llega en los resultados (se fija una sola vez). */
   portada = signal<string | null>(null);
@@ -66,10 +67,12 @@ export class BusquedaComponent {
   chips = signal<{ clave: string; texto: string }[]>([]);
   filtrosPanel = computed(() => this.chips().filter((c) => ['tipo', 'precioMin', 'precioMax'].includes(c.clave) || c.clave.startsWith('servicio:')).length);
 
-  private router = inject(Router);
-  private ruta = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly ruta = inject(ActivatedRoute);
 
   constructor() {
+    // El panel se abre como modal: el navegador atrapa el foco y lo cierra con Escape.
+    effect(() => this.panelFiltros()?.nativeElement.showModal());
     this.tiposApi.cargarActivos();
     inject(PublicacionesService).catalogos().subscribe({
       next: (c) => {
@@ -200,6 +203,15 @@ export class BusquedaComponent {
   aplicarPanel() {
     this.panelAbierto.set(false);
     this.buscar();
+  }
+
+  /** Un clic en el fondo le llega al propio panel, fuera de su caja: lo cierra. */
+  cerrarSiTocaFondo(evento: MouseEvent) {
+    const panel = evento.currentTarget as HTMLDialogElement;
+    if (evento.target !== panel) return;
+    const caja = panel.getBoundingClientRect();
+    const fuera = evento.clientX < caja.left || evento.clientX > caja.right || evento.clientY < caja.top || evento.clientY > caja.bottom;
+    if (fuera) this.panelAbierto.set(false);
   }
 
   totalEstadia(precioNoche: number) {

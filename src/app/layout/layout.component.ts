@@ -57,7 +57,7 @@ const ETIQUETA_ROL: Record<RolUsuario, string> = {
 })
 export class LayoutComponent {
   auth = inject(AuthService);
-  private router = inject(Router);
+  private readonly router = inject(Router);
   notif = inject(NotificacionesService);
 
   constructor() {

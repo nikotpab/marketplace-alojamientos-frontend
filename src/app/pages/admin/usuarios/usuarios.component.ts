@@ -19,8 +19,8 @@ const ROL_TEXTO: Record<RolUsuario, string> = {
   templateUrl: './usuarios.component.html',
 })
 export class UsuariosComponent {
-  private api = inject(UsuariosAdminService);
-  private auth = inject(AuthService);
+  private readonly api = inject(UsuariosAdminService);
+  private readonly auth = inject(AuthService);
 
   rolTexto = ROL_TEXTO;
   busqueda = signal('');
@@ -32,7 +32,7 @@ export class UsuariosComponent {
   aRestringir = signal<UsuarioAdmin | null>(null);
   procesando = signal(false);
   errorAccion = signal('');
-  /** SCRUM-112: levantar una restricción o reactivar una cuenta se hace desde la fila, sin diálogo. */
+  /** Levantar una restricción o reactivar una cuenta se hace desde la fila, sin diálogo. */
   procesandoId = signal<string | null>(null);
   errorFila = signal('');
 

@@ -7,7 +7,7 @@
     <button type="submit" class="btn-mini" [disabled]="nuevo.trim().length < 3 || creando()">{{ creando() ? 'Agregando…' : 'Agregar' }}</button>
   </form>
 
-  @if (aviso()) { <p class="aviso-ok" role="status">{{ aviso() }}</p> }
+  @if (aviso()) { <output class="aviso-ok">{{ aviso() }}</output> }
 
   @if (cargando()) {
     <p>Cargando tipos…</p>

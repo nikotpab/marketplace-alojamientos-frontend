@@ -34,7 +34,7 @@ export class AuthComponent {
   correoDuplicado = signal(false);
   errorGeneral = signal('');
 
-  /** SCRUM-152: ventana del código que llega al correo antes de crear la cuenta. */
+  /** Ventana del código que llega al correo antes de crear la cuenta. */
   ventanaCodigo = signal(false);
   creandoCuenta = signal(false);
   errorCodigo = signal('');
@@ -42,17 +42,17 @@ export class AuthComponent {
   /** Se muestra en "Iniciar sesión" si la cuenta se creó pero el inicio automático falló. */
   avisoLogin = signal('');
 
-  private fb = inject(FormBuilder);
-  private auth = inject(AuthService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private el = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly fb = inject(FormBuilder);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
 
   cargandoLogin = signal(false);
   errorLogin = signal('');
   loginEnviado = signal(false);
 
-  /** SCRUM-153: la contraseña se escribe dos veces; la confirmación no se envía a la API. */
+  /** La contraseña se escribe dos veces; la confirmación no se envía a la API. */
   registro = this.fb.nonNullable.group(
     {
       nombre: ['', [Validators.required, Validators.minLength(2)]],
@@ -94,7 +94,7 @@ export class AuthComponent {
 
   /**
    * true cuando el inicio de sesión falló por correo sin verificar (403 CORREO_NO_VERIFICADO). Solo les pasa a cuentas
-   * creadas antes del código (SCRUM-151): recuperar la contraseña también verifica el correo.
+   * creadas antes del código: recuperar la contraseña también verifica el correo.
    */
   sinVerificar = signal(false);
 
@@ -144,7 +144,7 @@ export class AuthComponent {
     return (c.touched || this.enviado()) && (c.invalid || this.registro.hasError('noCoinciden'));
   }
 
-  /** SCRUM-152, paso 1: valida el formulario, pide el código al correo y abre la ventana. */
+  /** Paso 1: valida el formulario, pide el código al correo y abre la ventana. */
   registrar() {
     this.enviado.set(true);
     this.correoDuplicado.set(false);

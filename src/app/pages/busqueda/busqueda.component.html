@@ -46,9 +46,8 @@
   </div>
 
   @if (panelAbierto()) {
-    <div class="fondo-panel" (click)="panelAbierto.set(false)"></div>
-    <aside class="panel" id="panel-filtros" role="dialog" aria-modal="true" aria-labelledby="titulo-filtros"
-           (keydown.escape)="panelAbierto.set(false)" [formGroup]="form">
+    <dialog #panelFiltros class="panel" id="panel-filtros" aria-labelledby="titulo-filtros" [formGroup]="form"
+            (close)="panelAbierto.set(false)" (click)="cerrarSiTocaFondo($event)" (keydown.escape)="panelAbierto.set(false)">
       <header>
         <h2 id="titulo-filtros">Filtros</h2>
         <button type="button" class="cerrar" aria-label="Cerrar filtros" (click)="panelAbierto.set(false)">×</button>
@@ -80,7 +79,7 @@
         <button type="button" class="enlace" (click)="limpiar()">Limpiar filtros</button>
         <button type="button" class="btn btn-primario" (click)="aplicarPanel()">Ver resultados</button>
       </footer>
-    </aside>
+    </dialog>
   }
 
   <section class="resultados" aria-live="polite" [attr.aria-busy]="cargando()">

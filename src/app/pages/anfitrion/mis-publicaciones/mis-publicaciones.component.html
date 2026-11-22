@@ -7,7 +7,7 @@
     <a class="btn btn-primario principal" routerLink="/anfitrion/publicaciones/nueva">+ Nueva publicación</a>
   </div>
 
-  @if (aviso()) { <p class="aviso ok" role="status">{{ aviso() }}</p> }
+  @if (aviso()) { <output class="aviso ok">{{ aviso() }}</output> }
   @if (error() && !cargando() && publicaciones().length) { <p class="aviso mal" role="alert">{{ error() }}</p> }
 
   @if (cargando()) {

@@ -2,7 +2,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { Cancelacion } from '../../core/reservas.service';
 
-/** Resumen de la cancelación y de la devolución simulada registrada (RF-23). */
+/** Resumen de la cancelación y de la devolución simulada registrada. */
 @Component({
   selector: 'app-detalle-cancelacion',
   standalone: true,

@@ -13,7 +13,6 @@ export const ACCIONES_AUDITORIA: string[] = [
   'TarifasActualizadas', 'TipoAlojamientoAgregado', 'TipoAlojamientoEditado', 'ReporteExportado',
 ];
 
-export type ResultadoAuditoria = 'EXITO' | 'FALLIDO' | 'DENEGADO';
 
 /** Registro inmutable (solo inserción): el front únicamente lo consulta. */
 export interface EventoAuditoria {
@@ -24,7 +23,8 @@ export interface EventoAuditoria {
   accion: string;
   entidad: string;
   entidadId: string | null;
-  resultado: ResultadoAuditoria | string;
+  /** EXITO, FALLIDO o DENEGADO. */
+  resultado: string;
   detalle: Record<string, unknown> | null;
   /** Hash de integridad del registro. */
   hashRegistro: string;
@@ -43,7 +43,7 @@ export interface FiltrosAuditoria {
 
 @Injectable({ providedIn: 'root' })
 export class AuditoriaService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   consultar(f: FiltrosAuditoria): Observable<EventoAuditoria[]> {
     let p = new HttpParams();

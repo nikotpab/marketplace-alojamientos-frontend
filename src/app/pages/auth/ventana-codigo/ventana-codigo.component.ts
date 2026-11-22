@@ -3,11 +3,11 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
 import { SoloNumerosDirective } from '../../../shared/solo-numeros.directive';
 
-/** Segundos entre dos envíos del código; el backend tampoco envía otro antes (SCRUM-151). */
+/** Segundos entre dos envíos del código; el backend tampoco envía otro antes. */
 export const ESPERA_REENVIO = 60;
 
 /**
- * SCRUM-152: ventana donde se escribe el código de 6 dígitos que llegó al correo antes de crear la cuenta.
+ * Ventana donde se escribe el código de 6 dígitos que llegó al correo antes de crear la cuenta.
  * Solo muestra y valida; las llamadas a la API las hace la pantalla de registro.
  */
 @Component({
@@ -32,7 +32,7 @@ export class VentanaCodigoComponent {
   formulario = new FormGroup({
     codigo: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.pattern(/^\d{6}$/)] }),
   });
-  private codigo = this.formulario.controls.codigo;
+  private readonly codigo = this.formulario.controls.codigo;
   intentoEnviar = signal(false);
   segundos = signal(ESPERA_REENVIO);
 

@@ -49,7 +49,7 @@ describe('ReservasAnfitrionComponent', () => {
     expect(raiz.textContent).toContain('Casa del lago');
   });
 
-  it('SCRUM-113: muestra el nombre del huésped también en las reservas sin contacto', () => {
+  it('muestra el nombre del huésped también en las reservas sin contacto', () => {
     http.expectOne('/api/reservas').flush(RESERVAS.map((r) => ({ ...r, nombreHuesped: 'Laura Gómez' })));
     fixture.detectChanges();
     const huespedes = [...raiz.querySelectorAll('.huesped')].map((p) => p.textContent!.replace(/\s+/g, ' ').trim());

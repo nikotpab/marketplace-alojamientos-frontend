@@ -18,7 +18,7 @@ const haceDias = (n: number) => new Date(Date.now() - n * 86_400_000).toISOStrin
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
-  private api = inject(IndicadoresService);
+  private readonly api = inject(IndicadoresService);
 
   periodos: { valor: Periodo; texto: string }[] = [
     { valor: '7', texto: 'Últimos 7 días' },

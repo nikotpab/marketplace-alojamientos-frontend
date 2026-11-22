@@ -1,7 +1,7 @@
 import { FormControl } from '@angular/forms';
 import { validarCorreo, validarTelefono } from './validadores-contacto';
 
-describe('validadores de contacto (SCRUM-155)', () => {
+describe('validadores de contacto', () => {
   const valido = (validadores: typeof validarCorreo, valor: string) => new FormControl(valor, validadores).valid;
 
   it('aceptan correos con dominio completo', () => {

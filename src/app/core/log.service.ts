@@ -9,7 +9,7 @@ const CLAVES_SENSIBLES = /contrasena|password|token|authorization|tarjeta|card|c
 const JWT = /eyJ[\w-]+\.[\w-]+\.[\w-]+/g;
 const PAN = /\b(?:\d[ -]?){13,19}\b/g;
 
-/** Enmascara recursivamente datos sensibles antes de registrarlos (RNF-25). */
+/** Enmascara recursivamente datos sensibles antes de registrarlos. */
 export function enmascarar(valor: unknown, profundidad = 0): unknown {
   if (profundidad > 5) return '[…]';
   if (typeof valor === 'string') return valor.replace(JWT, '[TOKEN]').replace(PAN, '[TARJETA]');
@@ -28,7 +28,7 @@ export function enmascarar(valor: unknown, profundidad = 0): unknown {
  */
 @Injectable({ providedIn: 'root' })
 export class LogService {
-  private auth = inject(AuthService);
+  private readonly auth = inject(AuthService);
 
   registrar(nivel: NivelLog, evento: string, datos: Record<string, unknown> = {}, correlationId?: string) {
     const entrada = {

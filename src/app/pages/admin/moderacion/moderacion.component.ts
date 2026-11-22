@@ -6,8 +6,8 @@ import { MOTIVO_REPORTE_TEXTO, ResenaReportada, ResenaVisible, ResenasService } 
 import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
 
 /**
- * Moderación de reseñas (RF-29). Arriba, las reseñas que reportaron los usuarios, con su número de reportes
- * (SCRUM-111). Abajo, el administrador elige una publicación, revisa sus reseñas visibles y oculta las que incumplen.
+ * Moderación de reseñas. Arriba, las reseñas que reportaron los usuarios, con su número de reportes.
+ * Abajo, el administrador elige una publicación, revisa sus reseñas visibles y oculta las que incumplen.
  */
 @Component({
   selector: 'app-moderacion',
@@ -18,7 +18,7 @@ import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
   styleUrl: './moderacion.component.scss',
 })
 export class ModeracionComponent {
-  private resenasApi = inject(ResenasService);
+  private readonly resenasApi = inject(ResenasService);
 
   publicaciones = signal<Publicacion[]>([]);
   publicacionId = '';

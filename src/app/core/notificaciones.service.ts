@@ -34,7 +34,7 @@ interface Bandeja {
 
 @Injectable({ providedIn: 'root' })
 export class NotificacionesService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   readonly notificaciones = signal<Notificacion[]>([]);
   readonly noLeidas = computed(() => this.notificaciones().filter((n) => !n.leida).length);

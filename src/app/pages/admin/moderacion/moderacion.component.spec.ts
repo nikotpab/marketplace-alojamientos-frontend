@@ -25,9 +25,6 @@ describe('ModeracionComponent', () => {
   let raiz: HTMLElement;
   let http: HttpTestingController;
 
-  const boton = (texto: string) =>
-    [...raiz.querySelectorAll<HTMLButtonElement>('button')].find((b) => b.textContent!.includes(texto));
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ModeracionComponent],
@@ -96,7 +93,7 @@ describe('ModeracionComponent', () => {
     expect(comp.error()).toContain('No pudimos ocultar');
   });
 
-  it('SCRUM-111: muestra las reseñas reportadas con su publicación, sus reportes y sus motivos', () => {
+  it('muestra las reseñas reportadas con su publicación, sus reportes y sus motivos', () => {
     const tarjeta = raiz.querySelector('.reportadas .tarjeta')!;
     expect(tarjeta.textContent).toContain('Luis');
     expect(tarjeta.textContent).toContain('Casa');
@@ -105,7 +102,7 @@ describe('ModeracionComponent', () => {
     expect(tarjeta.textContent).toContain('Spam o publicidad');
   });
 
-  it('SCRUM-111: ocultar una reportada la quita de la lista', () => {
+  it('ocultar una reportada la quita de la lista', () => {
     raiz.querySelector<HTMLButtonElement>('.reportadas .btn-mini.peligro')!.click();
     fixture.detectChanges();
     expect(comp.aOcultar()!.id).toBe('r9');

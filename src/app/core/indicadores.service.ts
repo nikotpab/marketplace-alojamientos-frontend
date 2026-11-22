@@ -17,12 +17,12 @@ export interface Indicadores {
   ciudadesConMayorDemanda: string[];
 }
 
-/** Más de 10 s: se corta la espera para no afectar el resto de la plataforma (RNF-10). */
+/** Más de 10 s: se corta la espera para no afectar el resto de la plataforma. */
 export const PLAZO_DASHBOARD_MS = 10_000;
 
 @Injectable({ providedIn: 'root' })
 export class IndicadoresService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   consultar(desde: string, hasta: string): Observable<Indicadores> {
     return this.http

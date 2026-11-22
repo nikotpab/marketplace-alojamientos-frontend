@@ -12,7 +12,7 @@ export type EstadoPeriodo = 'DISPONIBLE' | 'BLOQUEADO';
 
 @Injectable({ providedIn: 'root' })
 export class DisponibilidadService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   consultar(publicacionId: string, desde: string, hasta: string): Observable<Disponibilidad> {
     return this.http.get<Disponibilidad>(

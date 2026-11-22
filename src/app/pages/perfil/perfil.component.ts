@@ -21,9 +21,9 @@ const ETIQUETA_ROL: Record<RolUsuario, string> = {
 })
 export class PerfilComponent implements OnInit {
   readonly mensajeTelefono = MENSAJE_TELEFONO;
-  private fb = inject(FormBuilder);
-  private auth = inject(AuthService);
-  private router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
   perfil = signal<Perfil | null>(null);
   cargando = signal(true);

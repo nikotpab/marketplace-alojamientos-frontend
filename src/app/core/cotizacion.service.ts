@@ -39,7 +39,7 @@ export interface SolicitudCotizacion {
 
 @Injectable({ providedIn: 'root' })
 export class CotizacionService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   cotizar(s: SolicitudCotizacion): Observable<Cotizacion> {
     return this.http.post<Cotizacion>('/api/cotizaciones', s);

@@ -103,7 +103,7 @@
           </div>
 
 
-          @if (avisoLogin()) { <p class="exito" role="status">{{ avisoLogin() }}</p> }
+          @if (avisoLogin()) { <output class="exito">{{ avisoLogin() }}</output> }
           @if (errorLogin()) { <p class="error" role="alert">{{ errorLogin() }}</p> }
           @if (sinVerificar()) {
             <button type="button" class="olvido" (click)="irARecuperar()">Recuperar contraseña y confirmar mi correo</button>

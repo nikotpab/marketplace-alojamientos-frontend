@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AlojamientoDetalle, DetalleService } from '../../core/detalle.service';
 import { Disponibilidad, DisponibilidadService } from '../../core/disponibilidad.service';
@@ -22,18 +22,19 @@ const NOMBRES_TIPO: Record<string, string> = {
   styleUrl: './detalle.component.scss',
 })
 export class DetalleComponent {
-  private ruta = inject(ActivatedRoute);
-  private api = inject(DetalleService);
+  private readonly ruta = inject(ActivatedRoute);
+  private readonly api = inject(DetalleService);
 
   alojamiento = signal<AlojamientoDetalle | null>(null);
   cargando = signal(true);
   error = signal('');
   /** Índice de la foto abierta en el visor (null = cerrado). */
   visor = signal<number | null>(null);
+  private readonly visorFotos = viewChild<ElementRef<HTMLDialogElement>>('visorFotos');
 
   tipoTexto = computed(() => NOMBRES_TIPO[this.alojamiento()?.tipo ?? ''] ?? '');
 
-  private disp = inject(DisponibilidadService);
+  private readonly disp = inject(DisponibilidadService);
   disponibilidad = signal<Disponibilidad>({ bloqueados: [], reservados: [] });
   rango = signal<RangoFechas | null>(null);
 
@@ -56,6 +57,8 @@ export class DetalleComponent {
   });
 
   constructor() {
+    // El visor se abre como modal: el navegador atrapa el foco y lo cierra con Escape.
+    effect(() => this.visorFotos()?.nativeElement.showModal());
     const id = this.ruta.snapshot.paramMap.get('id') ?? '';
     this.api.obtener(id).subscribe({
       next: (a) => {

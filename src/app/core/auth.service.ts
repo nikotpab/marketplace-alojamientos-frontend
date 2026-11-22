@@ -12,7 +12,7 @@ export interface RegistroRequest {
   telefono: string;
   contrasena: string;
   rol: Rol;
-  /** SCRUM-151: el código de 6 dígitos que llegó al correo. */
+  /** El código de 6 dígitos que llegó al correo. */
   codigo: string;
 }
 
@@ -48,16 +48,16 @@ const CLAVE_SESION = 'lr_sesion';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private readonly api = '/api';
 
-  private sesion = signal<Sesion | null>(this.leerSesion());
+  private readonly sesion = signal<Sesion | null>(this.leerSesion());
 
   usuario = computed(() => this.sesion()?.usuario ?? null);
   token = computed(() => this.sesion()?.token ?? null);
   autenticado = computed(() => this.sesion() !== null);
 
-  /** SCRUM-151: envía al correo el código para crear la cuenta (vence en 15 min). 409 si el correo ya tiene cuenta. */
+  /** Envía al correo el código para crear la cuenta (vence en 15 min). 409 si el correo ya tiene cuenta. */
   solicitarCodigoRegistro(correo: string): Observable<void> {
     return this.http.post<void>(`${this.api}/auth/register/code`, { correo });
   }

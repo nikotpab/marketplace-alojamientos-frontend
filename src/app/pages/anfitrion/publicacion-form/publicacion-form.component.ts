@@ -18,7 +18,7 @@ type CampoActivacion =
   | 'titulo' | 'descripcion' | 'ubicacion' | 'ciudad' | 'tipo'
   | 'capacidad' | 'precioNoche' | 'imagenes' | 'politicaCancelacion';
 
-/** Información mínima para pedir la activación (RF-08). */
+/** Información mínima para pedir la activación. */
 function validarActivacion(d: DatosPublicacion): Partial<Record<CampoActivacion, string>> {
   const e: Partial<Record<CampoActivacion, string>> = {};
   if (!d.titulo) e.titulo = 'Agrega un título para la publicación.';
@@ -45,10 +45,10 @@ const lineas = (texto: string) =>
   styleUrl: './publicacion-form.component.scss',
 })
 export class PublicacionFormComponent {
-  private fb = inject(FormBuilder);
-  private api = inject(PublicacionesService);
-  private router = inject(Router);
-  private auth = inject(AuthService);
+  private readonly fb = inject(FormBuilder);
+  private readonly api = inject(PublicacionesService);
+  private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
 
   /** Si la ruta trae :id, el formulario está en modo edición. */
   id = inject(ActivatedRoute).snapshot.paramMap.get('id');
@@ -62,7 +62,7 @@ export class PublicacionFormComponent {
 
   /** Solo se puede pedir activación desde BORRADOR (incluye las rechazadas, que vuelven a borrador). */
   puedeSolicitar = computed(() => !!this.id && this.publicacion()?.estado === 'BORRADOR');
-  /** SCRUM-118: si el anfitrión edita una publicación aprobada (activa o pausada), vuelve a revisión. */
+  /** Si el anfitrión edita una publicación aprobada (activa o pausada), vuelve a revisión. */
   vuelveARevision = computed(() => {
     const estado = this.publicacion()?.estado;
     return (estado === 'ACTIVA' || estado === 'PAUSADA') && !this.auth.tieneRol(['ADMINISTRADOR']);

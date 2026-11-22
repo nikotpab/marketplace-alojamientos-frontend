@@ -54,7 +54,7 @@ export interface TipoConfigurado {
 
 @Injectable({ providedIn: 'root' })
 export class PublicacionesService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   /** Publicaciones del anfitrión autenticado (el backend filtra por propietario). */
   misPublicaciones(): Observable<Publicacion[]> {
@@ -125,7 +125,7 @@ export class PublicacionesService {
   }
 
   /**
-   * SCRUM-112 (204): BLOQUEADA → ACTIVA sin pasar por revisión; sus reservas EN_REVISION vuelven a
+   * 204: BLOQUEADA → ACTIVA sin pasar por revisión; sus reservas EN_REVISION vuelven a
    * CONFIRMADA. Queda en auditoría y se avisa al anfitrión y a los huéspedes. 409 si no está bloqueada.
    */
   desbloquear(id: string): Observable<void> {

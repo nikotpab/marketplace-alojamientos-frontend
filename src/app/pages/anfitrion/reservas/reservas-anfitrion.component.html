@@ -2,12 +2,12 @@
   <h1>Reservas</h1>
   <p class="subtitulo">Reservas de tus alojamientos.</p>
 
-  <div class="filtros" role="group" aria-label="Filtrar por estado">
+  <fieldset class="filtros" aria-label="Filtrar por estado">
     @for (f of filtros; track f.valor) {
       <button type="button" class="chip" [class.on]="filtro() === f.valor" [attr.aria-pressed]="filtro() === f.valor"
               (click)="filtro.set(f.valor)">{{ f.texto }}</button>
     }
-  </div>
+  </fieldset>
 
   @if (cargando()) {
     <p>Cargando reservas…</p>

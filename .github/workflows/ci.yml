@@ -1,11 +1,11 @@
-# SCRUM-124: integración continua del frontend
+# Integración continua del frontend
 name: CI
 
 on:
   push:
     branches: [main]
   pull_request:
-  # SCRUM-121: para volver a desplegar main sin un commit nuevo.
+  # Para volver a desplegar main sin un commit nuevo.
   workflow_dispatch:
 
 permissions:
@@ -34,7 +34,7 @@ jobs:
       # Ejecuta los tests en Chrome sin interfaz gráfica
       - run: npm test -- --watch=false --browsers=ChromeHeadless
 
-  # SCRUM-121: cada push a main que pasa las pruebas publica la imagen en ECR, con el commit como etiqueta, y la despliega
+  # Cada push a main que pasa las pruebas publica la imagen en ECR, con el commit como etiqueta, y la despliega
   # en la EC2 por SSM. GitHub entra a AWS por OIDC, sin llaves guardadas. Las variables del repositorio salen del stack
   # deploy/aws/despliegue.yaml del backend; sin ellas el job no corre.
   desplegar:

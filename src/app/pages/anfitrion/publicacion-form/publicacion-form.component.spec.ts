@@ -88,7 +88,7 @@ describe('PublicacionFormComponent · editar publicación', () => {
     expect(comp.publicacion()?.estado).toBe('BORRADOR');
   });
 
-  it('SCRUM-118: al editar una publicación activa avisa que vuelve a revisión y lo repite al guardar', async () => {
+  it('al editar una publicación activa avisa que vuelve a revisión y lo repite al guardar', async () => {
     const navegar = spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
     const comp = await harness.navigateByUrl('/anfitrion/publicaciones/pub1/editar', PublicacionFormComponent);
     http.expectOne((r) => r.url.includes('/api/configuracion/tipos-alojamiento')).flush(TIPOS);
@@ -102,7 +102,7 @@ describe('PublicacionFormComponent · editar publicación', () => {
     expect(navegar).toHaveBeenCalledWith(['/anfitrion'], { queryParams: { guardada: 'revision' } });
   });
 
-  it('SCRUM-118: un borrador no muestra el aviso de revisión', async () => {
+  it('un borrador no muestra el aviso de revisión', async () => {
     await harness.navigateByUrl('/anfitrion/publicaciones/pub1/editar', PublicacionFormComponent);
     http.expectOne((r) => r.url.includes('/api/configuracion/tipos-alojamiento')).flush(TIPOS);
     http.expectOne('/api/catalogos').flush(CATALOGOS);

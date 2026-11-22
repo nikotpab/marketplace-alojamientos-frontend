@@ -19,7 +19,7 @@ export interface ResenaVisible {
   fecha: string;
 }
 
-/** SCRUM-111 · RF-29: motivos con que se reporta una reseña (MotivoReporte del backend). */
+/** Motivos con que se reporta una reseña (MotivoReporte del backend). */
 export type MotivoReporte = 'OFENSIVA' | 'SPAM' | 'INFORMACION_FALSA' | 'OTRO';
 
 export const MOTIVO_REPORTE_TEXTO: Record<MotivoReporte, string> = {
@@ -41,7 +41,7 @@ export interface ResenaReportada extends ResenaVisible {
 
 @Injectable({ providedIn: 'root' })
 export class ResenasService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   /**
    * Reseña de una reserva COMPLETADA del huésped autenticado. El backend valida la propiedad
@@ -58,7 +58,7 @@ export class ResenasService {
   }
 
   /**
-   * SCRUM-111 (204): cualquier usuario con sesión, una vez por reseña y nunca la propia (409 con el
+   * 204: cualquier usuario con sesión, una vez por reseña y nunca la propia (409 con el
    * mensaje del backend). Queda en auditoría.
    */
   reportar(resenaId: string, motivo: MotivoReporte, comentario?: string): Observable<void> {

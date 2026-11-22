@@ -12,7 +12,7 @@
     <div id="codigo-registro-mensajes" class="mensajes">
       @if (invalido()) { <small class="error" role="alert">Escribe los 6 dígitos del código.</small> }
       @if (error()) { <small class="error" role="alert">{{ error() }}</small> }
-      @if (aviso()) { <small class="exito" role="status">{{ aviso() }}</small> }
+      @if (aviso()) { <small class="exito" aria-live="polite">{{ aviso() }}</small> }
     </div>
 
     <button type="submit" class="btn btn-primario btn-bloque" [disabled]="procesando()">

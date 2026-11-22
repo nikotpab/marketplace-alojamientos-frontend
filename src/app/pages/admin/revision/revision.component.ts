@@ -15,8 +15,8 @@ const MOTIVO_MINIMO = 10;
   styleUrl: './revision.component.scss',
 })
 export class RevisionComponent {
-  private tiposApi = inject(TiposAlojamientoService);
-  private api = inject(PublicacionesService);
+  private readonly tiposApi = inject(TiposAlojamientoService);
+  private readonly api = inject(PublicacionesService);
 
   minimo = MOTIVO_MINIMO;
   pendientes = signal<Publicacion[]>([]);

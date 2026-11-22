@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TipoAlojamiento } from './alojamientos.service';
 
 export interface Resena {
   id: string;
@@ -17,7 +16,7 @@ export interface AlojamientoDetalle {
   descripcion: string;
   ciudad: string;
   direccion: string;
-  tipo: TipoAlojamiento;
+  tipo: string;
   capacidad: number;
   precioNoche: number;
   servicios: string[];
@@ -32,7 +31,7 @@ export interface AlojamientoDetalle {
 
 @Injectable({ providedIn: 'root' })
 export class DetalleService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   obtener(id: string): Observable<AlojamientoDetalle> {
     return this.http.get<AlojamientoDetalle>(`/api/alojamientos/${encodeURIComponent(id)}`);
