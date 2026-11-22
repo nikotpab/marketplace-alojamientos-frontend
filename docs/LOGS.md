@@ -1,4 +1,4 @@
-# Logs estructurados del front (SCRUM-46 · RF-31)
+# Logs estructurados del front
 
 ## Qué se registra
 - Cada llamada a `/api` lleva el encabezado `X-Correlation-Id` (UUID). El backend lo usa en sus logs, así una falla reportada se sigue de punta a punta con un solo identificador.

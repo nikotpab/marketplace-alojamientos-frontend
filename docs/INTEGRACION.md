@@ -1,10 +1,10 @@
 # Integración del frontend con el backend
 
-Contrato verificado contra `marketplace-alojamientos-backend` (controladores de `main`, 11 nov 2026). Swagger del backend: http://localhost:8080/swagger-ui.html.
+El contrato está en `src/contract/openapi.json` (ver [CONTRATO.md](CONTRATO.md)). Swagger del backend: http://localhost:8080/swagger-ui.html.
 
 ## Cómo levantar todo en local
 
-1. Backend (ver su README, sección "Con el frontend y datos de demostración"):
+1. Backend (ver la sección "Arrancar" de su README):
    ```bash
    cp .env.example .env
    docker compose up -d --wait db correo
@@ -20,49 +20,41 @@ Contrato verificado contra `marketplace-alojamientos-backend` (controladores de 
 Los servicios del front llaman a `/api/...`. `core/version-api.interceptor.ts` agrega la versión: `/api/v1/...`.
 
 - Desarrollo: `proxy.conf.json` reenvía `/api` a `http://localhost:8080` sin reescribir.
-- Producción: `deploy/Caddyfile` del backend reenvía `/api/*` tal cual a la API y sirve el front para lo demás.
+- Producción: `deploy/caddy/Caddyfile` del backend reenvía `/api/*` tal cual a la API y sirve el front para lo demás.
 
 Cada petición lleva `Authorization: Bearer <token>` (si hay sesión) y `X-Correlation-Id` (ver `docs/LOGS.md`). Los errores llegan como ProblemDetail: `{ status, detail, codigo, campos, errores }`.
 
 ## Pantalla → endpoint
 
-| Pantalla / acción | Método y ruta (`/api/v1`) | Historia |
-|---|---|---|
-| Registro, con la ventana del código que llega al correo | `POST /auth/register/code`, luego `POST /auth/register` con `codigo`; al acertar inicia sesión con `POST /auth/login` | SCRUM-16, SCRUM-151, SCRUM-152 |
-| Iniciar sesión | `POST /auth/login` (403 `CORREO_NO_VERIFICADO`, `CUENTA_RESTRINGIDA`, `CUENTA_DESACTIVADA`; 423 bloqueada) | SCRUM-17 |
-| Recuperar contraseña (`/recuperar?token=`) | `POST /auth/password/recover`, `POST /auth/password/reset` | SCRUM-18, SCRUM-110 |
-| Mi perfil / estado de la cuenta | `GET/PUT /usuarios/me`, `PATCH /usuarios/me/estado` | SCRUM-19, 20 |
-| Búsqueda | `GET /alojamientos?ciudad&llegada&salida&huespedes&tipo&precioMin&precioMax&servicios&pagina&tamano` | SCRUM-30 |
-| Detalle | `GET /alojamientos/{id}` | SCRUM-31 |
-| Calendario | `GET /publicaciones/{id}/disponibilidad?desde&hasta` | SCRUM-29 |
-| Cotización | `POST /cotizaciones` | SCRUM-32 |
-| Confirmar y pagar | `POST /reservas` con `Idempotency-Key` (402 rechazado, 409 sin cupo, 503 pasarela) | SCRUM-33, 34, 36 |
-| Mis reservas / Reservas del anfitrión | `GET /reservas` (el backend filtra por el rol del token) | SCRUM-35 |
-| Cancelar reserva | `GET /reservas/{id}/cancelacion/estimacion`, `POST /reservas/{id}/cancelacion`; también una `EN_REVISION`, con devolución total | SCRUM-37, 38, 118 |
-| Calificar estadía | `POST /reservas/{id}/resena` con `{ calificacion, contenido }` | SCRUM-40 |
-| Reseñas del detalle | `GET /publicaciones/{id}/resenas` | SCRUM-41 |
-| Notificaciones | `GET /notificaciones`, `POST /notificaciones/{id}/lectura`, `POST /notificaciones/lectura` | SCRUM-39 |
-| Mis alojamientos y formulario | `GET /publicaciones/mias`, `POST/PUT /publicaciones`, `GET /catalogos`, `GET /configuracion/tipos-alojamiento`; desde SCRUM-148 el payload incluye `ciudad`; si el anfitrión edita una `ACTIVA` o `PAUSADA`, vuelve a `PENDIENTE_REVISION` | SCRUM-21 a 23, SCRUM-148, SCRUM-118 |
-| Pausar / reactivar | `POST /publicaciones/{id}/pausar`, `POST /publicaciones/{id}/reactivar` | SCRUM-25 |
-| Disponibilidad del anfitrión | `PUT /publicaciones/{id}/disponibilidad` con `{ desde, hasta, estado }` | SCRUM-27 |
-| Admin: publicaciones y revisión | `GET /admin/publicaciones?estado`, `POST /admin/publicaciones/{id}/aprobar`, `…/rechazar` | SCRUM-24, 26 |
-| Admin: bloquear publicación | `POST /admin/publicaciones/{id}/bloqueo` con `{ motivo }`; desbloquear con `POST /admin/publicaciones/{id}/desbloqueo` | SCRUM-42, 112 |
-| Admin: usuarios | `GET /admin/usuarios`, `POST /admin/usuarios/{id}/restriccion`; levantarla con `DELETE` en la misma ruta; reactivar con `POST /admin/usuarios/{id}/reactivacion` | SCRUM-43, 112 |
-| Reportar una reseña (detalle) | `POST /resenas/{id}/reportes` con `{ motivo, comentario? }` (409 si repite o es la propia) | SCRUM-111 |
-| Admin: moderación | `GET /admin/resenas/reportadas`, `GET /publicaciones/{id}/resenas`, `POST /admin/resenas/{id}/ocultamiento` | SCRUM-44, SCRUM-111 |
-| Admin: auditoría | `GET /admin/auditoria?accion&entidad&desde&hasta&resultado&actorId` | SCRUM-45 |
-| Admin: configuración de tarifas | `GET/PUT /admin/tarifas`; historial = auditoría `TarifasActualizadas` | SCRUM-47 |
-| Admin: tipos de alojamiento | `GET/POST /admin/tipos-alojamiento`, `PUT /admin/tipos-alojamiento/{id}` | SCRUM-48 |
-| Admin: panel | `GET /admin/dashboard?desde&hasta` (corte a los 10 s en el front) | SCRUM-49 |
-| Admin: reportes | `GET /admin/reportes?tipo&formato&desde&hasta&ciudad` (archivo); historial = auditoría `ReporteExportado` | SCRUM-50 |
-
-## Lo que el backend todavía no permite (el front ya se adaptó)
-
-Vienen de las "Decisiones pendientes" del README del backend. Si el backend los agrega, el front tiene el lugar listo:
-
-- **Políticas de cancelación:** solo la Flexible tiene reglas; con otra, la estimación y la cancelación responden 409 y el front muestra el mensaje del backend.
-- **Tarifa de limpieza:** puede llegar en null hasta que el administrador la configure; el front la muestra como 0.
-- **Método de pago (pendiente 2):** el backend usa `STRIPE_METODO_PAGO` y no lee `metodoPagoId`. El front lo envía igual, listo para cuando se use.
+| Pantalla / acción | Método y ruta (`/api/v1`) |
+|---|---|
+| Registro, con la ventana del código que llega al correo | `POST /auth/register/code`, luego `POST /auth/register` con `codigo`; al acertar inicia sesión con `POST /auth/login` |
+| Iniciar sesión | `POST /auth/login` (403 `CORREO_NO_VERIFICADO`, `CUENTA_RESTRINGIDA`, `CUENTA_DESACTIVADA`; 423 bloqueada) |
+| Recuperar contraseña (`/recuperar?token=`) | `POST /auth/password/recover`, `POST /auth/password/reset` |
+| Mi perfil / estado de la cuenta | `GET/PUT /usuarios/me`, `PATCH /usuarios/me/estado` |
+| Búsqueda | `GET /alojamientos?ciudad&llegada&salida&huespedes&tipo&precioMin&precioMax&servicios&pagina&tamano` |
+| Detalle | `GET /alojamientos/{id}` |
+| Calendario | `GET /publicaciones/{id}/disponibilidad?desde&hasta` |
+| Cotización | `POST /cotizaciones` |
+| Confirmar y pagar | `POST /reservas` con `Idempotency-Key` (402 rechazado, 409 sin cupo, 503 pasarela) |
+| Mis reservas / Reservas del anfitrión | `GET /reservas` (el backend filtra por el rol del token) |
+| Cancelar reserva | `GET /reservas/{id}/cancelacion/estimacion`, `POST /reservas/{id}/cancelacion`; también una `EN_REVISION`, con devolución total |
+| Calificar estadía | `POST /reservas/{id}/resena` con `{ calificacion, contenido }` |
+| Reseñas del detalle | `GET /publicaciones/{id}/resenas` |
+| Notificaciones | `GET /notificaciones`, `POST /notificaciones/{id}/lectura`, `POST /notificaciones/lectura` |
+| Mis alojamientos y formulario | `GET /publicaciones/mias`, `POST/PUT /publicaciones`, `GET /catalogos`, `GET /configuracion/tipos-alojamiento`; el payload incluye `ciudad`; si el anfitrión edita una `ACTIVA` o `PAUSADA`, vuelve a `PENDIENTE_REVISION` |
+| Pausar / reactivar | `POST /publicaciones/{id}/pausar`, `POST /publicaciones/{id}/reactivar` |
+| Disponibilidad del anfitrión | `PUT /publicaciones/{id}/disponibilidad` con `{ desde, hasta, estado }` |
+| Admin: publicaciones y revisión | `GET /admin/publicaciones?estado`, `POST /admin/publicaciones/{id}/aprobar`, `…/rechazar` |
+| Admin: bloquear publicación | `POST /admin/publicaciones/{id}/bloqueo` con `{ motivo }`; desbloquear con `POST /admin/publicaciones/{id}/desbloqueo` |
+| Admin: usuarios | `GET /admin/usuarios`, `POST /admin/usuarios/{id}/restriccion`; levantarla con `DELETE` en la misma ruta; reactivar con `POST /admin/usuarios/{id}/reactivacion` |
+| Reportar una reseña (detalle) | `POST /resenas/{id}/reportes` con `{ motivo, comentario? }` (409 si repite o es la propia) |
+| Admin: moderación | `GET /admin/resenas/reportadas`, `GET /publicaciones/{id}/resenas`, `POST /admin/resenas/{id}/ocultamiento` |
+| Admin: auditoría | `GET /admin/auditoria?accion&entidad&desde&hasta&resultado&actorId` |
+| Admin: configuración de tarifas | `GET/PUT /admin/tarifas`; historial = auditoría `TarifasActualizadas` |
+| Admin: tipos de alojamiento | `GET/POST /admin/tipos-alojamiento`, `PUT /admin/tipos-alojamiento/{id}` |
+| Admin: panel | `GET /admin/dashboard?desde&hasta` (corte a los 10 s en el front) |
+| Admin: reportes | `GET /admin/reportes?tipo&formato&desde&hasta&ciudad` (archivo); historial = auditoría `ReporteExportado` |
 
 ## Prueba rápida de punta a punta
 
