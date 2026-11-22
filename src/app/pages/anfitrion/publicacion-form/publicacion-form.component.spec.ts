@@ -92,6 +92,18 @@ describe('PublicacionFormComponent · nueva publicación', () => {
     expect(http.expectOne('/api/publicaciones/pub1').request.method).toBe('PUT');
   });
 
+  it('si el backend rechaza un dato, muestra su mensaje junto al campo y no culpa a la conexión', () => {
+    comp.form.patchValue({ titulo: 'Mi casa' });
+    comp.guardarBorrador();
+    http.expectOne('/api/publicaciones').flush(
+      { errores: { titulo: 'el tamaño debe estar entre 0 y 180' } }, { status: 400, statusText: 'Bad Request' });
+    fixture.detectChanges();
+
+    expect(comp.errorActivacion('titulo')).toContain('el tamaño debe estar');
+    expect(comp.error()).toBe('Revisa los campos indicados.');
+    expect(raiz.textContent).not.toContain('Revisa tu conexión');
+  });
+
   it('con datos incompletos no crea nada y marca lo que falta', () => {
     comp.form.patchValue({ titulo: 'Solo el título' });
     comp.solicitarActivacion();

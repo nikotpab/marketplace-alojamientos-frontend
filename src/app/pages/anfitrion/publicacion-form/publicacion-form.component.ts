@@ -153,10 +153,7 @@ export class PublicacionFormComponent {
         error: (e) => {
           this.guardando.set(false);
           if (e.status === 403) return;
-          if (e.status === 422 && e.error?.errores) {
-            this.erroresActivacion.set(e.error.errores);
-            return;
-          }
+          if (this.mostrarErroresDeCampos(e)) return;
           this.error.set('No pudimos enviar la solicitud. Intenta de nuevo.');
         },
       });
@@ -218,6 +215,14 @@ export class PublicacionFormComponent {
     };
   }
 
+  /** 400 (dato inválido) o 422 (falta información para publicar): el mensaje del backend va junto a cada campo. */
+  private mostrarErroresDeCampos(e: { status: number; error?: { errores?: Partial<Record<CampoActivacion, string>> } }): boolean {
+    if ((e.status !== 400 && e.status !== 422) || !e.error?.errores) return false;
+    this.erroresActivacion.set(e.error.errores);
+    this.error.set('Revisa los campos indicados.');
+    return true;
+  }
+
   /** Qué le dice Mis publicaciones al anfitrión después de guardar. */
   private resultadoAlGuardar(p: Publicacion | null): string {
     if (p?.estado === 'PENDIENTE_REVISION' && this.vuelveARevision()) return 'revision';
@@ -233,9 +238,10 @@ export class PublicacionFormComponent {
     peticion.subscribe({
       next: (p) => this.router.navigate(['/anfitrion'], { queryParams: { guardada: this.resultadoAlGuardar(p) } }),
       error: (e) => {
-        if (e.status === 403) return; // el interceptor lleva a /acceso-denegado
-        this.error.set('No pudimos guardar los cambios. Revisa tu conexión e intenta de nuevo.');
         this.guardando.set(false);
+        if (e.status === 403) return; // el interceptor lleva a /acceso-denegado
+        if (this.mostrarErroresDeCampos(e)) return;
+        this.error.set('No pudimos guardar los cambios. Revisa tu conexión e intenta de nuevo.');
       },
     });
   }
