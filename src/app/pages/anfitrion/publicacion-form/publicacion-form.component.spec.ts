@@ -52,6 +52,65 @@ describe('PublicacionFormComponent · nueva publicación', () => {
     expect(navegar).toHaveBeenCalledWith(['/anfitrion'], jasmine.anything());
   });
 
+  it('guardar un borrador avisa en Mis publicaciones que falta solicitar la activación', () => {
+    comp.form.patchValue({ titulo: 'Mi casa' });
+    comp.guardarBorrador();
+    http.expectOne('/api/publicaciones').flush(PUB_BORRADOR);
+    expect(navegar).toHaveBeenCalledWith(['/anfitrion'], { queryParams: { guardada: 'borrador' } });
+  });
+
+  it('ofrece guardar y solicitar la activación, y explica que un borrador no aparece en Explorar', () => {
+    const botones = [...raiz.querySelectorAll('button')].map((b) => b.textContent!.trim());
+    expect(botones).toContain('Guardar y solicitar activación');
+    expect(raiz.textContent).toContain('Un borrador no aparece en Explorar');
+  });
+
+  function completar() {
+    comp.form.patchValue({ titulo: 'Casa de prueba', descripcion: 'Desc', ubicacion: 'Calle 10 # 5-20', ciudad: 'Bogotá', tipo: 'CASA',
+      capacidad: '4', precioNoche: '100000', imagenes: 'https://img.com/1.jpg', politicaCancelacion: 'Flexible' });
+  }
+
+  it('guardar y solicitar crea la publicación, pide su activación y vuelve a Mis publicaciones', () => {
+    completar();
+    comp.solicitarActivacion();
+    const crear = http.expectOne('/api/publicaciones');
+    expect(crear.request.method).toBe('POST');
+    crear.flush(PUB_BORRADOR);
+    http.expectOne('/api/publicaciones/pub1/solicitar-activacion').flush({ ...PUB_BORRADOR, estado: 'PENDIENTE_REVISION' });
+    expect(navegar).toHaveBeenCalledWith(['/anfitrion'], { queryParams: { guardada: 'solicitada' } });
+  });
+
+  it('si la solicitud falla después de crearla, el reintento la actualiza en vez de crear otra', () => {
+    completar();
+    comp.solicitarActivacion();
+    http.expectOne('/api/publicaciones').flush(PUB_BORRADOR);
+    http.expectOne('/api/publicaciones/pub1/solicitar-activacion').flush(null, { status: 500, statusText: 'Error' });
+    expect(comp.error()).toContain('No pudimos enviar la solicitud');
+    expect(navegar).not.toHaveBeenCalled();
+
+    comp.solicitarActivacion();
+    expect(http.expectOne('/api/publicaciones/pub1').request.method).toBe('PUT');
+  });
+
+  it('si el backend rechaza un dato, muestra su mensaje junto al campo y no culpa a la conexión', () => {
+    comp.form.patchValue({ titulo: 'Mi casa' });
+    comp.guardarBorrador();
+    http.expectOne('/api/publicaciones').flush(
+      { errores: { titulo: 'el tamaño debe estar entre 0 y 180' } }, { status: 400, statusText: 'Bad Request' });
+    fixture.detectChanges();
+
+    expect(comp.errorActivacion('titulo')).toContain('el tamaño debe estar');
+    expect(comp.error()).toBe('Revisa los campos indicados.');
+    expect(raiz.textContent).not.toContain('Revisa tu conexión');
+  });
+
+  it('con datos incompletos no crea nada y marca lo que falta', () => {
+    comp.form.patchValue({ titulo: 'Solo el título' });
+    comp.solicitarActivacion();
+    http.expectNone('/api/publicaciones');
+    expect(comp.erroresActivacion()['precioNoche']).toContain('precio');
+  });
+
   it('con capacidad de 0 inválida no llama a la API', () => {
     comp.form.controls.capacidad.setValue('0');
     comp.form.controls.capacidad.markAsTouched();

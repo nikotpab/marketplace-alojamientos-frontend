@@ -26,6 +26,9 @@
         <span class="estado" [attr.data-estado]="p.estado">{{ estados[p.estado] }}</span>
         <div class="acciones">
           @switch (p.estado) {
+            @case ('BORRADOR') {
+              <button type="button" class="sec" [disabled]="procesando() === p.id" (click)="solicitarActivacion(p)">Solicitar activación</button>
+            }
             @case ('ACTIVA') {
               <button type="button" class="sec" [disabled]="procesando() === p.id" (click)="confirmandoPausa.set(p.id)">Pausar</button>
             }
@@ -37,6 +40,15 @@
           <a class="editar" [routerLink]="['/anfitrion/publicaciones', p.id, 'editar']">Editar</a>
         </div>
 
+        @if (p.estado === 'BORRADOR') {
+          <p class="nota guia">
+            @if (p.motivoRechazo) { Rechazada por el administrador: {{ p.motivoRechazo }}. Corrígela en Editar y vuelve a solicitar la activación. }
+            @else { Borrador: no aparece en Explorar hasta que solicites la activación y un administrador la apruebe. }
+          </p>
+        }
+        @if (p.estado === 'PENDIENTE_REVISION') {
+          <p class="nota guia">Esperando la aprobación de un administrador para aparecer en Explorar.</p>
+        }
         @if (p.estado === 'BLOQUEADA') {
           <p class="nota">Bloqueada por el administrador. Solo un administrador puede reactivarla.</p>
         }

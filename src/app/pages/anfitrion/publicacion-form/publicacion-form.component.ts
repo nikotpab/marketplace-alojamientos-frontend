@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { switchMap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SERVICIOS } from '../../../core/alojamientos.service';
@@ -60,8 +60,14 @@ export class PublicacionFormComponent {
   totalErrores = computed(() => Object.keys(this.erroresActivacion()).length);
   exito = signal('');
 
-  /** Solo se puede pedir activación desde BORRADOR (incluye las rechazadas, que vuelven a borrador). */
-  puedeSolicitar = computed(() => !!this.id && this.publicacion()?.estado === 'BORRADOR');
+  /**
+   * Se pide la activación al crear la publicación o desde BORRADOR (incluye las rechazadas, que vuelven a borrador).
+   * Solo así llega a revisión y, cuando un administrador la aprueba, aparece en Explorar.
+   */
+  puedeSolicitar = computed(() => {
+    const estado = this.publicacion()?.estado;
+    return !this.id || estado === 'BORRADOR';
+  });
   /** Si el anfitrión edita una publicación aprobada (activa o pausada), vuelve a revisión. */
   vuelveARevision = computed(() => {
     const estado = this.publicacion()?.estado;
@@ -72,7 +78,7 @@ export class PublicacionFormComponent {
   servicios = signal<string[]>(SERVICIOS);
   tipos = signal<TipoConfigurado[]>([]);
   errorTipos = signal('');
-  /** Políticas de cancelación del backend; se envía su nombre (ajuste 8 del README del backend). */
+  /** Políticas de cancelación del backend; se envía su nombre. */
   politicas = signal<string[]>([]);
   seleccionados = signal<string[]>([]);
   guardando = signal(false);
@@ -114,22 +120,32 @@ export class PublicacionFormComponent {
     return this.erroresActivacion()[campo] ?? '';
   }
 
+  /** Guarda la publicación (o la crea, si es nueva) y pide su activación. */
   solicitarActivacion() {
-    if (!this.id) return;
     this.exito.set('');
     this.error.set('');
-    const errores = validarActivacion(this.datos());
+    const datos = this.datos();
+    const errores = validarActivacion(datos);
     this.erroresActivacion.set(errores);
     if (Object.keys(errores).length) return;
 
-    const id = this.id;
+    const nueva = !this.id;
     this.guardando.set(true);
-    // Primero guarda los cambios y luego pide la activación
-    this.api
-      .actualizar(id, this.datos())
-      .pipe(switchMap(() => this.api.solicitarActivacion(id)))
+    (this.id ? this.api.actualizar(this.id, datos) : this.api.crear(datos))
+      .pipe(
+        // Desde aquí el formulario edita la publicación guardada: si la solicitud falla, reintentar no la duplica
+        tap((p) => {
+          this.id = p.id;
+          this.publicacion.set(p);
+        }),
+        switchMap((p) => this.api.solicitarActivacion(p.id)),
+      )
       .subscribe({
         next: (p) => {
+          if (nueva) {
+            void this.router.navigate(['/anfitrion'], { queryParams: { guardada: 'solicitada' } });
+            return;
+          }
           this.publicacion.set(p);
           this.exito.set('Solicitud enviada. Un administrador revisará tu publicación antes de que aparezca en búsquedas.');
           this.guardando.set(false);
@@ -137,10 +153,7 @@ export class PublicacionFormComponent {
         error: (e) => {
           this.guardando.set(false);
           if (e.status === 403) return;
-          if (e.status === 422 && e.error?.errores) {
-            this.erroresActivacion.set(e.error.errores);
-            return;
-          }
+          if (this.mostrarErroresDeCampos(e)) return;
           this.error.set('No pudimos enviar la solicitud. Intenta de nuevo.');
         },
       });
@@ -202,6 +215,20 @@ export class PublicacionFormComponent {
     };
   }
 
+  /** 400 (dato inválido) o 422 (falta información para publicar): el mensaje del backend va junto a cada campo. */
+  private mostrarErroresDeCampos(e: { status: number; error?: { errores?: Partial<Record<CampoActivacion, string>> } }): boolean {
+    if ((e.status !== 400 && e.status !== 422) || !e.error?.errores) return false;
+    this.erroresActivacion.set(e.error.errores);
+    this.error.set('Revisa los campos indicados.');
+    return true;
+  }
+
+  /** Qué le dice Mis publicaciones al anfitrión después de guardar. */
+  private resultadoAlGuardar(p: Publicacion | null): string {
+    if (p?.estado === 'PENDIENTE_REVISION' && this.vuelveARevision()) return 'revision';
+    return p?.estado === 'BORRADOR' ? 'borrador' : 'guardada';
+  }
+
   guardarBorrador() {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
@@ -209,11 +236,12 @@ export class PublicacionFormComponent {
     this.error.set('');
     const peticion = this.id ? this.api.actualizar(this.id, this.datos()) : this.api.crear(this.datos());
     peticion.subscribe({
-      next: (p) => this.router.navigate(['/anfitrion'], { queryParams: { guardada: p?.estado === 'PENDIENTE_REVISION' && this.vuelveARevision() ? 'revision' : 1 } }),
+      next: (p) => this.router.navigate(['/anfitrion'], { queryParams: { guardada: this.resultadoAlGuardar(p) } }),
       error: (e) => {
-        if (e.status === 403) return; // el interceptor lleva a /acceso-denegado
-        this.error.set('No pudimos guardar los cambios. Revisa tu conexión e intenta de nuevo.');
         this.guardando.set(false);
+        if (e.status === 403) return; // el interceptor lleva a /acceso-denegado
+        if (this.mostrarErroresDeCampos(e)) return;
+        this.error.set('No pudimos guardar los cambios. Revisa tu conexión e intenta de nuevo.');
       },
     });
   }
