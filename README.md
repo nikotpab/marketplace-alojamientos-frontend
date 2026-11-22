@@ -72,7 +72,7 @@ Las llamadas a la API llevan la cabecera `X-Correlation-Id`, y los errores se es
 
 ```bash
 docker build -t marketplace-web .
-docker run --rm -p 8081:80 marketplace-web    # http://localhost:8081
+docker run --rm -p 8081:8080 marketplace-web    # http://localhost:8081
 ```
 
 La imagen sirve solo los archivos estáticos con Caddy; las llamadas a `/api` necesitan el backend detrás del Caddy principal (`deploy/compose.yaml` del backend).
