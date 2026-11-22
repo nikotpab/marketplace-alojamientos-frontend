@@ -94,6 +94,18 @@ describe('BusquedaComponent', () => {
     req.flush({ ...PAGINA, contenido: [], total: 0 });
   });
 
+  it('limpiar quita los filtros de la dirección', async () => {
+    const pagina = await harness.navigateByUrl('/buscar?ciudad=Cali', BusquedaComponent);
+    responderTipos();
+    backend.expectOne((r) => r.url === '/api/alojamientos').flush(PAGINA);
+
+    pagina.limpiar();
+    await harness.fixture.whenStable();
+
+    expect(TestBed.inject(Router).url).toBe('/buscar');
+    backend.match((r) => r.url === '/api/alojamientos').forEach((r) => r.flush(PAGINA));
+  });
+
   it('no busca si la salida no es posterior a la llegada', async () => {
     await harness.navigateByUrl('/buscar?llegada=2026-12-10&salida=2026-12-09', BusquedaComponent);
     responderTipos();

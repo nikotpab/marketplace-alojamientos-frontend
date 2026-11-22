@@ -1,5 +1,5 @@
 // La configuración por defecto de Angular, más el reporte lcov de cobertura que lee SonarQube Cloud.
-module.exports = function (config) {
+module.exports = function configurarKarma(config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
@@ -12,7 +12,7 @@ module.exports = function (config) {
     ],
     jasmineHtmlReporter: { suppressAll: true },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/marketplace-alojamientos-frontend'),
+      dir: require('node:path').join(__dirname, './coverage/marketplace-alojamientos-frontend'),
       subdir: '.',
       reporters: [{ type: 'html' }, { type: 'lcovonly' }, { type: 'text-summary' }],
     },

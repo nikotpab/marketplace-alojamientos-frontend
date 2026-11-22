@@ -6,7 +6,7 @@
   <form [formGroup]="formulario" (ngSubmit)="enviar()" novalidate>
     <label for="codigo-registro">Código de verificación</label>
     <input id="codigo-registro" class="codigo" formControlName="codigo" type="text" inputmode="numeric"
-           autocomplete="one-time-code" maxlength="6" soloNumeros autofocus
+           autocomplete="one-time-code" maxlength="6" soloNumeros data-foco-inicial
            [attr.aria-invalid]="invalido() || !!error()" aria-describedby="codigo-registro-mensajes" />
 
     <div id="codigo-registro-mensajes" class="mensajes">

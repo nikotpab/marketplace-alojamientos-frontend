@@ -16,10 +16,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(peticion).pipe(
     catchError((e) => {
       const esAuth = req.url.includes('/auth/');
-      if (e.status === 403 && !esAuth) router.navigateByUrl('/acceso-denegado');
+      if (e.status === 403 && !esAuth) void router.navigateByUrl('/acceso-denegado');
       if (e.status === 401 && !esAuth) {
         auth.cerrarSesion();
-        router.navigateByUrl('/auth');
+        void router.navigateByUrl('/auth');
       }
       return throwError(() => e);
     }),

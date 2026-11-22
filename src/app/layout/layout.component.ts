@@ -94,6 +94,6 @@ export class LayoutComponent {
 
   salir() {
     this.auth.cerrarSesion();
-    this.router.navigateByUrl('/auth');
+    void this.router.navigateByUrl('/auth');
   }
 }

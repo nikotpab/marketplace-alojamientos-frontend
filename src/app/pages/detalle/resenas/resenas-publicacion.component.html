@@ -51,7 +51,7 @@
   <app-dialogo titulo="Reportar reseña" [bloqueado]="enviando()" (cerrar)="aReportar.set(null)">
     <p>Reseña de <strong>{{ r.autor }}</strong>. Un administrador la revisará y la ocultará si no cumple las normas.</p>
     <label for="motivo-reporte">Motivo</label>
-    <select id="motivo-reporte" autofocus [value]="motivo()" (change)="motivo.set($any($event.target).value)"
+    <select id="motivo-reporte" data-foco-inicial [value]="motivo()" (change)="motivo.set($any($event.target).value)"
             [attr.aria-invalid]="!!errorReporte() && !motivo()">
       <option value="">Elige un motivo</option>
       @for (m of motivos; track m.valor) { <option [value]="m.valor">{{ m.texto }}</option> }

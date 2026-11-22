@@ -95,10 +95,10 @@ export class RecuperarComponent {
     this.error.set('');
     this.enviado.set(false);
     this.paso.set(1);
-    this.router.navigate([], { queryParams: {} });
+    void this.router.navigate([], { queryParams: {} });
   }
 
   irALogin() {
-    this.router.navigateByUrl('/auth');
+    void this.router.navigateByUrl('/auth');
   }
 }

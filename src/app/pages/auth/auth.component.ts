@@ -82,7 +82,7 @@ export class AuthComponent {
   }
 
   irARecuperar() {
-    this.router.navigateByUrl('/recuperar');
+    void this.router.navigateByUrl('/recuperar');
   }
 
   cambiarPestana(p: 'login' | 'registro') {
@@ -109,7 +109,7 @@ export class AuthComponent {
     this.auth.login(this.login.getRawValue()).subscribe({
       next: (s) => {
         this.cargandoLogin.set(false);
-        this.router.navigateByUrl(INICIO_POR_ROL[s.usuario.rol]);
+        void this.router.navigateByUrl(INICIO_POR_ROL[s.usuario.rol]);
       },
       error: (e) => {
         this.cargandoLogin.set(false);
@@ -216,7 +216,7 @@ export class AuthComponent {
     this.auth.login({ correo, contrasena }).subscribe({
       next: (s) => {
         this.terminarRegistro();
-        this.router.navigateByUrl(INICIO_POR_ROL[s.usuario.rol]);
+        void this.router.navigateByUrl(INICIO_POR_ROL[s.usuario.rol]);
       },
       error: () => {
         this.terminarRegistro();

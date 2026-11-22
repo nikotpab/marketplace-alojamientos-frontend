@@ -103,7 +103,7 @@ export class BusquedaComponent {
       this.consultar(pagina);
       return;
     }
-    this.router.navigate([], { relativeTo: this.ruta, queryParams: params });
+    void this.router.navigate([], { relativeTo: this.ruta, queryParams: params });
   }
 
   limpiar() {
@@ -111,7 +111,7 @@ export class BusquedaComponent {
     this.seleccionados.set([]);
     this.panelAbierto.set(false);
     this.error.set('');
-    this.router.navigate([], { relativeTo: this.ruta, queryParams: {} });
+    void this.router.navigate([], { relativeTo: this.ruta, queryParams: {} });
   }
 
   private filtros(pagina: number): FiltrosBusqueda {

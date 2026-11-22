@@ -19,12 +19,15 @@ export function existeOperacion(metodo: string, url: string): boolean {
 
   if (paths[versionada]?.[m]) return true;
 
+  // Una ruta coincide con la plantilla si tiene los mismos segmentos; un {parametro} acepta cualquier valor.
+  const segmentos = versionada.split('/');
   for (const template of Object.keys(paths)) {
     if (!paths[template][m]) continue;
-    const regex = new RegExp(
-      '^' + template.replace(/\{[^}]+\}/g, '[^/]+') + '$'
-    );
-    if (regex.test(versionada)) return true;
+    const plantilla = template.split('/');
+    if (plantilla.length === segmentos.length
+        && plantilla.every((s, i) => (s.startsWith('{') && s.endsWith('}') && segmentos[i] !== '') || s === segmentos[i])) {
+      return true;
+    }
   }
 
   return false;
