@@ -29,8 +29,8 @@ jobs:
           node-version: 22
           cache: npm
 
-      # Instala las dependencias exactas del lockfile
-      - run: npm ci
+      # Instala las dependencias exactas del lockfile, sin correr sus scripts de instalación
+      - run: npm ci --ignore-scripts
 
       # Verifica que la app compila sin errores
       - run: npm run build

@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Copiar solo el manifiesto primero para aprovechar la caché de capas
 COPY package*.json ./
-RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+RUN if [ -f package-lock.json ]; then npm ci --ignore-scripts; else npm install --ignore-scripts; fi
 
 # Compilar el bundle de producción
 COPY . .
