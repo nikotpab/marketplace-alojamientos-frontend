@@ -22,8 +22,8 @@ type Filtro = EstadoPublicacion | 'TODAS';
   styleUrl: './todas-publicaciones.component.scss',
 })
 export class TodasPublicacionesComponent {
-  private tiposApi = inject(TiposAlojamientoService);
-  private api = inject(PublicacionesService);
+  private readonly tiposApi = inject(TiposAlojamientoService);
+  private readonly api = inject(PublicacionesService);
 
   estados = ESTADO_TEXTO;
   filtros: { valor: Filtro; texto: string }[] = [
@@ -93,7 +93,7 @@ export class TodasPublicacionesComponent {
     });
   }
 
-  /** SCRUM-112: vuelve a ACTIVA y sus reservas en revisión a confirmadas. */
+  /** Vuelve a ACTIVA y sus reservas en revisión a confirmadas. */
   desbloquear() {
     const p = this.aDesbloquear();
     if (!p) return;

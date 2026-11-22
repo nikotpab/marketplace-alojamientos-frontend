@@ -34,14 +34,14 @@
     </section>
 
     @if (visor() !== null) {
-      <div class="visor" role="dialog" aria-modal="true" aria-label="Fotos del alojamiento" tabindex="-1"
-           (keydown.escape)="visor.set(null)" (keydown.arrowRight)="mover(1, a.imagenes.length)" (keydown.arrowLeft)="mover(-1, a.imagenes.length)">
+      <dialog #visorFotos class="visor" aria-label="Fotos del alojamiento" (close)="visor.set(null)"
+              (keydown.arrowRight)="mover(1, a.imagenes.length)" (keydown.arrowLeft)="mover(-1, a.imagenes.length)">
         <button type="button" class="cerrar" aria-label="Cerrar" (click)="visor.set(null)">×</button>
         <button type="button" class="flecha anterior" aria-label="Imagen anterior" (click)="mover(-1, a.imagenes.length)">‹</button>
         <img [src]="a.imagenes[visor()!]" [alt]="a.titulo + ', imagen ' + (visor()! + 1)" />
         <button type="button" class="flecha siguiente" aria-label="Imagen siguiente" (click)="mover(1, a.imagenes.length)">›</button>
         <p class="posicion">{{ visor()! + 1 }} / {{ a.imagenes.length }}</p>
-      </div>
+      </dialog>
     }
 
     <div class="columnas">

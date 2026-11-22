@@ -18,8 +18,8 @@ import { PagoFormComponent } from './pago/pago-form.component';
   styleUrl: './cotizacion.component.scss',
 })
 export class CotizacionComponent {
-  private ruta = inject(ActivatedRoute);
-  private api = inject(CotizacionService);
+  private readonly ruta = inject(ActivatedRoute);
+  private readonly api = inject(CotizacionService);
 
   id = this.ruta.snapshot.paramMap.get('id') ?? '';
   llegada = this.ruta.snapshot.queryParamMap.get('llegada') ?? '';
@@ -32,14 +32,14 @@ export class CotizacionComponent {
   cargando = signal(false);
   error = signal('');
 
-  private reservas = inject(ReservasService);
+  private readonly reservas = inject(ReservasService);
   confirmando = signal(false);
   pagando = signal(false);
   errorReserva = signal('');
   reserva = signal<Reserva | null>(null);
 
   /**
-   * Clave única por intento de confirmación (RF-19). Se reutiliza si hay que reintentar
+   * Clave única por intento de confirmación. Se reutiliza si hay que reintentar
    * por un error de red y se renueva cuando cambian los datos de la reserva.
    */
   private claveIntento: string | null = null;
@@ -89,7 +89,7 @@ export class CotizacionComponent {
       });
   }
 
-  /** Plazo máximo de respuesta de la pasarela (RF-21): pasado este tiempo no se confirma nada. */
+  /** Plazo máximo de respuesta de la pasarela: pasado este tiempo no se confirma nada. */
   private static readonly PLAZO_PAGO_MS = 7000;
 
   confirmar(metodoPagoId: string) {

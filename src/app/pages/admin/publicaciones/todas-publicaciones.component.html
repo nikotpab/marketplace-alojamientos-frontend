@@ -2,43 +2,46 @@
   <h1>Publicaciones</h1>
   <p class="subtitulo">Todas las publicaciones del marketplace, con su estado.</p>
 
-  <div class="filtros" role="group" aria-label="Filtrar por estado">
+  <fieldset class="filtros" aria-label="Filtrar por estado">
     @for (f of filtros; track f.valor) {
       <button type="button" class="chip" [class.on]="filtro() === f.valor" [attr.aria-pressed]="filtro() === f.valor"
               (click)="filtro.set(f.valor)">
         {{ f.texto }} <span class="cuenta">{{ conteo()[f.valor] || 0 }}</span>
       </button>
     }
-  </div>
+  </fieldset>
 
-  @if (aviso()) { <p class="aviso-ok" role="status">{{ aviso() }}</p> }
+  @if (aviso()) { <output class="aviso-ok">{{ aviso() }}</output> }
 
   @if (cargando()) {
     <p>Cargando publicaciones…</p>
   } @else if (error()) {
     <p class="error" role="alert">{{ error() }}</p>
   } @else {
-    <div class="tabla" role="table" aria-label="Publicaciones">
-      <div class="fila cabecera" role="row">
-        <span role="columnheader">Publicación</span>
-        <span role="columnheader">Anfitrión</span>
-        <span role="columnheader">Precio / noche</span>
-        <span role="columnheader">Estado</span>
-        <span role="columnheader"><span class="oculto">Acciones</span></span>
-      </div>
+    <table class="tabla" aria-label="Publicaciones">
+      <thead>
+        <tr class="fila cabecera">
+          <th scope="col">Publicación</th>
+          <th scope="col">Anfitrión</th>
+          <th scope="col">Precio / noche</th>
+          <th scope="col">Estado</th>
+          <th scope="col"><span class="oculto">Acciones</span></th>
+        </tr>
+      </thead>
+      <tbody>
       @for (p of visibles(); track p.id) {
-        <div class="fila" role="row">
-          <span role="cell">
+        <tr class="fila">
+          <td>
             <strong>{{ p.titulo || 'Sin título' }}</strong>
             <small>{{ p.ubicacion || '—' }} · {{ nombreTipo(p.tipo) || '—' }}</small>
             @if (p.estado === 'BLOQUEADA' && p.motivoBloqueo) { <small class="motivo">Motivo del bloqueo: {{ p.motivoBloqueo }}</small> }
-          </span>
-          <span role="cell">{{ p.anfitrion || '—' }}</span>
-          <span role="cell">
+          </td>
+          <td>{{ p.anfitrion || '—' }}</td>
+          <td>
             @if (p.precioNoche) { {{ p.precioNoche | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} } @else { — }
-          </span>
-          <span role="cell"><span class="estado" [attr.data-estado]="p.estado">{{ estados[p.estado] }}</span></span>
-          <span role="cell" class="acciones">
+          </td>
+          <td><span class="estado" [attr.data-estado]="p.estado">{{ estados[p.estado] }}</span></td>
+          <td class="acciones">
             @if (p.estado === 'PENDIENTE_REVISION') {
               <a class="revisar" routerLink="/admin/revision">Revisar</a>
             }
@@ -48,12 +51,13 @@
               <button type="button" class="desbloquear" (click)="aviso.set(''); errorAccion.set(''); aDesbloquear.set(p)">Desbloquear</button>
             }
             <a class="editar" [routerLink]="['/anfitrion/publicaciones', p.id, 'editar']">Editar</a>
-          </span>
-        </div>
+          </td>
+        </tr>
       } @empty {
-        <p class="vacio">No hay publicaciones en este estado.</p>
+        <tr class="sin-filas"><td class="vacio" colspan="5">No hay publicaciones en este estado.</td></tr>
       }
-    </div>
+      </tbody>
+    </table>
   }
 </main>
 

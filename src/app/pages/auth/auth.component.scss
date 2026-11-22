@@ -39,7 +39,7 @@
 }
 
 .etiqueta { font-weight: 600; margin: 8px 0; }
-/* minmax(0, 1fr): las columnas pueden encoger por debajo del ancho propio de su contenido (como en SCRUM-139) */
+/* minmax(0, 1fr): las columnas pueden encoger por debajo del ancho propio de su contenido */
 .roles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
 .rol {
   text-align: left; background: #fff; border: 1px solid var(--gris-borde);
@@ -51,7 +51,7 @@
 form { display: flex; flex-direction: column; gap: 14px; }
 .fila { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .9rem; }
-/* Campos con la etiqueta fuera (contraseñas, SCRUM-153): mismo espaciado que las etiquetas que envuelven el input */
+/* Campos con la etiqueta fuera (contraseñas): mismo espaciado que las etiquetas que envuelven el input */
 .campo { display: flex; flex-direction: column; gap: 6px; }
 input {
   width: 100%; min-width: 0; padding: 12px; border: 1px solid var(--borde-campo); border-radius: var(--radio);

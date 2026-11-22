@@ -3,7 +3,7 @@
   <h1>Cotización</h1>
 
   @if (reserva(); as r) {
-    <section class="tarjeta exito" role="status">
+    <section class="tarjeta exito" aria-live="polite">
       <h2>¡Reserva confirmada!</h2>
       <p>Código de reserva: <strong>{{ r.codigo }}</strong></p>
       <p>{{ alojamiento()?.titulo }} · {{ r.llegada | date: 'd MMM' }} → {{ r.salida | date: 'd MMM y' }} · {{ r.huespedes }} {{ r.huespedes === 1 ? 'huésped' : 'huéspedes' }}</p>

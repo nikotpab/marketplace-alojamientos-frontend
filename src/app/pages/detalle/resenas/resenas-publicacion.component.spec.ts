@@ -7,7 +7,7 @@ import { ResenasPublicacionComponent } from './resenas-publicacion.component';
 
 const RESENAS = [{ id: 'r1', autor: 'María G.', calificacion: 1, comentario: 'Pésimo', fecha: '2026-01-15T10:00:00Z' }];
 
-describe('ResenasPublicacionComponent · reportar (SCRUM-111)', () => {
+describe('ResenasPublicacionComponent · reportar', () => {
   let fixture: ComponentFixture<ResenasPublicacionComponent>;
   let raiz: HTMLElement;
   let http: HttpTestingController;

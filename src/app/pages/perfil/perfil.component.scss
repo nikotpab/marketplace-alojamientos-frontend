@@ -57,7 +57,7 @@ input {
   border-radius: var(--radio); font-weight: 700; font-size: .95rem; cursor: pointer;
   &:disabled { opacity: .6; cursor: wait; }
 }
-.confirmar-texto { font-weight: 600; color: var(--texto) !important; margin-bottom: 12px !important; }
+.tarjeta .confirmar-texto { font-weight: 600; color: var(--texto); margin-bottom: 12px; }
 .acciones { display: flex; align-items: center; gap: 16px; }
 .texto {
   background: none; border: 0; padding: 0; font: inherit; font-weight: 600; color: var(--verde); cursor: pointer;

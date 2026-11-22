@@ -23,8 +23,8 @@ import { AuthService } from '../../core/auth.service';
   `,
 })
 export class AccesoDenegadoComponent {
-  private auth = inject(AuthService);
-  private router = inject(Router);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
   volver() {
     this.router.navigateByUrl(this.auth.autenticado() ? '/' : '/auth');

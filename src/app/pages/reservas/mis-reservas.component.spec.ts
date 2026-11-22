@@ -67,7 +67,7 @@ describe('MisReservasComponent', () => {
     expect(comp.cancelable(RESERVA_CANCELADA as any)).toBeFalse();
   });
 
-  it('SCRUM-118: una reserva en revisión se puede cancelar aunque su llegada ya pasó', () => {
+  it('una reserva en revisión se puede cancelar aunque su llegada ya pasó', () => {
     http.expectOne('/api/reservas').flush([]);
     expect(comp.cancelable({ ...RESERVA_PROXIMA, estado: 'EN_REVISION' } as any)).toBeTrue();
     expect(comp.cancelable({ ...RESERVA_CANCELADA, estado: 'EN_REVISION' } as any)).toBeTrue();
@@ -115,7 +115,7 @@ describe('MisReservasComponent', () => {
     expect(comp.aviso()).toContain('reseña quedó publicada');
   });
 
-  it('SCRUM-113: una completada que el historial trae como reseñada no ofrece calificarla', () => {
+  it('una completada que el historial trae como reseñada no ofrece calificarla', () => {
     http.expectOne('/api/reservas').flush([{ ...RESERVA_COMPLETADA, resenada: true }]);
     comp.grupo.set('completadas');
     fixture.detectChanges();
@@ -124,7 +124,7 @@ describe('MisReservasComponent', () => {
     expect(raiz.textContent).toContain('Ya la reseñaste');
   });
 
-  it('SCRUM-113: una cancelada del historial muestra el motivo y la devolución no procesada', () => {
+  it('una cancelada del historial muestra el motivo y la devolución no procesada', () => {
     const cancelacion: Cancelacion = {
       fecha: '2025-05-20T15:00:00Z', motivo: 'Me enfermé', valorDevolucion: 90000, estadoFinal: 'DEVOLUCION_NO_PROCESADA',
     };

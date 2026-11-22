@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { AuthComponent } from './auth.component';
 
-/** SCRUM-152: registro en dos pasos, con el código que llega al correo. */
+/** Registro en dos pasos, con el código que llega al correo. */
 describe('AuthComponent · registro con código', () => {
   const CONTRASENA = 'Contrasena-de-prueba-1';
   let fixture: ComponentFixture<AuthComponent>;
@@ -64,7 +64,7 @@ describe('AuthComponent · registro con código', () => {
     escribirCodigo('048213');
     const registro = http.expectOne('/api/auth/register');
     expect(registro.request.body).toEqual(jasmine.objectContaining({ correo: 'laura@correo.co', rol: 'HUESPED', codigo: '048213' }));
-    // SCRUM-153: la confirmación no viaja a la API.
+    // La confirmación no viaja a la API.
     expect(Object.keys(registro.request.body)).not.toContain('confirmar');
     registro.flush({}, { status: 201, statusText: 'Created' });
 

@@ -27,10 +27,13 @@
 
 .visor {
   position: fixed; inset: 0; z-index: 60; background: rgba(12, 20, 28, .92);
+  width: auto; height: auto; max-width: none; max-height: none; margin: 0; border: 0; color: inherit;
+  &::backdrop { background: transparent; }
   display: grid; place-items: center; padding: 48px 64px;
   img { max-width: 100%; max-height: calc(100vh - 120px); object-fit: contain; border-radius: var(--radio-sm); }
-  button { position: absolute; border: 0; background: rgba(255, 255, 255, .14); color: #fff; cursor: pointer; border-radius: 50%;
-    width: 44px; height: 44px; font-size: 1.6rem; line-height: 1; &:hover { background: rgba(255, 255, 255, .28); } }
+  /* Opacos, con el mismo tono que el blanco translúcido sobre el fondo del visor */
+  button { position: absolute; border: 0; background: #2e353c; color: #fff; cursor: pointer; border-radius: 50%;
+    width: 44px; height: 44px; font-size: 1.6rem; line-height: 1; &:hover { background: #50565c; } }
   .cerrar { top: 16px; right: 16px; }
   .anterior { left: 16px; top: 50%; }
   .siguiente { right: 16px; top: 50%; }

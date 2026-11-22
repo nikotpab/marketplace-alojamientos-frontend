@@ -38,7 +38,7 @@ function tarjetaDePrueba(c: AbstractControl): ValidationErrors | null {
   styleUrl: './pago-form.component.scss',
 })
 export class PagoFormComponent {
-  private fb = inject(FormBuilder);
+  private readonly fb = inject(FormBuilder);
 
   total = input.required<number>();
   procesando = input(false);

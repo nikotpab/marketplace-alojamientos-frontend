@@ -13,7 +13,7 @@ import { CalendarioComponent, RangoFechas } from '../../../shared/calendario/cal
   styleUrl: './disponibilidad.component.scss',
 })
 export class DisponibilidadComponent {
-  private api = inject(DisponibilidadService);
+  private readonly api = inject(DisponibilidadService);
   id = inject(ActivatedRoute).snapshot.paramMap.get('id') ?? '';
 
   datos = signal<Disponibilidad>({ bloqueados: [], reservados: [] });
@@ -21,7 +21,7 @@ export class DisponibilidadComponent {
   guardando = signal(false);
   error = signal('');
   aviso = signal('');
-  private calendario = viewChild(CalendarioComponent);
+  private readonly calendario = viewChild(CalendarioComponent);
 
   /** Los días con reserva confirmada no se pueden editar a mano. */
   incluyeReservas = computed(() => {

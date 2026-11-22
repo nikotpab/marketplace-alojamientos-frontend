@@ -21,8 +21,8 @@ const POR_PAGINA = 10;
   styleUrl: './resenas-publicacion.component.scss',
 })
 export class ResenasPublicacionComponent implements OnInit {
-  private api = inject(ResenasService);
-  private auth = inject(AuthService);
+  private readonly api = inject(ResenasService);
+  private readonly auth = inject(AuthService);
 
   publicacionId = input.required<string>();
 
@@ -42,7 +42,7 @@ export class ResenasPublicacionComponent implements OnInit {
   });
   mostradas = computed(() => this.resenas().slice(0, this.visibles()));
 
-  /** SCRUM-111: reportar exige sesión; el backend rechaza la propia reseña y los reportes repetidos. */
+  /** Reportar exige sesión; el backend rechaza la propia reseña y los reportes repetidos. */
   conSesion = computed(() => !!this.auth.usuario());
   readonly motivos = Object.entries(MOTIVO_REPORTE_TEXTO).map(([valor, texto]) => ({ valor: valor as MotivoReporte, texto }));
   readonly maxComentario = MAX_COMENTARIO_REPORTE;

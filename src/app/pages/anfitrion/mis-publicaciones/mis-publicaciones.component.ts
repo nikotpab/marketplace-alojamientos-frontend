@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ESTADO_TEXTO, Publicacion, PublicacionesService } from '../../../core/publicaciones.service';
 
-/** SCRUM-118: si la edición devolvió la publicación a revisión, se dice por qué ya no aparece en búsquedas. */
+/** Si la edición devolvió la publicación a revisión, se dice por qué ya no aparece en búsquedas. */
 function avisoAlGuardar(guardada: string | null): string {
   if (guardada === 'revision') {
     return 'Cambios guardados. La publicación volvió a revisión y aparecerá en las búsquedas cuando un administrador la apruebe.';
@@ -20,7 +20,7 @@ function avisoAlGuardar(guardada: string | null): string {
   styleUrl: './mis-publicaciones.component.scss',
 })
 export class MisPublicacionesComponent {
-  private api = inject(PublicacionesService);
+  private readonly api = inject(PublicacionesService);
 
   estados = ESTADO_TEXTO;
   publicaciones = signal<Publicacion[]>([]);

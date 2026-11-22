@@ -11,7 +11,7 @@ import { TipoAlojamientoConfig, TiposAlojamientoService } from '../../../core/ti
   styleUrl: './tipos.component.scss',
 })
 export class TiposComponent {
-  private api = inject(TiposAlojamientoService);
+  private readonly api = inject(TiposAlojamientoService);
 
   tipos = signal<TipoAlojamientoConfig[]>([]);
   cargando = signal(true);

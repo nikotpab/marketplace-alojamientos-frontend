@@ -3,7 +3,7 @@
   <h1>Disponibilidad</h1>
   <p class="subtitulo">Elige la fecha de inicio y la de fin, y márcalas como disponibles o bloqueadas. Los días reservados no se pueden editar.</p>
 
-  @if (aviso()) { <p class="aviso ok" role="status">{{ aviso() }}</p> }
+  @if (aviso()) { <output class="aviso ok">{{ aviso() }}</output> }
   @if (error()) { <p class="aviso mal" role="alert">{{ error() }}</p> }
 
   <div class="columnas">

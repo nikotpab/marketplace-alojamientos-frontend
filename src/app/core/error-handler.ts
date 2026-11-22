@@ -4,7 +4,7 @@ import { LogService } from './log.service';
 /** Errores no controlados del front, registrados en JSON y enmascarados. */
 @Injectable()
 export class ManejadorErroresGlobal implements ErrorHandler {
-  private log = inject(LogService);
+  private readonly log = inject(LogService);
 
   handleError(error: unknown): void {
     const e = error as { name?: string; message?: string; stack?: string };

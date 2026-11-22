@@ -2,15 +2,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-/** Código del tipo; los tipos se administran como configuración (RF-35). */
-export type TipoAlojamiento = string;
-
 export interface FiltrosBusqueda {
   ciudad?: string;
   llegada?: string;
   salida?: string;
   huespedes?: number;
-  tipo?: TipoAlojamiento | '';
+  /** Código del tipo; los tipos se administran como configuración. */
+  tipo?: string;
   precioMin?: number;
   precioMax?: number;
   servicios?: string[];
@@ -21,7 +19,7 @@ export interface AlojamientoResumen {
   id: string;
   titulo: string;
   ciudad: string;
-  tipo: TipoAlojamiento;
+  tipo: string;
   capacidad: number;
   precioNoche: number;
   calificacion: number | null;
@@ -39,7 +37,7 @@ export interface PaginaAlojamientos {
 export const TAMANO_PAGINA = 20;
 
 /** Tipos iniciales, usados solo como respaldo si la configuración no responde. */
-export const TIPOS: { valor: TipoAlojamiento; texto: string }[] = [
+export const TIPOS: { valor: string; texto: string }[] = [
   { valor: 'CASA', texto: 'Casa' },
   { valor: 'APARTAMENTO', texto: 'Apartamento' },
   { valor: 'HABITACION', texto: 'Habitación' },
@@ -50,7 +48,7 @@ export const SERVICIOS = ['WiFi', 'Cocina', 'Parqueadero', 'Piscina', 'Aire acon
 
 @Injectable({ providedIn: 'root' })
 export class AlojamientosService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   buscar(f: FiltrosBusqueda): Observable<PaginaAlojamientos> {
     let p = new HttpParams()

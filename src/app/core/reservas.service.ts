@@ -20,12 +20,12 @@ export const ESTADO_RESERVA_TEXTO: Record<EstadoReserva, string> = {
   EN_REVISION: 'En revisión manual',
 };
 
-/** Estado final de la cancelación según la devolución simulada (RF-23). */
+/** Estado final de la cancelación según la devolución simulada. */
 export type EstadoFinalCancelacion = 'DEVOLUCION_PROCESADA' | 'DEVOLUCION_NO_PROCESADA' | 'SIN_DEVOLUCION';
 
 /**
  * Registro de la cancelación. POST /reservas/{id}/cancelacion la devuelve completa; el historial
- * (GET /reservas) trae solo fecha, motivo, valorDevolucion y estadoFinal (SCRUM-113).
+ * (GET /reservas) trae solo fecha, motivo, valorDevolucion y estadoFinal.
  */
 export interface Cancelacion {
   id?: string;
@@ -57,9 +57,9 @@ export interface Reserva {
    * está CONFIRMADA; en otro caso no llegan.
    */
   contactoHuesped?: { telefono: string | null; correo: string | null } | null;
-  /** Motivo y devolución de una reserva cancelada (SCRUM-113). También se llena al cancelar en esta sesión. */
+  /** Motivo y devolución de una reserva cancelada. También se llena al cancelar en esta sesión. */
   cancelacion?: Cancelacion | null;
-  /** Si ya tiene reseña, aunque esté oculta (SCRUM-113). También se marca al reseñar en esta sesión. */
+  /** Si ya tiene reseña, aunque esté oculta. También se marca al reseñar en esta sesión. */
   resenada?: boolean;
 }
 
@@ -72,7 +72,7 @@ export interface EstimacionDevolucion {
 
 @Injectable({ providedIn: 'root' })
 export class ReservasService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   /** Reservas del huésped autenticado (el backend filtra por el rol del token). */
   misReservas(): Observable<Reserva[]> {

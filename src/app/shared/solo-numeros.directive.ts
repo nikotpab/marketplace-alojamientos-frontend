@@ -6,7 +6,7 @@ import { Directive, ElementRef, HostListener, inject } from '@angular/core';
   standalone: true,
 })
 export class SoloNumerosDirective {
-  private el = inject<ElementRef<HTMLInputElement>>(ElementRef).nativeElement;
+  private readonly el = inject<ElementRef<HTMLInputElement>>(ElementRef).nativeElement;
 
   @HostListener('input')
   filtrar() {

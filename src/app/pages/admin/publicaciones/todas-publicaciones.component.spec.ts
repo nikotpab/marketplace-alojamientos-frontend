@@ -14,7 +14,7 @@ const BLOQUEADA = {
   precioNoche: 200000, tipo: 'CASA', ubicacion: 'Paipa',
 };
 
-describe('TodasPublicacionesComponent (SCRUM-112)', () => {
+describe('TodasPublicacionesComponent', () => {
   let fixture: ComponentFixture<TodasPublicacionesComponent>;
   let raiz: HTMLElement;
   let http: HttpTestingController;

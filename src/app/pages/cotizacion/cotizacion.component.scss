@@ -2,7 +2,7 @@
 .volver { color: var(--verde); font-weight: 600; text-decoration: none; &:hover { text-decoration: underline; } }
 h1 { margin: 12px 0 20px; font-size: 2rem; color: var(--texto); }
 
-.aviso { padding: 12px 16px; border-radius: 12px; font-weight: 500; &.mal { background: var(--peligro-suave); color: var(--rojo); } }
+.aviso { padding: 12px 16px; border-radius: 12px; font-weight: 500; &.mal { margin-top: 12px; background: var(--peligro-suave); color: var(--rojo); } }
 
 .columnas { display: grid; grid-template-columns: 1fr 380px; gap: 24px; align-items: start; }
 .tarjeta {
@@ -51,7 +51,6 @@ table {
 }
 
 .confirmar { margin-top: 16px; padding: 13px; font-size: 1rem; }
-.aviso.mal { margin-top: 12px; }
 .exito {
   text-align: center; padding: 40px 24px;
   h2 { font-size: 1.6rem; margin-bottom: 12px; }

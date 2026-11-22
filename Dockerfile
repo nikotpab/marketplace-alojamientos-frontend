@@ -1,5 +1,5 @@
-# Etapa 1: compilar la aplicación Angular (SCRUM-156). Corre en la plataforma de quien construye: el CI publica la imagen
-# para la EC2, que es ARM (t4g), sin emular la compilación (SCRUM-121).
+# Etapa 1: compilar la aplicación Angular. Corre en la plataforma de quien construye: el CI publica la imagen
+# para la EC2, que es ARM (t4g), sin emular la compilación.
 FROM --platform=$BUILDPLATFORM node:22-alpine AS build
 WORKDIR /app
 

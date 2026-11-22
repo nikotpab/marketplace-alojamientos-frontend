@@ -20,7 +20,7 @@ export interface UsuarioAdmin {
 
 @Injectable({ providedIn: 'root' })
 export class UsuariosAdminService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   /** Todos los usuarios; la búsqueda se filtra en el front. */
   listar(): Observable<UsuarioAdmin[]> {
@@ -32,12 +32,12 @@ export class UsuariosAdminService {
     return this.http.post<void>(`/api/admin/usuarios/${encodeURIComponent(id)}/restriccion`, { motivo });
   }
 
-  /** SCRUM-112 (204): el usuario puede volver a iniciar sesión. 409 si no estaba restringido. */
+  /** 204: el usuario puede volver a iniciar sesión. 409 si no estaba restringido. */
   levantarRestriccion(id: string): Observable<void> {
     return this.http.delete<void>(`/api/admin/usuarios/${encodeURIComponent(id)}/restriccion`);
   }
 
-  /** SCRUM-112 · CU-05 (204): reactiva una cuenta desactivada. 409 si ya estaba activa. */
+  /** 204: reactiva una cuenta desactivada. 409 si ya estaba activa. */
   reactivar(id: string): Observable<void> {
     return this.http.post<void>(`/api/admin/usuarios/${encodeURIComponent(id)}/reactivacion`, {});
   }

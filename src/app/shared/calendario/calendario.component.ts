@@ -41,8 +41,8 @@ export class CalendarioComponent implements OnInit {
   rango = output<RangoFechas | null>();
   mesVisible = output<RangoFechas>();
 
-  private hoy = aIso(new Date());
-  private mesInicial = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  private readonly hoy = aIso(new Date());
+  private readonly mesInicial = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   inicioVista = signal(this.mesInicial);
   desde = signal<string | null>(null);
   hasta = signal<string | null>(null);
@@ -56,7 +56,7 @@ export class CalendarioComponent implements OnInit {
     return Array.from({ length: this.meses() }, (_, i) => {
       const m = new Date(base.getFullYear(), base.getMonth() + i, 1);
       const total = new Date(m.getFullYear(), m.getMonth() + 1, 0).getDate();
-      const dias: (Dia | null)[] = Array((m.getDay() + 6) % 7).fill(null);
+      const dias: (Dia | null)[] = new Array<Dia | null>((m.getDay() + 6) % 7).fill(null);
       for (let d = 1; d <= total; d++) {
         const iso = aIso(new Date(m.getFullYear(), m.getMonth(), d));
         dias.push({ numero: d, iso, pasado: iso < this.hoy, bloqueado: bloq.has(iso), reservado: res.has(iso) });

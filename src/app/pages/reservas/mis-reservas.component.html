@@ -11,7 +11,7 @@
     }
   </div>
 
-  @if (aviso()) { <p class="aviso-ok" role="status">{{ aviso() }}</p> }
+  @if (aviso()) { <output class="aviso-ok">{{ aviso() }}</output> }
 
   @if (cargando()) {
     <p>Cargando tus reservas…</p>

@@ -17,16 +17,16 @@ import { MENSAJE_CORREO, validarCorreo } from '../../shared/validadores-contacto
 })
 export class RecuperarComponent {
   readonly mensajeCorreo = MENSAJE_CORREO;
-  private fb = inject(FormBuilder);
-  private auth = inject(AuthService);
-  private router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
   /** 1: pedir correo · 4: enlace enviado · 2: nueva contraseña (llega con ?token=) · 3: listo. */
   paso = signal<1 | 2 | 3 | 4>(1);
   cargando = signal(false);
   error = signal('');
   enviado = signal(false);
-  private token = inject(ActivatedRoute).snapshot.queryParamMap.get('token') ?? '';
+  private readonly token = inject(ActivatedRoute).snapshot.queryParamMap.get('token') ?? '';
 
   correo = this.fb.nonNullable.group({
     correo: ['', validarCorreo],

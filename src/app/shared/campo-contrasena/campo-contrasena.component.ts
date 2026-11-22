@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, ViewEncapsulation, inject, signal } from '@angular/core';
 
 /**
- * Campo de contraseña con un botón para mostrarla u ocultarla (SCRUM-153). El input se proyecta, así que sigue
+ * Campo de contraseña con un botón para mostrarla u ocultarla. El input se proyecta, así que sigue
  * en el formulario de la pantalla con su etiqueta, su `autocomplete` y sus validaciones. La etiqueta debe ir fuera
  * (con `for`), para que el nombre del botón no se sume al del campo.
  */
@@ -42,7 +42,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, ViewEncapsulation, inje
 export class CampoContrasenaComponent {
   visible = signal(false);
 
-  private host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
 
   alternar() {
     const campo = this.host.querySelector('input');

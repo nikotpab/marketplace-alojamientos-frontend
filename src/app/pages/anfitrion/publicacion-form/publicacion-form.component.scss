@@ -23,7 +23,7 @@ input, select, textarea {
 textarea { resize: vertical; }
 .error { color: var(--rojo); font-weight: 500; margin: 0; }
 
-.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { border: 0; margin: 0; padding: 0; min-width: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {
   font: inherit; font-size: .85rem; padding: 6px 14px; border-radius: 999px; cursor: pointer;
   border: 1px solid var(--gris-borde); background: #fff;

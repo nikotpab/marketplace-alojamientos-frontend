@@ -2,7 +2,7 @@
   <h1>Revisión de publicaciones</h1>
   <p class="subtitulo">Aprueba o rechaza las publicaciones que los anfitriones enviaron a revisión.</p>
 
-  @if (aviso()) { <p class="aviso ok" role="status">{{ aviso() }}</p> }
+  @if (aviso()) { <output class="aviso ok">{{ aviso() }}</output> }
   @if (error()) { <p class="aviso mal" role="alert">{{ error() }}</p> }
 
   @if (cargando()) {

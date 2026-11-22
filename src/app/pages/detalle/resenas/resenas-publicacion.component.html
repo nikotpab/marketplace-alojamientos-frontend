@@ -31,7 +31,7 @@
           <span class="nota" [attr.aria-label]="x.calificacion + ' de 5'">{{ estrellas(x.calificacion) }}</span>
           <small>{{ x.fecha | date: 'mediumDate' }}</small>
           @if (reportadas().has(x.id)) {
-            <small class="reportada" role="status">Reportada. Un administrador la revisará.</small>
+            <small class="reportada" aria-live="polite">Reportada. Un administrador la revisará.</small>
           } @else if (conSesion()) {
             <button type="button" class="enlace reportar" (click)="abrirReporte(x)">Reportar</button>
           }

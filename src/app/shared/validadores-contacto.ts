@@ -1,6 +1,6 @@
 import { Validators } from '@angular/forms';
 
-/** SCRUM-155: los mismos formatos que valida el backend (SCRUM-154). */
+/** Los mismos formatos que valida el backend. */
 
 /** Celular de Colombia: 10 dígitos que empiezan por 3. */
 export const FORMATO_TELEFONO = /^3\d{9}$/;

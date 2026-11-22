@@ -14,7 +14,7 @@ const POR_PAGINA = 25;
   styleUrl: './auditoria.component.scss',
 })
 export class AuditoriaComponent {
-  private api = inject(AuditoriaService);
+  private readonly api = inject(AuditoriaService);
 
   acciones = ACCIONES_AUDITORIA;
   filtros: FiltrosAuditoria = { accion: '', entidad: '', desde: '', hasta: '', resultado: '' };
@@ -69,7 +69,7 @@ export class AuditoriaComponent {
   textoDetalle(d: Record<string, unknown> | null) {
     if (!d) return '';
     return Object.entries(d)
-      .map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`)
+      .map(([k, v]) => `${k}: ${typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' ? v : JSON.stringify(v)}`)
       .join(' · ');
   }
 }

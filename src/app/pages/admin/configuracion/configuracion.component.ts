@@ -22,8 +22,8 @@ interface Diferencia {
   styleUrl: './configuracion.component.scss',
 })
 export class ConfiguracionComponent {
-  private api = inject(ConfiguracionService);
-  private fb = inject(FormBuilder);
+  private readonly api = inject(ConfiguracionService);
+  private readonly fb = inject(FormBuilder);
 
   campos = CAMPOS_TARIFA;
   actual = signal<Tarifas | null>(null);
@@ -50,7 +50,7 @@ export class ConfiguracionComponent {
   cargar() {
     this.api.tarifas().subscribe({
       next: (t) => {
-        // LIMPIEZA puede llegar en null hasta que se configure (pendiente 5 del backend)
+        // Un porcentaje sin configurar llega en null
         const limpio = { ...t, porcentajeLimpieza: t.porcentajeLimpieza ?? 0 };
         this.actual.set(limpio);
         this.form.reset(limpio);

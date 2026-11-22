@@ -35,13 +35,16 @@ export interface Exportacion {
 }
 
 /** El backend guarda los filtros vacíos como el texto "null". */
-const valor = (v: unknown) => (v === undefined || v === null || v === 'null' || v === '' ? null : String(v));
+const valor = (v: unknown): string | null => {
+  if (v === undefined || v === null || v === 'null' || v === '') return null;
+  return typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' ? String(v) : JSON.stringify(v);
+};
 
 @Injectable({ providedIn: 'root' })
 export class ReportesService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
-  private auditoria = inject(AuditoriaService);
+  private readonly auditoria = inject(AuditoriaService);
 
   /** Devuelve el archivo (PDF o Excel); el backend registra la exportación en la auditoría. */
   exportar(s: SolicitudReporte): Observable<HttpResponse<Blob>> {

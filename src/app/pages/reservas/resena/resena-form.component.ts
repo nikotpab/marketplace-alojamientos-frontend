@@ -4,6 +4,11 @@ import { Reserva } from '../../../core/reservas.service';
 import { MAX_COMENTARIO, ResenasService } from '../../../core/resenas.service';
 import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
 
+const MENSAJES_ERROR: Record<number, string> = {
+  409: 'Ya reseñaste esta reserva. Cada reserva admite una sola reseña.',
+  422: 'Solo puedes reseñar estadías completadas.',
+};
+
 @Component({
   selector: 'app-resena-form',
   standalone: true,
@@ -13,7 +18,7 @@ import { DialogoComponent } from '../../../shared/dialogo/dialogo.component';
   styleUrl: './resena-form.component.scss',
 })
 export class ResenaFormComponent {
-  private api = inject(ResenasService);
+  private readonly api = inject(ResenasService);
 
   reserva = input.required<Reserva>();
   cerrar = output<void>();
@@ -44,13 +49,7 @@ export class ResenaFormComponent {
       },
       error: (e) => {
         this.enviando.set(false);
-        this.error.set(
-          e.status === 409
-            ? 'Ya reseñaste esta reserva. Cada reserva admite una sola reseña.'
-            : e.status === 422
-              ? 'Solo puedes reseñar estadías completadas.'
-              : 'No pudimos publicar tu reseña. Intenta de nuevo.',
-        );
+        this.error.set(MENSAJES_ERROR[e.status] ?? 'No pudimos publicar tu reseña. Intenta de nuevo.');
       },
     });
   }

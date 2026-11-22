@@ -13,9 +13,9 @@
   @if (cargando()) { <p>Cargando publicación…</p> }
   @if (errorCarga()) { <p class="error" role="alert">{{ errorCarga() }}</p> }
   @if (publicacion()?.estado === 'BORRADOR' && publicacion()?.motivoRechazo) {
-    <p class="aviso mal" role="status"><strong>Rechazada por el administrador:</strong> {{ publicacion()?.motivoRechazo }}</p>
+    <output class="aviso mal"><strong>Rechazada por el administrador:</strong> {{ publicacion()?.motivoRechazo }}</output>
   }
-  @if (exito()) { <p class="aviso ok" role="status">{{ exito() }}</p> }
+  @if (exito()) { <output class="aviso ok">{{ exito() }}</output> }
   @if (totalErrores()) {
     <p class="aviso mal" role="alert">
       La publicación sigue en borrador: {{ totalErrores() === 1 ? 'falta 1 dato' : 'faltan ' + totalErrores() + ' datos' }}
@@ -79,12 +79,12 @@
 
     <section class="tarjeta">
       <h2>Servicios y reglas</h2>
-      <div class="chips" role="group" aria-label="Servicios">
+      <fieldset class="chips" aria-label="Servicios">
         @for (s of servicios(); track s) {
           <button type="button" class="chip" [class.on]="seleccionados().includes(s)"
                   [attr.aria-pressed]="seleccionados().includes(s)" (click)="alternarServicio(s)">{{ s }}</button>
         }
-      </div>
+      </fieldset>
       <label>Reglas básicas <span class="ayuda">(una por línea)</span>
         <textarea formControlName="reglas" rows="3" placeholder="No fiestas&#10;Check-in desde las 3:00 p. m."></textarea>
       </label>

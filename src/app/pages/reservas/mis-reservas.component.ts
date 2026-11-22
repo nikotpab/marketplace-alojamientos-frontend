@@ -29,7 +29,7 @@ export class MisReservasComponent {
   /** Reserva completada abierta en el formulario de reseña. */
   aResenar = signal<Reserva | null>(null);
 
-  private hoy = new Date().toISOString().slice(0, 10);
+  private readonly hoy = new Date().toISOString().slice(0, 10);
 
   /** Próximas: confirmadas que aún no terminan o en revisión manual. */
   grupos = computed<Record<Grupo, Reserva[]>>(() => {
@@ -52,7 +52,7 @@ export class MisReservasComponent {
 
   /**
    * Se cancelan las confirmadas cuya estadía no ha comenzado y las que están en revisión porque su
-   * alojamiento fue bloqueado; estas, con devolución total (SCRUM-118).
+   * alojamiento fue bloqueado; estas, con devolución total.
    */
   cancelable(r: Reserva) {
     return (r.estado === 'CONFIRMADA' && r.llegada > this.hoy) || r.estado === 'EN_REVISION';

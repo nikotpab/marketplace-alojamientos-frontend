@@ -3,7 +3,7 @@
 ## Origen del archivo
 
 `src/contract/openapi.json` es una copia del contrato que genera el backend
-(rama `SCRUM-129-contrato-openapi`, archivo `docs/openapi.json`).
+(`docs/openapi.json` en su repositorio).
 El backend es la única fuente de verdad.
 
 ## Cómo actualizarlo

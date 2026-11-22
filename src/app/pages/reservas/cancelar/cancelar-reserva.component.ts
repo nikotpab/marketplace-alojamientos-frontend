@@ -14,7 +14,7 @@ type Paso = 'motivo' | 'revision';
   templateUrl: './cancelar-reserva.component.html',
 })
 export class CancelarReservaComponent {
-  private api = inject(ReservasService);
+  private readonly api = inject(ReservasService);
 
   reserva = input.required<Reserva>();
   cerrar = output<void>();

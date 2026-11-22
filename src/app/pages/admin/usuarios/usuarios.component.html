@@ -9,7 +9,7 @@
     </label>
   </div>
 
-  @if (aviso()) { <p class="aviso-ok" role="status">{{ aviso() }}</p> }
+  @if (aviso()) { <output class="aviso-ok">{{ aviso() }}</output> }
   @if (errorFila()) { <p class="aviso-mal" role="alert">{{ errorFila() }}</p> }
 
   @if (cargando()) {

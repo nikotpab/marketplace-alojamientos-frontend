@@ -9,7 +9,7 @@ export interface TipoActivo {
   nombre: string;
 }
 
-/** Tipo administrado como dato de configuración (RF-35), vista del administrador. */
+/** Tipo administrado como dato de configuración, vista del administrador. */
 export interface TipoAlojamientoConfig {
   id: string;
   nombre: string;
@@ -21,7 +21,7 @@ const RESPALDO: TipoActivo[] = TIPOS.map((t) => ({ codigo: t.valor, nombre: t.te
 
 @Injectable({ providedIn: 'root' })
 export class TiposAlojamientoService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   /** Tipos activos, compartidos por búsqueda, formularios y listados. */
   readonly activos = signal<TipoActivo[]>(RESPALDO);

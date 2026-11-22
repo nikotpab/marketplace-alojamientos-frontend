@@ -10,7 +10,7 @@ const BASE: UsuarioAdmin = {
   rol: 'HUESPED', cuentaActiva: true, restringido: false, correoVerificado: true,
 };
 
-describe('UsuariosComponent (SCRUM-112)', () => {
+describe('UsuariosComponent', () => {
   let fixture: ComponentFixture<UsuariosComponent>;
   let raiz: HTMLElement;
   let http: HttpTestingController;

@@ -2,12 +2,12 @@
   <h1>Panel de administración</h1>
   <p class="admin-subtitulo">Indicadores de la plataforma en el periodo elegido.</p>
 
-  <div class="periodos" role="group" aria-label="Periodo">
+  <fieldset class="periodos" aria-label="Periodo">
     @for (p of periodos; track p.valor) {
       <button type="button" class="chip" [class.on]="periodo() === p.valor" [attr.aria-pressed]="periodo() === p.valor"
               (click)="elegir(p.valor)">{{ p.texto }}</button>
     }
-  </div>
+  </fieldset>
   @if (periodo() === 'personalizado') {
     <form class="admin-filtros" (ngSubmit)="consultar()">
       <label>Desde <input type="date" name="desde" [(ngModel)]="desde" /></label>
