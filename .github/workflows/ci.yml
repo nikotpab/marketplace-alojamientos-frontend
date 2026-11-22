@@ -14,10 +14,14 @@ permissions:
 jobs:
   construir-y-probar:
     runs-on: ubuntu-latest
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     steps:
-      # Descarga el código del PR o del push
+      # Descarga el código del PR o del push, con el historial: SonarQube Cloud lo usa para saber qué código es nuevo
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # Instala Node 22 y activa la caché de npm
       - uses: actions/setup-node@v4
@@ -31,8 +35,16 @@ jobs:
       # Verifica que la app compila sin errores
       - run: npm run build
 
-      # Ejecuta los tests en Chrome sin interfaz gráfica
-      - run: npm test -- --watch=false --browsers=ChromeHeadless
+      # Ejecuta los tests en Chrome sin interfaz gráfica y mide la cobertura
+      - run: npm test -- --watch=false --browsers=ChromeHeadless --code-coverage
+
+      # Análisis en SonarQube Cloud con la cobertura. Sin el secreto (PR de Dependabot), se omite.
+      # En un PR espera el quality gate y falla si queda en ERROR, así que bloquea el merge. En main solo
+      # actualiza el análisis: su código nuevo es todo lo cambiado desde la versión anterior y no debe frenar el despliegue.
+      - if: env.SONAR_TOKEN != ''
+        uses: SonarSource/sonarqube-scan-action@e805d875275f728fac1885b413934be6d7c63f65 # v8.4.1
+        with:
+          args: -Dsonar.qualitygate.wait=${{ github.event_name == 'pull_request' }}
 
   # Cada push a main que pasa las pruebas publica la imagen en ECR, con el commit como etiqueta, y la despliega
   # en la EC2 por SSM. GitHub entra a AWS por OIDC, sin llaves guardadas. Las variables del repositorio salen del stack
