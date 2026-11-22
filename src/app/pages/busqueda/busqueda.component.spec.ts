@@ -112,4 +112,103 @@ describe('BusquedaComponent', () => {
     backend.expectNone((r) => r.url === '/api/alojamientos');
     expect(backend.match(() => true).length).toBe(0);
   });
+
+  const URL_COMPLETA = '/buscar?ciudad=Paipa&llegada=2099-01-10&salida=2099-01-13&huespedes=1&tipo=CABANA&precioMin=100000&precioMax=300000&servicios=WiFi,Chimenea';
+
+  async function abrir(url: string, pagina: PaginaAlojamientos = PAGINA) {
+    const comp = await harness.navigateByUrl(url, BusquedaComponent);
+    responderTipos();
+    backend.expectOne((r) => r.url === '/api/alojamientos').flush(pagina);
+    harness.detectChanges();
+    return comp;
+  }
+
+  it('muestra un chip por cada filtro de la URL y calcula las noches', async () => {
+    const pagina = await abrir(URL_COMPLETA);
+    expect(pagina.chips().map((c) => c.clave)).toEqual([
+      'ciudad', 'fechas', 'huespedes', 'tipo', 'precioMin', 'precioMax', 'servicio:WiFi', 'servicio:Chimenea',
+    ]);
+    expect(pagina.chips()[2].texto).toBe('1 huésped');
+    expect(pagina.chips()[3].texto).toBe('Cabaña');
+    expect(pagina.noches()).toBe(3);
+    expect(pagina.totalEstadia(250000)).toBe(750000);
+  });
+
+  it('quitar un chip borra ese filtro y repite la búsqueda', async () => {
+    const pagina = await abrir(URL_COMPLETA);
+    const navegar = spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+    const params = () => navegar.calls.mostRecent().args[1]!.queryParams!;
+
+    pagina.quitar('fechas');
+    expect(params()['llegada']).toBeUndefined();
+    expect(params()['salida']).toBeUndefined();
+    pagina.quitar('servicio:WiFi');
+    expect(params()['servicios']).toBe('Chimenea');
+    pagina.quitar('huespedes');
+    expect(params()['huespedes']).toBeUndefined();
+    pagina.quitar('precioMax');
+    expect(params()['precioMax']).toBeUndefined();
+    pagina.quitar('ciudad');
+    pagina.quitar('tipo');
+    expect(params()).toEqual({ precioMin: 100000, servicios: 'Chimenea' });
+
+    pagina.quitar('otra');
+    expect(params()).toEqual({ precioMin: 100000, servicios: 'Chimenea' });
+  });
+
+  it('buscar con los mismos filtros de la URL vuelve a consultar', async () => {
+    const pagina = await abrir('/buscar?ciudad=Paipa');
+    pagina.buscar();
+    const repetida = backend.expectOne((r) => r.url === '/api/alojamientos');
+    expect(repetida.request.params.get('ciudad')).toBe('Paipa');
+    repetida.flush(PAGINA);
+  });
+
+  it('elegir servicios los agrega y los quita', async () => {
+    const pagina = await abrir('/buscar');
+    pagina.alternarServicio('WiFi');
+    pagina.alternarServicio('Chimenea');
+    pagina.alternarServicio('WiFi');
+    expect(pagina.seleccionados()).toEqual(['Chimenea']);
+  });
+
+  it('usa la primera imagen de los resultados como portada', async () => {
+    const conImagen = { ...PAGINA.contenido[0], id: 'a2', imagen: 'https://img.com/a2.jpg' };
+    const pagina = await abrir('/buscar', { ...PAGINA, contenido: [PAGINA.contenido[0], conImagen], total: 2 });
+    expect(pagina.portada()).toBe('https://img.com/a2.jpg');
+  });
+
+  it('si la búsqueda falla lo dice', async () => {
+    const pagina = await harness.navigateByUrl('/buscar', BusquedaComponent);
+    responderTipos();
+    backend.expectOne((r) => r.url === '/api/alojamientos').flush(null, { status: 500, statusText: 'Server Error' });
+    expect(pagina.error()).toContain('No pudimos obtener los alojamientos');
+    expect(pagina.cargando()).toBeFalse();
+  });
+
+  it('aplicar el panel lo cierra y busca', async () => {
+    const pagina = await abrir('/buscar');
+    const navegar = spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+    pagina.panelAbierto.set(true);
+    pagina.form.controls.ciudad.setValue('Cali');
+    pagina.aplicarPanel();
+    expect(pagina.panelAbierto()).toBeFalse();
+    expect(navegar.calls.mostRecent().args[1]!.queryParams).toEqual({ ciudad: 'Cali' });
+  });
+
+  it('un clic fuera de la caja del panel lo cierra, uno dentro no', async () => {
+    const pagina = await abrir('/buscar');
+    const panel = document.createElement('dialog');
+    spyOn(panel, 'getBoundingClientRect').and.returnValue(new DOMRect(100, 100, 200, 200));
+    const clic = (x: number, y: number, target: EventTarget = panel) =>
+      ({ currentTarget: panel, target, clientX: x, clientY: y }) as unknown as MouseEvent;
+
+    pagina.panelAbierto.set(true);
+    pagina.cerrarSiTocaFondo(clic(150, 150));
+    pagina.cerrarSiTocaFondo(clic(10, 10, document.body));
+    expect(pagina.panelAbierto()).toBeTrue();
+
+    pagina.cerrarSiTocaFondo(clic(10, 150));
+    expect(pagina.panelAbierto()).toBeFalse();
+  });
 });
